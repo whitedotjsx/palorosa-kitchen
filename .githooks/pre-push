@@ -1,0 +1,7 @@
+#!/bin/sh
+# Regenerate the kitchen list web before pushing, so a broken build never lands.
+set -e
+
+echo "pre-push: building the kitchen list app (pnpm build:list)"
+pnpm build:list
+echo "pre-push: built apps/standalone/dist/index.html"

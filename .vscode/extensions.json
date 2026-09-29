@@ -1,0 +1,8 @@
+{
+	"recommendations": [
+		"dbaeumer.vscode-eslint",
+		"vitest.explorer",
+		"bmewburn.vscode-intelephense-client",
+		"redhat.vscode-yaml"
+	]
+}

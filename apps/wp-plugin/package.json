@@ -1,0 +1,13 @@
+{
+	"name": "@palorosa-kitchen/wp-plugin",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
+	"description": "WordPress plugin: kitchen list button, catalog CRUD admin section and new order hook.",
+	"scripts": {
+		"check": "tsc --noEmit"
+	},
+	"devDependencies": {
+		"typescript": "^6.0.3"
+	}
+}

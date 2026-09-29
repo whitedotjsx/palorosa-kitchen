@@ -1,0 +1,20 @@
+{
+	"name": "@palorosa-kitchen/core",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
+	"description": "Framework-free, browser-safe core: catalog schema, kitchen list engine, label parsing, formatters, notifier interfaces.",
+	"exports": {
+		".": "./src/index.ts",
+		"./assets/palorosa-logo.png": "./assets/palorosa-logo.png"
+	},
+	"scripts": {
+		"check": "tsc --noEmit",
+		"test": "vitest run --passWithNoTests",
+		"test:watch": "vitest"
+	},
+	"devDependencies": {
+		"typescript": "^6.0.3",
+		"vitest": "^5.0.2"
+	}
+}

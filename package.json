@@ -1,0 +1,34 @@
+{
+	"name": "palorosa-kitchen",
+	"private": true,
+	"type": "module",
+	"packageManager": "pnpm@10.13.1",
+	"engines": {
+		"node": ">=22"
+	},
+	"pnpm": {
+		"onlyBuiltDependencies": ["esbuild"]
+	},
+	"scripts": {
+		"lint": "eslint .",
+		"lint:fix": "eslint . --fix",
+		"hooks:install": "git config core.hooksPath .githooks",
+		"check": "pnpm -r --if-present run check",
+		"test": "pnpm -r --if-present run test",
+		"migrate": "pnpm --filter @palorosa-kitchen/migration run migrate",
+		"editor": "pnpm --filter @palorosa-kitchen/catalog-editor run dev",
+		"build:list": "pnpm --filter @palorosa-kitchen/standalone run build",
+		"server": "pnpm --filter @palorosa-kitchen/kitchen-server run dev",
+		"bot": "pnpm --filter @palorosa-kitchen/whatsapp-bot run dev",
+		"sync:source": "pnpm --filter @palorosa-kitchen/migration run sync:source",
+		"snapshot": "pnpm --filter @palorosa-kitchen/migration run snapshot",
+		"diff:wp": "pnpm --filter @palorosa-kitchen/migration run diff:wp",
+		"dev": "pnpm -r --parallel --if-present run dev"
+	},
+	"devDependencies": {
+		"eslint": "^9.39.5",
+		"neostandard": "^0.13.0",
+		"typescript": "^6.0.3",
+		"typescript-eslint": "^8.70.1"
+	}
+}

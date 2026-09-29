@@ -1,0 +1,39 @@
+node_modules/
+dist/
+out/
+coverage/
+*.log
+.env
+.env.*
+!.env.example
+
+# Generated migration artifacts are versioned, local overrides are not.
+data/*.local.json
+data/*.local.md
+
+# Runtime state of the WhatsApp service.
+apps/whatsapp-bot/.wwebjs_auth/
+apps/whatsapp-bot/.wwebjs_cache/
+apps/whatsapp-bot/.state/
+
+# Runtime state of the local team server.
+apps/kitchen-server/.state/
+
+# WordPress plugin dependencies.
+apps/wp-plugin/plugin/vendor/
+
+# OS and editor files.
+.DS_Store
+Thumbs.db
+*.swp
+
+# Internal documentation and business data are not published. The catalog can
+# be rebuilt only with the WordPress credentials (`pnpm snapshot`) plus the
+# private evaluation repo (`pnpm sync:source`). Only the generated seed ships,
+# because the standalone build embeds it.
+docs/
+data/*
+!data/.gitkeep
+!data/seed.json
+tools/migration/source/*
+.opencode/

@@ -1,0 +1,25 @@
+{
+	"name": "@palorosa-kitchen/migration",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
+	"description": "Dev-only migration tool: evaluation repo constants to catalog seed and review queue.",
+	"scripts": {
+		"check": "tsc --noEmit",
+		"test": "vitest run --passWithNoTests",
+		"test:watch": "vitest",
+		"migrate": "tsx src/index.ts",
+		"snapshot": "tsx src/snapshot.ts",
+		"diff:wp": "tsx src/wp-diff.ts",
+		"sync:source": "tsx src/sync-source.ts"
+	},
+	"devDependencies": {
+		"@types/node": "^26.6.3",
+		"tsx": "^4.23.15",
+		"typescript": "^6.0.3",
+		"vitest": "^5.0.2"
+	},
+	"dependencies": {
+		"@palorosa-kitchen/core": "workspace:*"
+	}
+}

@@ -1,0 +1,5577 @@
+{
+  "schemaVersion": 1,
+  "units": [
+    {
+      "id": "arepa-asada-con-pechuga-asada-aguacate-y-parmesano",
+      "name": "Arepa asada con pechuga asada, aguacate y parmesano",
+      "category": "main",
+      "measure": "unit",
+      "aliases": [
+        "Arepa asada con pechuga asada, aguacate y parmesano"
+      ],
+      "isKitchen": true,
+      "active": true
+    },
+    {
+      "id": "arepas-de-pollo",
+      "name": "Arepas de pollo",
+      "category": "main",
+      "measure": "unit",
+      "aliases": [
+        "Arepas de pollo"
+      ],
+      "isKitchen": true,
+      "active": true
+    },
+    {
+      "id": "arepas-rancheras",
+      "name": "Arepas rancheras",
+      "category": "main",
+      "measure": "unit",
+      "aliases": [
+        "Arepas rancheras"
+      ],
+      "isKitchen": true,
+      "active": true,
+      "description": "Arepas rancheras de salchicha y queso. También van en la zona salada del Cristal."
+    },
+    {
+      "id": "bebida-pequena",
+      "name": "bebida pequeña",
+      "category": "other",
+      "measure": "unit",
+      "aliases": [
+        "Dos bebidas pequeñas"
+      ],
+      "isKitchen": true,
+      "active": true
+    },
+    {
+      "id": "bolsita-con-mani-salado",
+      "name": "Bolsita con maní salado",
+      "category": "condiment",
+      "measure": "unit",
+      "aliases": [
+        "Bolsita con maní salado"
+      ],
+      "isKitchen": false,
+      "active": true
+    },
+    {
+      "id": "bombones-de-chocolate",
+      "name": "Bombones de chocolate",
+      "category": "dessert",
+      "measure": "unit",
+      "aliases": [
+        "Bombones de chocolate"
+      ],
+      "isKitchen": false,
+      "active": true
+    },
+    {
+      "id": "botella-de-vino-gato-negro-750ml-casillero-del-diablo-350ml-reservado-750ml-o-frontera-750ml",
+      "name": "Botella de vino tinto",
+      "category": "drink",
+      "measure": "bottle",
+      "aliases": [
+        "Botella de vino (Gato Negro 750ml, Casillero del Diablo 350ml, Reservado 750ml o Frontera 750ml)",
+        "Botella de vino tinto 750ml"
+      ],
+      "isKitchen": false,
+      "active": true,
+      "description": "Gato Negro 750ml, Casillero del Diablo 350ml, Reservado 750ml o Frontera 750ml, según disponibilidad. Adicional."
+    },
+    {
+      "id": "bowl-con-yogur-griego-granola-y-frutas",
+      "name": "Bowl con yogur griego, granola y frutas",
+      "category": "fruit",
+      "measure": "unit",
+      "aliases": [
+        "Bowl con yogur griego, granola y frutas"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "note": "Fusionada en Bowl Maleta Pro (revisión 2026-09-26)."
+    },
+    {
+      "id": "bowl-con-yogur-griego-kiwi-fresas-y-granola-de-pistachos",
+      "name": "Bowl con yogur griego, kiwi, fresas y granola de pistachos",
+      "category": "fruit",
+      "measure": "unit",
+      "aliases": [
+        "Bowl con yogur griego, kiwi, fresas y granola de pistachos"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "note": "Fusionada en Bowl Glow (revisión 2026-09-26)."
+    },
+    {
+      "id": "bowl-de-yogur-griego-con-durazno-y-granola-artesanal",
+      "name": "Bowl de yogur griego con durazno y granola artesanal",
+      "category": "fruit",
+      "measure": "unit",
+      "aliases": [
+        "Bowl de yogur griego con durazno y granola artesanal"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "note": "Fusionada en Bowl Brunch Chill (revisión 2026-09-26)."
+    },
+    {
+      "id": "bowl-de-yogur-griego-durazno-y-granola",
+      "name": "Bowl de yogur griego, durazno y granola",
+      "category": "fruit",
+      "measure": "unit",
+      "aliases": [
+        "Bowl de yogur griego, durazno y granola"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "note": "Gemela sin uso, fusionada en Bowl Brunch Chill (revisión 2026-09-26)."
+    },
+    {
+      "id": "bowl-de-yogur-griego-granola-artesanal-fresa-banano-y-arandanos",
+      "name": "Bowl de yogur griego, granola artesanal, fresa, banano y arándanos",
+      "category": "fruit",
+      "measure": "unit",
+      "aliases": [
+        "Bowl de yogur griego, granola artesanal, fresa, banano y arándanos"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "note": "Fusionada en Bowl Morning (revisión 2026-09-26)."
+    },
+    {
+      "id": "bowl-de-yogur-griego-granola-fresa-banano-y-arandanos",
+      "name": "Bowl de yogur griego, granola, fresa, banano y arándanos",
+      "category": "fruit",
+      "measure": "unit",
+      "aliases": [
+        "Bowl de yogur griego, granola, fresa, banano y arándanos"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "note": "Gemela sin uso, fusionada en Bowl Morning (revisión 2026-09-26)."
+    },
+    {
+      "id": "bowl-de-yogur-griego-kiwi-fresas-y-granola-de-pistachos",
+      "name": "Bowl de yogur griego, kiwi, fresas y granola de pistachos",
+      "category": "fruit",
+      "measure": "unit",
+      "aliases": [
+        "Bowl de yogur griego, kiwi, fresas y granola de pistachos"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "note": "Gemela sin uso, fusionada en Bowl Glow (revisión 2026-09-26)."
+    },
+    {
+      "id": "bowl-de-yogur-griego-mantequilla-de-mani-fresas-granola-y-kinder-bueno",
+      "name": "Bowl de yogur griego, mantequilla de maní, fresas, granola y Kinder Bueno",
+      "category": "fruit",
+      "measure": "unit",
+      "aliases": [
+        "Bowl de yogur griego, mantequilla de maní, fresas, granola y Kinder Bueno"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "note": "Fusionada en Bowl Libro (revisión 2026-09-26)."
+    },
+    {
+      "id": "bowl-de-yogur-griego-semillas-de-chia-quinoa-fresa-y-kiwi",
+      "name": "Bowl de yogur griego, semillas de chía, quinoa, fresa y kiwi",
+      "category": "fruit",
+      "measure": "unit",
+      "aliases": [
+        "Bowl de yogur griego, semillas de chía, quinoa, fresa y kiwi"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "note": "Fusionada en Bowl Saludable (revisión 2026-09-26)."
+    },
+    {
+      "id": "bowl-en-copa-de-cristal",
+      "name": "Copa Cristal",
+      "category": "dessert",
+      "measure": "glass",
+      "aliases": [
+        "Bowl en copa de cristal",
+        "Copa de cristal con yogur griego, müsli, frutas y galleta de coco"
+      ],
+      "isKitchen": true,
+      "active": true,
+      "description": "Yogur griego, müsli, frutas y galleta de coco. Se sirve en copa de cristal."
+    },
+    {
+      "id": "bowl-grande",
+      "name": "Bowl Libro",
+      "category": "dessert",
+      "measure": "unit",
+      "aliases": [
+        "Bowl grande",
+        "Bowl de yogur griego, mantequilla de maní, fresas, granola y Kinder Bueno"
+      ],
+      "isKitchen": true,
+      "active": true,
+      "description": "Yogur griego, mantequilla de maní, fresas, granola y Kinder Bueno."
+    },
+    {
+      "id": "bowl-para-maleta-pro",
+      "name": "Bowl Maleta Pro",
+      "category": "dessert",
+      "measure": "unit",
+      "aliases": [
+        "Bowl para maleta pro",
+        "Bowl con yogur griego, granola y frutas"
+      ],
+      "isKitchen": true,
+      "active": true,
+      "description": "Yogur griego, granola y frutas."
+    },
+    {
+      "id": "bowl-para-morral",
+      "name": "Bowl para morral",
+      "category": "side",
+      "measure": "unit",
+      "aliases": [
+        "Bowl para morral"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "note": "Sin desayuno Morral en el catálogo. Unidad inactiva (revisión 2026-09-26)."
+    },
+    {
+      "id": "bowl-pequeno-de-brunch",
+      "name": "Bowl Brunch Chill",
+      "category": "dessert",
+      "measure": "unit",
+      "aliases": [
+        "Bowl pequeño de brunch",
+        "Bowl de yogur griego con durazno y granola artesanal",
+        "Bowl de yogur griego, durazno y granola"
+      ],
+      "isKitchen": true,
+      "active": true,
+      "description": "Yogur griego, durazno y granola artesanal."
+    },
+    {
+      "id": "bowl-pequeno-de-glow",
+      "name": "Bowl Glow",
+      "category": "dessert",
+      "measure": "unit",
+      "aliases": [
+        "Bowl pequeño de glow",
+        "Bowl con yogur griego, kiwi, fresas y granola de pistachos",
+        "Bowl de yogur griego, kiwi, fresas y granola de pistachos"
+      ],
+      "isKitchen": true,
+      "active": true,
+      "description": "Yogur griego, kiwi, fresas y granola de pistachos."
+    },
+    {
+      "id": "bowl-pequeno-de-morning",
+      "name": "Bowl Morning",
+      "category": "dessert",
+      "measure": "unit",
+      "aliases": [
+        "Bowl pequeño de morning",
+        "Bowl de yogur griego, granola artesanal, fresa, banano y arándanos",
+        "Bowl de yogur griego, granola, fresa, banano y arándanos"
+      ],
+      "isKitchen": true,
+      "active": true,
+      "description": "Yogur griego, granola artesanal, fresa, banano y arándanos."
+    },
+    {
+      "id": "bowl-saludable",
+      "name": "Bowl Saludable",
+      "category": "dessert",
+      "measure": "unit",
+      "aliases": [
+        "Bowl saludable",
+        "Bowl de yogur griego, semillas de chía, quinoa, fresa y kiwi"
+      ],
+      "isKitchen": true,
+      "active": true,
+      "description": "Yogur griego, semillas de chía, quinoa, fresa y kiwi."
+    },
+    {
+      "id": "cafe-con-insta-cream-y-splenda",
+      "name": "Café con Insta Cream y Splenda",
+      "category": "drink",
+      "measure": "unit",
+      "aliases": [
+        "Café con Insta Cream y Splenda"
+      ],
+      "isKitchen": true,
+      "active": true
+    },
+    {
+      "id": "cafe-mocca",
+      "name": "Café Mocca",
+      "category": "drink",
+      "measure": "unit",
+      "aliases": [
+        "Café Mocca"
+      ],
+      "isKitchen": true,
+      "active": true
+    },
+    {
+      "id": "caja-con-chocolates-artesanales",
+      "name": "Caja con chocolates artesanales",
+      "category": "dessert",
+      "measure": "unit",
+      "aliases": [
+        "Caja con chocolates artesanales"
+      ],
+      "isKitchen": false,
+      "active": false,
+      "note": "Caja de chocolates. No va a la lista de cocina (revisión 2026-09-26)."
+    },
+    {
+      "id": "caja-con-chocolatinas-artesanales",
+      "name": "Caja con chocolatinas artesanales",
+      "category": "dessert",
+      "measure": "unit",
+      "aliases": [
+        "Caja con chocolatinas artesanales"
+      ],
+      "isKitchen": false,
+      "active": false,
+      "note": "Caja de chocolates. No va a la lista de cocina (revisión 2026-09-26)."
+    },
+    {
+      "id": "caja-de-chocolatinas-artesanales",
+      "name": "Caja de chocolates artesanales",
+      "category": "dessert",
+      "measure": "unit",
+      "aliases": [
+        "Caja de chocolatinas artesanales",
+        "Caja con chocolatinas artesanales",
+        "Caja con chocolates artesanales"
+      ],
+      "isKitchen": false,
+      "active": true,
+      "note": "Caja de chocolates. No va a la lista de cocina (revisión 2026-09-26)."
+    },
+    {
+      "id": "cajita-de-bombones-y-chocolates-en-forma-de-corazon-decorados-con-oro-24k-comestible",
+      "name": "Cajita de bombones y chocolates en forma de corazón decorados con oro 24K comestible",
+      "category": "dessert",
+      "measure": "unit",
+      "aliases": [
+        "Cajita de bombones y chocolates en forma de corazón decorados con oro 24K comestible"
+      ],
+      "isKitchen": false,
+      "active": true,
+      "note": "Caja de chocolates. No va a la lista de cocina (revisión 2026-09-26)."
+    },
+    {
+      "id": "canasta-de-jamones-y-quesos",
+      "name": "Canasta de jamones y quesos",
+      "category": "other",
+      "measure": "unit",
+      "aliases": [
+        "Canasta de jamones y quesos"
+      ],
+      "isKitchen": true,
+      "active": false
+    },
+    {
+      "id": "chocolatina-de-chocolate-blanco-con-pistachos",
+      "name": "Chocolatina de chocolate blanco con pistachos",
+      "category": "dessert",
+      "measure": "unit",
+      "aliases": [
+        "Chocolatina de chocolate blanco con pistachos"
+      ],
+      "isKitchen": false,
+      "active": true
+    },
+    {
+      "id": "copa-de-cristal-con-yogur-griego-musli-frutas-y-galleta-de-coco",
+      "name": "Copa de cristal con yogur griego, müsli, frutas y galleta de coco",
+      "category": "fruit",
+      "measure": "glass",
+      "aliases": [
+        "Copa de cristal con yogur griego, müsli, frutas y galleta de coco"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "note": "Fusionada en Bowl Cristal (revisión 2026-09-26)."
+    },
+    {
+      "id": "copa-de-cristal-de-vino",
+      "name": "Copa de cristal de vino",
+      "category": "drink",
+      "measure": "glass",
+      "aliases": [
+        "Copa de cristal de vino"
+      ],
+      "isKitchen": false,
+      "active": true,
+      "note": "Presentación, no va a la cocina (Revisión de duplicados 2026-09-26.)"
+    },
+    {
+      "id": "cristal-zone-dulce",
+      "name": "Zona dulce del domo de cristal",
+      "category": "other",
+      "measure": "unit",
+      "aliases": [
+        "Cristal zone dulce",
+        "Zona dulce"
+      ],
+      "isKitchen": true,
+      "active": true,
+      "description": "Dos waffles con nutella y fresas más cheesecake o torta. El contenido no es elegible."
+    },
+    {
+      "id": "cristal-zone-salado",
+      "name": "Zona salada del domo de cristal",
+      "category": "other",
+      "measure": "unit",
+      "aliases": [
+        "Cristal zone salado",
+        "Zona de sal"
+      ],
+      "isKitchen": true,
+      "active": true,
+      "description": "Dos arepas: una de pollo con queso y una ranchera de salchicha y queso."
+    },
+    {
+      "id": "deditos-de-queso",
+      "name": "Deditos de queso",
+      "category": "side",
+      "measure": "unit",
+      "aliases": [
+        "Deditos de queso"
+      ],
+      "isKitchen": true,
+      "active": true
+    },
+    {
+      "id": "empanadas-horneadas-de-pollo",
+      "name": "Empanadas horneadas de pollo",
+      "category": "main",
+      "measure": "unit",
+      "aliases": [
+        "Empanadas horneadas de pollo"
+      ],
+      "isKitchen": true,
+      "active": true
+    },
+    {
+      "id": "empanaditas",
+      "name": "Empanaditas",
+      "category": "side",
+      "measure": "unit",
+      "aliases": [
+        "Empanaditas"
+      ],
+      "isKitchen": true,
+      "active": true
+    },
+    {
+      "id": "ensalada-de-fruta",
+      "name": "ensalada de fruta",
+      "category": "fruit",
+      "measure": "unit",
+      "aliases": [
+        "Dos ensaladas de frutas"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "note": "Fusionada en Ensalada de frutas (Revisión de duplicados 2026-09-26.)"
+    },
+    {
+      "id": "ensalada-de-fruta-fresca",
+      "name": "Ensalada de fruta fresca",
+      "category": "fruit",
+      "measure": "unit",
+      "aliases": [
+        "Ensalada de fruta fresca"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "note": "Fusionada en Ensalada de frutas (Revisión de duplicados 2026-09-26.)"
+    },
+    {
+      "id": "ensalada-de-frutas",
+      "name": "Ensalada de frutas",
+      "category": "fruit",
+      "measure": "unit",
+      "aliases": [
+        "Ensalada de frutas",
+        "ensalada de fruta",
+        "Ensalada de fruta fresca",
+        "Porción de fruta picada",
+        "Una porción de fruta picada"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "description": "Ensalada de frutas."
+    },
+    {
+      "id": "ensalada-de-frutas-grande",
+      "name": "Porción de fruta grande",
+      "category": "fruit",
+      "measure": "unit",
+      "aliases": [
+        "Ensalada de frutas grande"
+      ],
+      "isKitchen": true,
+      "active": true,
+      "description": "Porción grande de fruta. La llevan los Cofres y los Box."
+    },
+    {
+      "id": "ensalada-de-frutas-pequena",
+      "name": "Porción de fruta pequeña",
+      "category": "fruit",
+      "measure": "unit",
+      "aliases": [
+        "Ensalada de frutas pequeña"
+      ],
+      "isKitchen": true,
+      "active": true
+    },
+    {
+      "id": "frasco-con-frutos-secos",
+      "name": "Frasco con frutos secos",
+      "category": "side",
+      "measure": "bottle",
+      "aliases": [
+        "Frasco con frutos secos"
+      ],
+      "isKitchen": false,
+      "active": true
+    },
+    {
+      "id": "frasco-de-chorizo-espanol-y-queso-mozzarella",
+      "name": "Frasco de chorizo español y queso mozzarella",
+      "category": "side",
+      "measure": "bottle",
+      "aliases": [
+        "Frasco de chorizo español y queso mozzarella",
+        "Queso mozarella y chorizo español",
+        "Frasco largo de quesos"
+      ],
+      "isKitchen": true,
+      "active": true,
+      "description": "Frasco con chorizo español y queso mozzarella. Unidad adicional de Gold Pro, alternativa al frasco de gomitas."
+    },
+    {
+      "id": "frasco-largo-de-quesos",
+      "name": "Frasco largo de quesos",
+      "category": "side",
+      "measure": "bottle",
+      "aliases": [
+        "Frasco largo de quesos"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "note": "Es una elección de Gold Pro, no un componente fijo. Reemplazada por el frasco de chorizo y queso mozzarella (revisión 2026-09-26)."
+    },
+    {
+      "id": "fresa-entera",
+      "name": "fresa entera",
+      "category": "fruit",
+      "measure": "unit",
+      "aliases": [
+        "Tres fresas enteras"
+      ],
+      "isKitchen": false,
+      "active": true
+    },
+    {
+      "id": "galleta-tosh-crackers",
+      "name": "Galleta Tosh crackers",
+      "category": "dessert",
+      "measure": "unit",
+      "aliases": [
+        "Galleta Tosh crackers"
+      ],
+      "isKitchen": false,
+      "active": true,
+      "note": "Galleta empacada. No va a la lista de cocina (revisión 2026-09-26)."
+    },
+    {
+      "id": "galleta-tosh-cremadas",
+      "name": "Galleta Tosh cremadas",
+      "category": "dessert",
+      "measure": "unit",
+      "aliases": [
+        "Galleta Tosh cremadas"
+      ],
+      "isKitchen": false,
+      "active": true,
+      "note": "Galleta empacada. No va a la lista de cocina (revisión 2026-09-26)."
+    },
+    {
+      "id": "galletas-con-chips-de-chocolate",
+      "name": "Galletas con chips de chocolate",
+      "category": "dessert",
+      "measure": "unit",
+      "aliases": [
+        "Galletas con chips de chocolate"
+      ],
+      "isKitchen": false,
+      "active": true,
+      "note": "Galleta empacada, no va a la cocina (Revisión de duplicados 2026-09-26.)"
+    },
+    {
+      "id": "galletas-de-avena-sin-azucar",
+      "name": "Galletas de avena sin azúcar",
+      "category": "dessert",
+      "measure": "unit",
+      "aliases": [
+        "Galletas de avena sin azúcar"
+      ],
+      "isKitchen": false,
+      "active": true,
+      "note": "Galleta empacada. No va a la lista de cocina (revisión 2026-09-26)."
+    },
+    {
+      "id": "gomitas-trululu",
+      "name": "Gomitas Trululu",
+      "category": "dessert",
+      "measure": "unit",
+      "aliases": [
+        "Gomitas Trululu",
+        "Gomitas Trululus"
+      ],
+      "isKitchen": false,
+      "active": true,
+      "description": "Frasco de gomitas. Alternativa al frasco de quesos y chorizo en Gold Pro."
+    },
+    {
+      "id": "granola-artesanal",
+      "name": "Granola artesanal",
+      "category": "condiment",
+      "measure": "unit",
+      "aliases": [
+        "Granola artesanal"
+      ],
+      "isKitchen": false,
+      "active": true,
+      "note": "La granola no la prepara la cocina (revisión 2026-09-26)."
+    },
+    {
+      "id": "hatsu-te",
+      "name": "Hatsu té",
+      "category": "drink",
+      "measure": "unit",
+      "aliases": [
+        "Dos Hatsu té",
+        "Hatsu té"
+      ],
+      "isKitchen": false,
+      "active": true,
+      "description": "Bebida. Opción de bebida en varios desayunos."
+    },
+    {
+      "id": "huevo-kinder",
+      "name": "Huevo Kinder",
+      "category": "dessert",
+      "measure": "unit",
+      "aliases": [
+        "Huevo Kinder"
+      ],
+      "isKitchen": false,
+      "active": true,
+      "note": "Empacado, no va a la cocina (Revisión de duplicados 2026-09-26.)"
+    },
+    {
+      "id": "jugo-de-naranja",
+      "name": "jugo de naranja",
+      "category": "drink",
+      "measure": "unit",
+      "aliases": [
+        "Dos jugos de naranja"
+      ],
+      "isKitchen": true,
+      "active": false
+    },
+    {
+      "id": "jugo-de-naranja-100-natural",
+      "name": "Jugo de naranja 100% natural",
+      "category": "drink",
+      "measure": "unit",
+      "aliases": [
+        "Jugo de naranja 100% natural",
+        "Jugo de naranja 100% natural 0% azúcar",
+        "Jugo de naranja 100% natural grande"
+      ],
+      "isKitchen": true,
+      "active": true
+    },
+    {
+      "id": "jugo-de-naranja-100-natural-0-azucar",
+      "name": "Jugo de naranja 100% natural 0% azúcar",
+      "category": "drink",
+      "measure": "unit",
+      "aliases": [
+        "Jugo de naranja 100% natural 0% azúcar"
+      ],
+      "isKitchen": true,
+      "active": false
+    },
+    {
+      "id": "jugo-de-naranja-con-mini-pastel-de-pollo",
+      "name": "Jugo de naranja con mini pastel de pollo",
+      "category": "drink",
+      "measure": "unit",
+      "aliases": [
+        "Jugo de naranja con mini pastel de pollo"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "note": "Elección combinada del Box: se separa en Jugo de naranja semi natural pequeño más Mini pastel de pollo (revisión 2026-09-26)."
+    },
+    {
+      "id": "jugo-de-naranja-semi-natural-grande",
+      "name": "Jugo de naranja semi natural grande",
+      "category": "drink",
+      "measure": "unit",
+      "aliases": [
+        "Jugo de naranja semi natural grande",
+        "jugo de naranja"
+      ],
+      "isKitchen": true,
+      "active": true
+    },
+    {
+      "id": "jugo-de-naranja-semi-natural-pequeno",
+      "name": "Jugo de naranja semi natural pequeño",
+      "category": "drink",
+      "measure": "unit",
+      "aliases": [
+        "Jugo de naranja semi natural pequeño"
+      ],
+      "isKitchen": true,
+      "active": true
+    },
+    {
+      "id": "jugo-verde",
+      "name": "Jugo verde pequeño",
+      "category": "drink",
+      "measure": "unit",
+      "aliases": [
+        "Jugo verde",
+        "Jugo verde de manzana verde, apio, kiwi y hierbabuena",
+        "Jugo verde de pepino, apio, jengibre y manzana con naranja",
+        "Jugo verde refrescante"
+      ],
+      "isKitchen": true,
+      "active": true,
+      "description": "Jugo verde. Siempre el mismo, lo único que cambia es el tamaño: pequeño o grande."
+    },
+    {
+      "id": "jugo-verde-de-manzana-verde-apio-kiwi-y-hierbabuena",
+      "name": "Jugo verde de manzana verde, apio, kiwi y hierbabuena",
+      "category": "drink",
+      "measure": "unit",
+      "aliases": [
+        "Jugo verde de manzana verde, apio, kiwi y hierbabuena"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "note": "Fusionada en Jugo verde (revisión 2026-09-26)."
+    },
+    {
+      "id": "jugo-verde-de-pepino-apio-jengibre-y-manzana-con-naranja",
+      "name": "Jugo verde de pepino, apio, jengibre y manzana con naranja",
+      "category": "drink",
+      "measure": "unit",
+      "aliases": [
+        "Jugo verde de pepino, apio, jengibre y manzana con naranja"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "note": "Fusionada en Jugo verde (revisión 2026-09-26)."
+    },
+    {
+      "id": "jugo-verde-refrescante",
+      "name": "Jugo verde refrescante",
+      "category": "drink",
+      "measure": "unit",
+      "aliases": [
+        "Jugo verde refrescante"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "note": "Fusionada en Jugo verde (revisión 2026-09-26)."
+    },
+    {
+      "id": "kumis-grande",
+      "name": "Kumis grande",
+      "category": "drink",
+      "measure": "unit",
+      "aliases": [
+        "Kumis grande"
+      ],
+      "isKitchen": true,
+      "active": true
+    },
+    {
+      "id": "kumis-pequeno",
+      "name": "Kumis pequeño",
+      "category": "drink",
+      "measure": "unit",
+      "aliases": [
+        "Kumis pequeño"
+      ],
+      "isKitchen": true,
+      "active": true
+    },
+    {
+      "id": "lazo-en-la-bebida",
+      "name": "Lazo en la bebida",
+      "category": "other",
+      "measure": "unit",
+      "aliases": [
+        "Lazo en la bebida"
+      ],
+      "isKitchen": false,
+      "active": true,
+      "note": "Presentación, no va a la cocina (Revisión de duplicados 2026-09-26.)"
+    },
+    {
+      "id": "mantequilla-pequena",
+      "name": "Mantequilla pequeña",
+      "category": "condiment",
+      "measure": "unit",
+      "aliases": [
+        "Mantequilla pequeña"
+      ],
+      "isKitchen": false,
+      "active": true
+    },
+    {
+      "id": "manzana-verde",
+      "name": "Manzana verde",
+      "category": "fruit",
+      "measure": "unit",
+      "aliases": [
+        "Manzana verde"
+      ],
+      "isKitchen": false,
+      "active": true,
+      "note": "No va a la lista de cocina (revisión 2026-09-26)."
+    },
+    {
+      "id": "mini-brownie",
+      "name": "Mini brownies",
+      "category": "dessert",
+      "measure": "unit",
+      "aliases": [
+        "Dos mini brownies"
+      ],
+      "isKitchen": false,
+      "active": true
+    },
+    {
+      "id": "mini-ensalada-de-fruta",
+      "name": "mini ensalada de fruta",
+      "category": "fruit",
+      "measure": "unit",
+      "aliases": [
+        "Dos mini ensaladas de frutas",
+        "Mini porción de ensalada de frutas"
+      ],
+      "isKitchen": true,
+      "active": false
+    },
+    {
+      "id": "mini-pancakes-con-fresas-y-nutella",
+      "name": "Mini pancakes con fresas y nutella",
+      "category": "dessert",
+      "measure": "unit",
+      "aliases": [
+        "Mini pancakes con fresas y Nutella",
+        "Mini pancakes con fresas y nutella",
+        "Mini pancakes para glow"
+      ],
+      "isKitchen": true,
+      "active": true
+    },
+    {
+      "id": "mini-pancakes-de-avena-con-fresas-y-mantequilla-de-mani",
+      "name": "Mini pancakes de avena con fresas y mantequilla de maní",
+      "category": "fruit",
+      "measure": "unit",
+      "aliases": [
+        "Mini pancakes de avena con fresas y mantequilla de maní"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "note": "Fusionada en Mini pancakes para fitness (Revisión de duplicados 2026-09-26.)"
+    },
+    {
+      "id": "mini-pancakes-para-fitness",
+      "name": "Mini pancakes para fitness",
+      "category": "dessert",
+      "measure": "unit",
+      "aliases": [
+        "Mini pancakes para fitness",
+        "Mini pancakes de avena con fresas y mantequilla de maní"
+      ],
+      "isKitchen": true,
+      "active": true,
+      "description": "Mini pancakes de avena con fresas y mantequilla de maní."
+    },
+    {
+      "id": "mini-pancakes-para-glow",
+      "name": "Mini pancakes para glow",
+      "category": "dessert",
+      "measure": "unit",
+      "aliases": [
+        "Mini pancakes para glow"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "note": "Fusionada en Mini pancakes con fresas y nutella (Revisión de duplicados 2026-09-26.)"
+    },
+    {
+      "id": "mini-pancakes-para-morral",
+      "name": "Mini pancakes para morral",
+      "category": "dessert",
+      "measure": "unit",
+      "aliases": [
+        "Mini pancakes para morral"
+      ],
+      "isKitchen": true,
+      "active": true
+    },
+    {
+      "id": "mini-pastel-de-pollo",
+      "name": "Mini pastel de pollo",
+      "category": "main",
+      "measure": "unit",
+      "aliases": [
+        "Mini pastel de pollo",
+        "Pastelito de pollo",
+        "Pastelitos de pollo"
+      ],
+      "isKitchen": false,
+      "active": true,
+      "description": "Mini pastel de pollo. No lo prepara la cocina.",
+      "note": "No va a la lista de cocina (revisión 2026-09-26)."
+    },
+    {
+      "id": "mini-porcione-de-ensalada-de-fruta",
+      "name": "mini porcione de ensalada de fruta",
+      "category": "fruit",
+      "measure": "portion",
+      "aliases": [
+        "Dos mini porciones de ensalada de frutas"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "note": "Fusionada en Mini ensalada de fruta (Revisión de duplicados 2026-09-26.)"
+    },
+    {
+      "id": "mini-sandwich-de-croissant",
+      "name": "Mini sándwich de croissant",
+      "category": "main",
+      "measure": "unit",
+      "aliases": [
+        "Mini sándwich de croissant"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "note": "Fusionada en Sándwich Maleta Pro (Revisión de duplicados 2026-09-26.)"
+    },
+    {
+      "id": "mini-sandwiche-en-pan-sin-gluten-de-jamon-queso-y-lechuga",
+      "name": "mini sándwiche en pan sin gluten de jamón, queso y lechuga",
+      "category": "main",
+      "measure": "unit",
+      "aliases": [
+        "Dos mini sándwiches en pan sin gluten de jamón, queso y lechuga"
+      ],
+      "isKitchen": true,
+      "active": true
+    },
+    {
+      "id": "mini-tabla-de-madera-con-quesos-jamon-y-chocolate-blanco",
+      "name": "Mini tabla de quesos de Libro",
+      "category": "dessert",
+      "measure": "unit",
+      "aliases": [
+        "Mini tabla de madera con quesos, jamón y chocolate blanco",
+        "Tablas de quesos para libro"
+      ],
+      "isKitchen": true,
+      "active": true,
+      "description": "Tabla mini con quesos, jamón y chocolate blanco. Parecida pero distinta a la del Brunch Chill."
+    },
+    {
+      "id": "mini-tabla-de-quesos-con-jamones-chorizo-espanol-mozzarella-holandes",
+      "name": "Mini tabla de quesos con jamones, chorizo español, mozzarella, holandés",
+      "category": "side",
+      "measure": "unit",
+      "aliases": [
+        "Mini tabla de quesos con jamones, chorizo español, mozzarella, holandés"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "note": "Fusionada en la tabla de picnic (revisión 2026-09-26)."
+    },
+    {
+      "id": "mini-torta-personal",
+      "name": "Mini torta personal",
+      "category": "dessert",
+      "measure": "unit",
+      "aliases": [
+        "Mini torta personal"
+      ],
+      "isKitchen": true,
+      "active": true
+    },
+    {
+      "id": "minis-croissant",
+      "name": "Minis croissant",
+      "category": "main",
+      "measure": "unit",
+      "aliases": [
+        "Minis croissant"
+      ],
+      "isKitchen": false,
+      "active": true
+    },
+    {
+      "id": "mocca-grande",
+      "name": "Mocca grande",
+      "category": "drink",
+      "measure": "unit",
+      "aliases": [
+        "Mocca grande"
+      ],
+      "isKitchen": true,
+      "active": true
+    },
+    {
+      "id": "muffin-con-topper-bajo-en-azucar",
+      "name": "Muffin con topper (bajo en azúcar)",
+      "category": "dessert",
+      "measure": "unit",
+      "aliases": [
+        "Muffin con topper (bajo en azúcar)"
+      ],
+      "isKitchen": false,
+      "active": true,
+      "note": "Muffin empacado. No va a la lista de cocina (revisión 2026-09-26)."
+    },
+    {
+      "id": "muffin-de-torta-de-zanahoria",
+      "name": "Muffin de torta de zanahoria",
+      "category": "dessert",
+      "measure": "unit",
+      "aliases": [
+        "Muffin de torta de zanahoria"
+      ],
+      "isKitchen": false,
+      "active": true,
+      "note": "Muffin empacado. No va a la lista de cocina (revisión 2026-09-26)."
+    },
+    {
+      "id": "muffin-en-caja",
+      "name": "Muffin en caja",
+      "category": "dessert",
+      "measure": "unit",
+      "aliases": [
+        "Muffin en caja"
+      ],
+      "isKitchen": false,
+      "active": true,
+      "note": "Muffin empacado. No va a la lista de cocina (revisión 2026-09-26)."
+    },
+    {
+      "id": "muffin-en-cajita-con-velita",
+      "name": "Muffin en cajita con velita",
+      "category": "dessert",
+      "measure": "unit",
+      "aliases": [
+        "Muffin en cajita con velita"
+      ],
+      "isKitchen": false,
+      "active": true,
+      "note": "Muffin empacado. No va a la lista de cocina (revisión 2026-09-26)."
+    },
+    {
+      "id": "nutella-15-gr",
+      "name": "Nutella 15 gr",
+      "category": "dessert",
+      "measure": "unit",
+      "aliases": [
+        "Nutella 15 gr"
+      ],
+      "isKitchen": false,
+      "active": false,
+      "description": "Sobre de Nutella de 15 gr. No la prepara la cocina; la empaqueta el taller.",
+      "note": "No va a la lista de cocina (revisión 2026-09-26)."
+    },
+    {
+      "id": "pancakes-para-maleta-pro",
+      "name": "Pancakes para maleta pro",
+      "category": "dessert",
+      "measure": "unit",
+      "aliases": [
+        "Pancakes para maleta pro"
+      ],
+      "isKitchen": true,
+      "active": true
+    },
+    {
+      "id": "paquete-de-papas-monterojo",
+      "name": "Paquete de papas monterojo",
+      "category": "side",
+      "measure": "unit",
+      "aliases": [
+        "Paquete de papas monterojo"
+      ],
+      "isKitchen": false,
+      "active": true,
+      "description": "Paquete de papas Monterojo. Snack empacado, no lo prepara la cocina.",
+      "note": "No va a la lista de cocina (revisión 2026-09-26)."
+    },
+    {
+      "id": "parfait",
+      "name": "Parfait",
+      "category": "dessert",
+      "measure": "unit",
+      "aliases": [
+        "Parfait",
+        "Parfait con yogur griego",
+        "Parfait de kumis, mango, fresa, kiwi y granola",
+        "Parfait de yogur griego con fresas, kiwi y semillas de chía",
+        "Parfait de yogur griego, fresas, kiwi, semillas de chía y granola"
+      ],
+      "isKitchen": true,
+      "active": true,
+      "description": "Parfait normal en frasco, con yogur, granola y fruta. Usado por varios desayunos."
+    },
+    {
+      "id": "parfait-con-yogur-griego",
+      "name": "Parfait con yogur griego",
+      "category": "side",
+      "measure": "unit",
+      "aliases": [
+        "Parfait con yogur griego"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "note": "Fusionada en Parfait (revisión 2026-09-26)."
+    },
+    {
+      "id": "parfait-de-kumis-mango-fresa-kiwi-y-granola",
+      "name": "Parfait de kumis, mango, fresa, kiwi y granola",
+      "category": "drink",
+      "measure": "unit",
+      "aliases": [
+        "Parfait de kumis, mango, fresa, kiwi y granola"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "note": "Fusionada en Parfait (revisión 2026-09-26)."
+    },
+    {
+      "id": "parfait-de-yogur-griego-con-fresas-kiwi-y-semillas-de-chia",
+      "name": "Parfait de yogur griego con fresas, kiwi y semillas de chía",
+      "category": "fruit",
+      "measure": "unit",
+      "aliases": [
+        "Parfait de yogur griego con fresas, kiwi y semillas de chía"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "note": "Fusionada en Parfait (revisión 2026-09-26)."
+    },
+    {
+      "id": "parfait-de-yogur-griego-fresas-kiwi-semillas-de-chia-y-granola",
+      "name": "Parfait de yogur griego, fresas, kiwi, semillas de chia y granola",
+      "category": "fruit",
+      "measure": "unit",
+      "aliases": [
+        "Parfait de yogur griego, fresas, kiwi, semillas de chia y granola"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "note": "Fusionada en Parfait (revisión 2026-09-26)."
+    },
+    {
+      "id": "pastelito-de-pollo",
+      "name": "pastelito de pollo",
+      "category": "main",
+      "measure": "unit",
+      "aliases": [
+        "Dos pastelitos de pollo"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "note": "Fusionada en Mini pastel de pollo (revisión 2026-09-26)."
+    },
+    {
+      "id": "pastelitos-de-pollo",
+      "name": "Pastelitos de pollo",
+      "category": "main",
+      "measure": "unit",
+      "aliases": [
+        "Pastelitos de pollo"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "note": "Fusionada en Mini pastel de pollo (revisión 2026-09-26)."
+    },
+    {
+      "id": "pinchos-de-quesos",
+      "name": "Pinchos de quesos",
+      "category": "side",
+      "measure": "unit",
+      "aliases": [
+        "Pinchos de quesos"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "note": "Un pincho por Cofre. Se reescribe a la variante de cada Cofre (revisión 2026-09-26)."
+    },
+    {
+      "id": "porcion-de-fresas",
+      "name": "Porción de fresas",
+      "category": "fruit",
+      "measure": "portion",
+      "aliases": [
+        "Porción de fresas"
+      ],
+      "isKitchen": true,
+      "active": true
+    },
+    {
+      "id": "porcion-de-uvas",
+      "name": "Porción de uvas",
+      "category": "fruit",
+      "measure": "portion",
+      "aliases": [
+        "Porción de uvas"
+      ],
+      "isKitchen": true,
+      "active": true
+    },
+    {
+      "id": "porcione-de-fruta-picada",
+      "name": "porcione de fruta picada",
+      "category": "fruit",
+      "measure": "portion",
+      "aliases": [
+        "Dos porciones de fruta picada"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "note": "Fusionada en Porción de fruta picada (revisión 2026-09-26)."
+    },
+    {
+      "id": "quesadilla-de-nutella",
+      "name": "Quesadilla de nutella",
+      "category": "dessert",
+      "measure": "unit",
+      "aliases": [
+        "Quesadilla de nutella"
+      ],
+      "isKitchen": true,
+      "active": true
+    },
+    {
+      "id": "quesadillas-de-nutella-con-fresas-y-banano",
+      "name": "Quesadillas de nutella con fresas y banano",
+      "category": "dessert",
+      "measure": "unit",
+      "aliases": [
+        "Quesadillas de nutella con fresas y banano"
+      ],
+      "isKitchen": true,
+      "active": true,
+      "description": "Quesadilla tipo tortilla con queso, fresa y banano."
+    },
+    {
+      "id": "queso-mozzarella-en-cuadros-y-chorizo-espanol",
+      "name": "Queso mozzarella en cuadros y chorizo español",
+      "category": "other",
+      "measure": "unit",
+      "aliases": [
+        "Queso mozzarella en cuadros y chorizo español"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "note": "Fusionada en la tabla de Morning (revisión 2026-09-26)."
+    },
+    {
+      "id": "quesos-casita",
+      "name": "Quesos Casita",
+      "category": "other",
+      "measure": "unit",
+      "aliases": [
+        "Quesos casita (?)",
+        "Canasta de jamones y quesos"
+      ],
+      "isKitchen": true,
+      "active": true,
+      "description": "Caja de cartón pequeña con un vaso de cartón con quesos y chorizo. Misma preparación que el frasco de Gold Pro, en formato caja."
+    },
+    {
+      "id": "rosquillas-integrales-de-arroz",
+      "name": "Rosquillas integrales de arroz",
+      "category": "side",
+      "measure": "unit",
+      "aliases": [
+        "Rosquillas integrales de arroz"
+      ],
+      "isKitchen": false,
+      "active": true
+    },
+    {
+      "id": "sandwich-de-jamon-de-pavo-queso-mozzarella-espinaca-baby-y-salsa-de-la-casa",
+      "name": "Sándwich de jamón de pavo, queso mozzarella, espinaca baby y salsa de la casa",
+      "category": "main",
+      "measure": "unit",
+      "aliases": [
+        "Sándwich de jamón de pavo, queso mozzarella, espinaca baby y salsa de la casa"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "note": "Fusionada en Sándwich Brunch Chill (revisión 2026-09-26)."
+    },
+    {
+      "id": "sandwich-de-pan-tajado-artesano",
+      "name": "Sándwich de pan tajado artesano",
+      "category": "main",
+      "measure": "unit",
+      "aliases": [
+        "Sándwich de pan tajado artesano",
+        "Sándwich: Jamón y queso"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "note": "Fusionada en sandwich-sencillo (revisión 2026-09-26)."
+    },
+    {
+      "id": "sandwich-en-croissant-de-jamon-queso-lechuga-y-chorizo-espanol",
+      "name": "Sándwich en croissant de jamón, queso, lechuga y chorizo español",
+      "category": "main",
+      "measure": "unit",
+      "aliases": [
+        "Sándwich en croissant de jamón, queso, lechuga y chorizo español"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "note": "Fusionada en Sándwich Libro (revisión 2026-09-26)."
+    },
+    {
+      "id": "sandwich-en-croissant-de-jamon-queso-rucula-y-mostaneza",
+      "name": "Sándwich en croissant de jamón, queso, rúcula y mostaneza",
+      "category": "main",
+      "measure": "unit",
+      "aliases": [
+        "Sándwich en croissant de jamón, queso, rúcula y mostaneza"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "note": "Fusionada en Sándwich Cristal (revisión 2026-09-26)."
+    },
+    {
+      "id": "sandwich-en-croissant-de-jamon-queso-y-lechuga",
+      "name": "Sándwich en croissant de jamón, queso y lechuga",
+      "category": "main",
+      "measure": "unit",
+      "aliases": [
+        "Sándwich en croissant de jamón, queso y lechuga"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "note": "Fusionada en Sándwich Morning (revisión 2026-09-26)."
+    },
+    {
+      "id": "sandwich-en-croissant-de-lechuga-jamon-queso-tajado-y-salsa-de-la-casa",
+      "name": "Sándwich en croissant de lechuga, jamón, queso tajado y salsa de la casa",
+      "category": "main",
+      "measure": "unit",
+      "aliases": [
+        "Sándwich en croissant de lechuga, jamón, queso tajado y salsa de la casa"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "note": "Fusionada en Sándwich Bolso (revisión 2026-09-26)."
+    },
+    {
+      "id": "sandwich-en-croissant-para-bolso",
+      "name": "Sándwich Bolso",
+      "category": "main",
+      "measure": "unit",
+      "aliases": [
+        "Sándwich en croissant para bolso",
+        "Sándwich en croissant de lechuga, jamón, queso tajado y salsa de la casa"
+      ],
+      "isKitchen": true,
+      "active": true,
+      "description": "Sándwich en croissant con jamón, queso tajado, lechuga y salsa de la casa."
+    },
+    {
+      "id": "sandwich-en-croissant-para-brunch-chill",
+      "name": "Sándwich Brunch Chill",
+      "category": "main",
+      "measure": "unit",
+      "aliases": [
+        "Sándwich en croissant para brunch chill",
+        "Sándwich de jamón de pavo, queso mozzarella, espinaca baby y salsa de la casa"
+      ],
+      "isKitchen": true,
+      "active": true,
+      "description": "Sándwich en croissant con jamón de pavo, queso mozzarella, espinaca baby y salsa de la casa."
+    },
+    {
+      "id": "sandwich-en-croissant-para-cristal",
+      "name": "Sándwich Cristal",
+      "category": "main",
+      "measure": "unit",
+      "aliases": [
+        "Sándwich en croissant para cristal",
+        "Sándwich en croissant de jamón, queso, rúcula y mostaneza"
+      ],
+      "isKitchen": true,
+      "active": true,
+      "description": "Sándwich en croissant con jamón, queso, rúcula y mostaneza."
+    },
+    {
+      "id": "sandwich-en-croissant-para-glow",
+      "name": "Sándwich en croissant para glow",
+      "category": "main",
+      "measure": "unit",
+      "aliases": [
+        "Sandwich en croissant para glow",
+        "Sándwich en croissant para glow"
+      ],
+      "isKitchen": true,
+      "active": true
+    },
+    {
+      "id": "sandwich-en-croissant-para-libro",
+      "name": "Sándwich Libro",
+      "category": "main",
+      "measure": "unit",
+      "aliases": [
+        "Sándwich en croissant para libro",
+        "Sándwich en croissant de jamón, queso, lechuga y chorizo español"
+      ],
+      "isKitchen": true,
+      "active": true,
+      "description": "Sándwich en croissant con jamón, queso, lechuga y chorizo español."
+    },
+    {
+      "id": "sandwich-en-croissant-para-maleta-pro",
+      "name": "Sándwich en croissant para maleta pro",
+      "category": "main",
+      "measure": "unit",
+      "aliases": [
+        "Sándwich en croissant para maleta pro",
+        "Mini sándwich de croissant"
+      ],
+      "isKitchen": true,
+      "active": true,
+      "description": "Sándwich de jamón, queso, tomate y lechuga."
+    },
+    {
+      "id": "sandwich-en-croissant-para-morning",
+      "name": "Sándwich Morning",
+      "category": "main",
+      "measure": "unit",
+      "aliases": [
+        "Sándwich en croissant para morning",
+        "Sándwich en croissant de jamón, queso y lechuga"
+      ],
+      "isKitchen": true,
+      "active": true,
+      "description": "Sándwich en croissant con jamón, queso y lechuga."
+    },
+    {
+      "id": "sandwich-en-croissant-para-morral",
+      "name": "Sándwich en croissant para morral",
+      "category": "main",
+      "measure": "unit",
+      "aliases": [
+        "Sándwich en croissant para morral"
+      ],
+      "isKitchen": true,
+      "active": true
+    },
+    {
+      "id": "sandwich-saludable",
+      "name": "Sándwich saludable",
+      "category": "main",
+      "measure": "unit",
+      "aliases": [
+        "Sándwich saludable"
+      ],
+      "isKitchen": true,
+      "active": true
+    },
+    {
+      "id": "sandwich-sencillo",
+      "name": "Sándwich sencillo",
+      "category": "main",
+      "measure": "unit",
+      "aliases": [
+        "Sándwich sencillo",
+        "Sándwich: Jamón y queso",
+        "Sándwich de pan tajado artesano"
+      ],
+      "isKitchen": true,
+      "active": true,
+      "description": "Sándwich de pan cuadrado artesanal con jamón y queso. La gama croissant es aparte."
+    },
+    {
+      "id": "sandwiche-de-pan-tajado-de-jamon-y-queso",
+      "name": "sándwiche de pan tajado de jamón y queso",
+      "category": "main",
+      "measure": "unit",
+      "aliases": [
+        "Dos sándwiches de pan tajado de jamón y queso"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "note": "Fusionada en sandwich-sencillo. Parejas lleva dos (revisión 2026-09-26)."
+    },
+    {
+      "id": "separador-de-bebidas",
+      "name": "Separador de bebidas",
+      "category": "other",
+      "measure": "unit",
+      "aliases": [
+        "Separador de bebidas"
+      ],
+      "isKitchen": false,
+      "active": true
+    },
+    {
+      "id": "smoothie-de-frutos-rojos",
+      "name": "Smoothie de frutos rojos",
+      "category": "drink",
+      "measure": "unit",
+      "aliases": [
+        "Smoothie de frutos rojos",
+        "Smothie de frutos rojos"
+      ],
+      "isKitchen": true,
+      "active": true,
+      "description": "Smoothie de frutos rojos."
+    },
+    {
+      "id": "smothie-de-frutos-rojos",
+      "name": "Smothie de frutos rojos",
+      "category": "drink",
+      "measure": "unit",
+      "aliases": [
+        "Smothie de frutos rojos"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "note": "Fusionada en smoothie-de-frutos-rojos (revisión 2026-09-26)."
+    },
+    {
+      "id": "sobre-de-nutella-de-15-gr",
+      "name": "Sobre de Nutella de 15 gr",
+      "category": "dessert",
+      "measure": "unit",
+      "aliases": [
+        "Dos sobres de Nutella de 15 gr",
+        "Nutella 15 gr"
+      ],
+      "isKitchen": false,
+      "active": true,
+      "description": "Sobre de Nutella de 15 gr. No la prepara la cocina; la empaqueta el taller.",
+      "note": "No va a la lista de cocina (revisión 2026-09-26)."
+    },
+    {
+      "id": "soda",
+      "name": "Soda",
+      "category": "drink",
+      "measure": "unit",
+      "aliases": [
+        "Soda"
+      ],
+      "isKitchen": false,
+      "active": true
+    },
+    {
+      "id": "tablas-de-quesos-barquito",
+      "name": "Tabla de quesos de Cristal (barquito)",
+      "category": "side",
+      "measure": "unit",
+      "aliases": [
+        "Tablas de quesos barquito (?)"
+      ],
+      "isKitchen": true,
+      "active": true,
+      "description": "Barco contenedor con quesos y otras cosas. Solo en Cristal."
+    },
+    {
+      "id": "tablas-de-quesos-para-brunch",
+      "name": "Tabla de quesos de Brunch Chill",
+      "category": "side",
+      "measure": "unit",
+      "aliases": [
+        "Tablas de quesos para brunch",
+        "Tablita en forma de surf con quesos y jamones varios"
+      ],
+      "isKitchen": true,
+      "active": true,
+      "description": "Tabla en forma de surf con quesos y jamones varios."
+    },
+    {
+      "id": "tablas-de-quesos-para-libro",
+      "name": "Tablas de quesos para libro",
+      "category": "side",
+      "measure": "unit",
+      "aliases": [
+        "Tablas de quesos para libro"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "note": "Fusionada en la mini tabla de Libro (revisión 2026-09-26)."
+    },
+    {
+      "id": "tablas-de-quesos-para-morning",
+      "name": "Tabla de quesos de Morning",
+      "category": "side",
+      "measure": "unit",
+      "aliases": [
+        "Tablas de quesos para morning",
+        "Queso mozzarella en cuadros y chorizo español"
+      ],
+      "isKitchen": true,
+      "active": true,
+      "description": "Cubos de queso y chorizo sueltos en el contenedor del desayuno."
+    },
+    {
+      "id": "tablas-de-quesos-para-picnic",
+      "name": "Tabla de quesos de picnic",
+      "category": "side",
+      "measure": "unit",
+      "aliases": [
+        "Tablas de quesos para picnic",
+        "Mini tabla de quesos con jamones, chorizo español, mozzarella, holandés"
+      ],
+      "isKitchen": true,
+      "active": true,
+      "description": "Mini tabla con jamones, chorizo español, mozzarella y holandés."
+    },
+    {
+      "id": "tablita-en-forma-de-surf-con-quesos-y-jamones-varios",
+      "name": "Tablita en forma de surf con quesos y jamones varios",
+      "category": "side",
+      "measure": "unit",
+      "aliases": [
+        "Tablita en forma de surf con quesos y jamones varios"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "note": "Fusionada en la tabla de Brunch Chill (revisión 2026-09-26)."
+    },
+    {
+      "id": "un-durazno",
+      "name": "Un durazno",
+      "category": "fruit",
+      "measure": "unit",
+      "aliases": [
+        "Un durazno"
+      ],
+      "isKitchen": false,
+      "active": true
+    },
+    {
+      "id": "un-pincho-de-queso-mozzarella-chorizo-espanol-y-aceituna",
+      "name": "Pincho de queso mozzarella, chorizo español y aceituna",
+      "category": "side",
+      "measure": "unit",
+      "aliases": [
+        "Un pincho de queso mozzarella, chorizo español y aceituna"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "description": "Pincho de queso mozzarella con chorizo español y aceituna.",
+      "note": "Fusionada: todos los pinchos son iguales (revisión 2026-09-26)."
+    },
+    {
+      "id": "un-pincho-de-queso-mozzarella-y-chorizo-espanol",
+      "name": "Pincho de queso mozzarella y chorizo español",
+      "category": "side",
+      "measure": "unit",
+      "aliases": [
+        "Un pincho de queso mozzarella y chorizo español",
+        "Un pincho de queso mozzarella, chorizo español y aceituna",
+        "Pincho de queso mozzarella, chorizo español y aceituna"
+      ],
+      "isKitchen": true,
+      "active": true,
+      "description": "Pincho de queso mozzarella con chorizo español en la punta."
+    },
+    {
+      "id": "una-porcion-de-fruta-picada",
+      "name": "Porción de fruta picada",
+      "category": "fruit",
+      "measure": "portion",
+      "aliases": [
+        "Una porción de fruta picada"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "description": "Fruta picada.",
+      "note": "Fusionada en Ensalada de frutas (Revisión de duplicados 2026-09-26.)"
+    },
+    {
+      "id": "uvas-moradas-o-verdes-segun-disponibilidad",
+      "name": "Uvas (moradas o verdes según disponibilidad)",
+      "category": "fruit",
+      "measure": "unit",
+      "aliases": [
+        "Uvas (moradas o verdes según disponibilidad)"
+      ],
+      "isKitchen": false,
+      "active": true
+    },
+    {
+      "id": "vino-jp-chenet-ice-en-lata",
+      "name": "Vino JP Chenet Ice en lata",
+      "category": "drink",
+      "measure": "unit",
+      "aliases": [
+        "Vino JP Chenet Ice en lata",
+        "JP Chenete 200ml"
+      ],
+      "isKitchen": false,
+      "active": true,
+      "description": "Vino JP Chenet Ice en lata 200ml. Adicional."
+    },
+    {
+      "id": "waffle-con-arequipe-y-fresas",
+      "name": "Waffles con arequipe y fresas",
+      "category": "dessert",
+      "measure": "unit",
+      "aliases": [
+        "Waffle con arequipe y fresas",
+        "Waffle: Base de arequipe",
+        "Waffles con arequipe y fresas",
+        "Waffle pequeño de arequipe"
+      ],
+      "isKitchen": true,
+      "active": true,
+      "description": "Porción de dos waffles con arequipe y fresas en contenedor plástico pequeño."
+    },
+    {
+      "id": "waffle-con-base-de-arequipe-y-fresa",
+      "name": "waffle con base de arequipe y fresa",
+      "category": "fruit",
+      "measure": "unit",
+      "aliases": [
+        "Cuatro waffles con base de arequipe y fresas",
+        "Dos waffles con base de arequipe y fresas"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "note": "Reemplazada por waffle-con-arequipe-y-fresas y waffles-con-arequipe-y-fresas-porcion-grande (revisión 2026-09-26)."
+    },
+    {
+      "id": "waffle-con-nutella",
+      "name": "waffle con nutella",
+      "category": "dessert",
+      "measure": "unit",
+      "aliases": [
+        "Cuatro waffles con nutella"
+      ],
+      "isKitchen": true,
+      "active": true
+    },
+    {
+      "id": "waffle-grande-de-arequipe",
+      "name": "Waffle grande de arequipe",
+      "category": "dessert",
+      "measure": "unit",
+      "aliases": [
+        "Waffle grande de arequipe"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "note": "Fusionada en waffles-con-arequipe-y-fresas-porcion-grande (revisión 2026-09-26)."
+    },
+    {
+      "id": "waffle-o-pancake-con-fresa-y-miel",
+      "name": "waffle o pancake con fresa y miel",
+      "category": "fruit",
+      "measure": "unit",
+      "aliases": [
+        "Dos waffles o pancakes con fresas y miel"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "note": "Declaración duplicada, reescrita por desayuno (Revisión de duplicados 2026-09-26.)"
+    },
+    {
+      "id": "waffle-para-cofres-de-nutella",
+      "name": "Waffle para cofres de nutella",
+      "category": "dessert",
+      "measure": "unit",
+      "aliases": [
+        "Waffle para cofres de nutella"
+      ],
+      "isKitchen": true,
+      "active": true
+    },
+    {
+      "id": "waffle-pequeno-de-arequipe",
+      "name": "Waffle pequeño de arequipe",
+      "category": "dessert",
+      "measure": "unit",
+      "aliases": [
+        "Waffle pequeño de arequipe"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "note": "Fusionada en waffle-con-arequipe-y-fresas (revisión 2026-09-26)."
+    },
+    {
+      "id": "waffle-pequeno-de-morning",
+      "name": "Waffle pequeño de morning",
+      "category": "dessert",
+      "measure": "unit",
+      "aliases": [
+        "Waffle pequeño de morning"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "note": "Fusionada en Waffles sueltos (Revisión de duplicados 2026-09-26.)"
+    },
+    {
+      "id": "waffle-suelto",
+      "name": "Waffles sueltos de Morning",
+      "category": "dessert",
+      "measure": "unit",
+      "aliases": [
+        "Dos waffles sueltos",
+        "Waffle suelto",
+        "Waffle pequeño de morning"
+      ],
+      "isKitchen": true,
+      "active": true,
+      "description": "Waffles sueltos del Morning."
+    },
+    {
+      "id": "waffles-con-nutella-fresas",
+      "name": "Waffles con nutella, fresas",
+      "category": "dessert",
+      "measure": "unit",
+      "aliases": [
+        "Waffles con nutella, fresas",
+        "Waffle: Base de nutella"
+      ],
+      "isKitchen": true,
+      "active": true,
+      "description": "Waffles con nutella y fresas."
+    },
+    {
+      "id": "wrapp-de-pollo",
+      "name": "Wrapp de pollo",
+      "category": "main",
+      "measure": "unit",
+      "aliases": [
+        "Wrapp de pollo",
+        "wrapp de pollo integrale con lechuga, queso, aderezo saludable y jamón de pavo",
+        "wrapp de pollo integrale con lechuga, queso y aderezo saludable, y jamón de pavo"
+      ],
+      "isKitchen": true,
+      "active": true,
+      "description": "Wrapp de pollo integral con lechuga, queso, aderezo saludable y jamón de pavo."
+    },
+    {
+      "id": "wrapp-de-pollo-integrale-con-lechuga-queso-aderezo-saludable-y-jamon-de-pavo",
+      "name": "wrapp de pollo integrale con lechuga, queso, aderezo saludable y jamón de pavo",
+      "category": "main",
+      "measure": "unit",
+      "aliases": [
+        "Dos wrapps de pollo integrales con lechuga, queso, aderezo saludable y jamón de pavo"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "note": "Fusionada en Wrapp de pollo (revisión 2026-09-26)."
+    },
+    {
+      "id": "wrapp-de-pollo-integrale-con-lechuga-queso-y-aderezo-saludable-y-jamon-de-pavo",
+      "name": "wrapp de pollo integrale con lechuga, queso y aderezo saludable, y jamón de pavo",
+      "category": "main",
+      "measure": "unit",
+      "aliases": [
+        "Dos wrapps de pollo integrales con lechuga, queso y aderezo saludable, y jamón de pavo"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "note": "Fusionada en Wrapp de pollo (revisión 2026-09-26)."
+    },
+    {
+      "id": "yogur-con-granola",
+      "name": "Yogur con granola",
+      "category": "condiment",
+      "measure": "unit",
+      "aliases": [
+        "Yogur con granola"
+      ],
+      "isKitchen": false,
+      "active": true,
+      "description": "Botella de yogur con granola. No la prepara la cocina.",
+      "note": "No va a la lista de cocina (revisión 2026-09-26)."
+    },
+    {
+      "id": "yogure-con-dos-granola",
+      "name": "Yogur con dos granolas",
+      "category": "condiment",
+      "measure": "unit",
+      "aliases": [
+        "Dos yogures con dos granolas"
+      ],
+      "isKitchen": false,
+      "active": true,
+      "description": "Yogur con dos granolas. No lo prepara la cocina.",
+      "note": "No va a la lista de cocina (revisión 2026-09-26)."
+    },
+    {
+      "id": "yogurt-grande",
+      "name": "Yogurt grande",
+      "category": "drink",
+      "measure": "unit",
+      "aliases": [
+        "Yogurt grande"
+      ],
+      "isKitchen": true,
+      "active": true
+    },
+    {
+      "id": "yogurt-pequeno",
+      "name": "Yogurt pequeño",
+      "category": "drink",
+      "measure": "unit",
+      "aliases": [
+        "Yogurt pequeño"
+      ],
+      "isKitchen": true,
+      "active": true
+    },
+    {
+      "id": "zona-de-comida-dulce-con-dos-waffles-con-nutella-fresas-y-porcion-cheesecake",
+      "name": "Zona de comida dulce con dos waffles con nutella, fresas y porción cheesecake",
+      "category": "fruit",
+      "measure": "portion",
+      "aliases": [
+        "Zona de comida dulce con dos waffles con nutella, fresas y porción cheesecake"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "note": "Reemplazada por cristal-zone-dulce (revisión 2026-09-26)."
+    },
+    {
+      "id": "zona-de-comida-salada-con-dos-arepas-con-pechuga-salchichas-y-queso-deditos-de-queso-y-dos-empanaditas-de-carne",
+      "name": "Zona de comida salada con dos arepas con pechuga, salchichas y queso, deditos de queso y dos empanaditas de carne",
+      "category": "main",
+      "measure": "unit",
+      "aliases": [
+        "Zona de comida salada con dos arepas con pechuga, salchichas y queso, deditos de queso y dos empanaditas de carne"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "note": "Reemplazada por cristal-zone-salado (revisión 2026-09-26)."
+    },
+    {
+      "id": "waffles-con-arequipe-y-fresas-porcion-grande",
+      "name": "Waffles con arequipe y fresas porción grande",
+      "category": "dessert",
+      "measure": "unit",
+      "aliases": [
+        "Waffles con arequipe y fresas porción grande",
+        "Cuatro waffles con base de arequipe y fresas",
+        "Waffle grande de arequipe"
+      ],
+      "isKitchen": true,
+      "active": true,
+      "description": "Porción de cuatro waffles con arequipe y fresas en contenedor más grande."
+    },
+    {
+      "id": "jugo-de-lata",
+      "name": "Jugo de lata",
+      "category": "drink",
+      "measure": "unit",
+      "aliases": [],
+      "isKitchen": true,
+      "active": true,
+      "description": "Jugo de naranja en lata. Solo en Classic."
+    },
+    {
+      "id": "parfait-classic",
+      "name": "Parfait Classic",
+      "category": "dessert",
+      "measure": "unit",
+      "aliases": [],
+      "isKitchen": true,
+      "active": true,
+      "description": "Parfait de yogur griego con granola, durazno y fresas o frambuesas. Se sirve en contenedor de acrílico rectangular."
+    },
+    {
+      "id": "sandwich-classic",
+      "name": "Sándwich Classic",
+      "category": "main",
+      "measure": "unit",
+      "aliases": [],
+      "isKitchen": true,
+      "active": true,
+      "description": "Sándwich en croissant con jamón de pavo, mix de lechugas baby, queso mozzarella, chorizo español y salsa de la casa. Va con un par de empanadas de carne."
+    },
+    {
+      "id": "sandwich-mini-box",
+      "name": "Sándwich Mini Box",
+      "category": "main",
+      "measure": "unit",
+      "aliases": [],
+      "isKitchen": true,
+      "active": true,
+      "description": "Sándwich en croissant sin vinipel y con papel parafinado. Jamón y queso."
+    },
+    {
+      "id": "sandwich-nino",
+      "name": "Sándwich NIÑO",
+      "category": "main",
+      "measure": "unit",
+      "aliases": [],
+      "isKitchen": true,
+      "active": true,
+      "description": "Sándwich en croissant con nuggets de pollo y queso mozzarella. Acompaña los mini pancakes de fresa con Nutella."
+    },
+    {
+      "id": "porcion-de-fruta-pequena-vaso-blanco",
+      "name": "Porción de fruta pequeña (vaso blanco)",
+      "category": "fruit",
+      "measure": "portion",
+      "aliases": [],
+      "isKitchen": true,
+      "active": false,
+      "description": "Fruta picada (mango, fresas y uvas) en vaso blanco sin estampado. Solo en Game Box y Level Up."
+    },
+    {
+      "id": "dona-pequena",
+      "name": "Dona pequeña",
+      "category": "dessert",
+      "measure": "unit",
+      "aliases": [],
+      "isKitchen": false,
+      "active": true,
+      "description": "Dona cubierta de chocolate. No la prepara la cocina; la empaqueta el taller.",
+      "note": "No va a la lista de cocina (revisión 2026-09-26)."
+    },
+    {
+      "id": "bowl-mujer",
+      "name": "Bowl Mujer",
+      "category": "dessert",
+      "measure": "unit",
+      "aliases": [],
+      "isKitchen": true,
+      "active": true,
+      "description": "Granola artesanal, kiwi, fresas y flor comestible."
+    },
+    {
+      "id": "sandwich-brunch-mujer",
+      "name": "Sándwich Brunch Mujer",
+      "category": "main",
+      "measure": "unit",
+      "aliases": [],
+      "isKitchen": true,
+      "active": true,
+      "description": "Sándwich en croissant con jamón de pavo, queso mozzarella, chorizo español y salsa de la casa."
+    },
+    {
+      "id": "cerveza-coronita",
+      "name": "Cerveza Coronita",
+      "category": "drink",
+      "measure": "unit",
+      "aliases": [],
+      "isKitchen": false,
+      "active": true,
+      "description": "Cerveza Coronita 200ml. Adicional."
+    },
+    {
+      "id": "jugo-verde-grande",
+      "name": "Jugo verde grande",
+      "category": "drink",
+      "measure": "unit",
+      "aliases": [],
+      "isKitchen": true,
+      "active": true,
+      "description": "Jugo verde en tamaño grande. Usado por Bolso Fitness."
+    },
+    {
+      "id": "jugo-de-naranja-natural-grande",
+      "name": "Jugo de naranja 100% natural grande",
+      "category": "drink",
+      "measure": "unit",
+      "aliases": [
+        "Jugo de naranja 100% natural 0% azúcar"
+      ],
+      "isKitchen": true,
+      "active": false,
+      "description": "Jugo de naranja 100% natural en tamaño grande. Usado por Bolso Fitness."
+    },
+    {
+      "id": "barra-de-cereal-tosh",
+      "name": "Barra de cereal Tosh",
+      "category": "other",
+      "measure": "unit",
+      "aliases": [
+        "Barra de cereal Tosh",
+        "Barra de cereal"
+      ],
+      "isKitchen": false,
+      "active": true
+    }
+  ],
+  "products": [
+    {
+      "id": "bolso",
+      "name": "Bolso",
+      "aliases": [
+        "Bolso"
+      ],
+      "category": "breakfast",
+      "isKitchen": true,
+      "priceCop": 182000,
+      "description": "Desayuno creativo, lindo y delicado. Contiene: sándwich de croissant, lechuga, jamón, queso tajado y salsa de la casa, jugo de naranja, parfait con kumis, mango, fresa, kiwi y granola artesanal, cajita con 4 bombones de chocolates en forma de corazón decorados con oro de 24k comestible, mini ramo de rosas (8) , diario de gratitud, lapicero estilo diamante, bolso en yute artesanal, lazo ancho en cinta de tela, cucharita, etiquetas y decoración. Nota: Los globos son adicionales en $10.000 c/u (helio certificado).",
+      "containerId": "bolso-de-yute-artesanal-con-lazo-ancho-de-tela-y-etiqueta",
+      "wpProductId": 12692,
+      "sku": "BVAL1",
+      "active": true
+    },
+    {
+      "id": "bolso-fitness",
+      "name": "Bolso Fitness",
+      "aliases": [
+        "Bolso Fitness"
+      ],
+      "category": "breakfast",
+      "isKitchen": true,
+      "description": "Agotado por el momento. No descontinuado.",
+      "containerId": "bolso-de-yute-plastificado-blanco-con-panoleta-de-seda",
+      "active": false
+    },
+    {
+      "id": "box-hombre",
+      "name": "Box Hombre",
+      "aliases": [
+        "Box Hombre"
+      ],
+      "category": "breakfast",
+      "isKitchen": true,
+      "priceCop": 85000,
+      "description": "Porciones: 1 persona",
+      "containerId": "caja-de-carton-estilo-baul",
+      "wpProductId": 434,
+      "active": true
+    },
+    {
+      "id": "box-mujer",
+      "name": "Box Mujer",
+      "aliases": [
+        "Box Mujer"
+      ],
+      "category": "breakfast",
+      "isKitchen": true,
+      "priceCop": 85000,
+      "description": "Porciones: 1 persona",
+      "containerId": "caja-de-carton-con-diseno-de-flores",
+      "wpProductId": 437,
+      "sku": "BM",
+      "active": true
+    },
+    {
+      "id": "brunch-chill",
+      "name": "BRUNCH CHILL",
+      "aliases": [
+        "BRUNCH CHILL",
+        "Brunch Chill"
+      ],
+      "category": "breakfast",
+      "isKitchen": true,
+      "priceCop": 175000,
+      "description": "Un desayuno pensado para quienes disfrutan sin prisas y con buen estilo. Nuestra caja temática cargada con sabores irresistibles. Incluye un sándwich de jamón de pavo, queso mozarella, espinaca baby y salsa de la casa, jugo de naranja, empanadas horneadas de pollo, un bowl de yogur griego con durazno y granola artesanal, y una tablita en forma de surf con quesos y jamones varios. Para completar la experiencia, una deliciosa chocolatina de chocolate blanco con pistachos. Decoración: Dos globos en helio, y puedes enviar una tarjeta personalizada con el mensaje que desees.",
+      "containerId": "caja-tematica-para-brunch-chill",
+      "wpProductId": 48976,
+      "sku": "BCHILL25",
+      "active": true
+    },
+    {
+      "id": "brunch-mujer",
+      "name": "Brunch Mujer",
+      "aliases": [
+        "Brunch Mujer"
+      ],
+      "category": "breakfast",
+      "isKitchen": true,
+      "priceCop": 120000,
+      "description": "Brunch presentado en una caja con diseño especial de postre. En su interior encontrarás: 1 sándwich de croissant elaborados con jamón de pavo, queso mozatella, chorizo español y salsa de la casa, jugo de naranja y un Bowl con granola de artesanal, kiwi, fresas y flor comestible, acompañado de cuchara dorada. Incluye además un mini joyero con aretes en forma de llave, elaborados en acero antialérgico con baño de oro, un detalle pensado para acompañar y permanecer. Este brunch se complementa con una tarjeta personalizada, donde puedes incluir el mensaje que desees. Un detalle cuidado, femenino y pensado para sorprender desde el primer momento. Disponible todos los días del 2026.",
+      "wpProductId": 65954,
+      "sku": "BRM26",
+      "active": true
+    },
+    {
+      "id": "canasta",
+      "name": "Canasta",
+      "aliases": [
+        "Canasta"
+      ],
+      "category": "breakfast",
+      "isKitchen": true,
+      "priceCop": 110000,
+      "description": "Porciones: 1 persona",
+      "containerId": "canasta-de-madera-pequena-sin-patas",
+      "wpProductId": 543,
+      "sku": "C1",
+      "active": true
+    },
+    {
+      "id": "classic",
+      "name": "Classic",
+      "aliases": [
+        "Classic"
+      ],
+      "category": "breakfast",
+      "isKitchen": true,
+      "priceCop": 155000,
+      "description": "Un desayuno de edición limitada presentado en nuestro nuevo y exclusivo empaque, acompañado de un letrero decorativo de Buenos días. Incluye: Sándwich en croissant con jamón de pavo, mix de lechugas baby, queso mozarella, chorizo español y salsa de la casa, Empanada horneada de pollo, jugo de naranja, vaso térmico rosado que conserva temperaturas, con tapa , parfait de yogur griego con granola, durazno y fresas o frambuesas y cucharita dorada. Incluye tarjeta con mensaje personalizado para la carta.",
+      "wpProductId": 69154,
+      "sku": "CLASSIC26",
+      "active": true
+    },
+    {
+      "id": "cofre-hombre",
+      "name": "Cofre Hombre",
+      "aliases": [
+        "Cofre Hombre"
+      ],
+      "category": "breakfast",
+      "isKitchen": true,
+      "priceCop": 195000,
+      "description": "Porciones: 1 persona",
+      "containerId": "cofre-de-madera-color-negro-para-hombre-con-lazo-dorado",
+      "wpProductId": 1119,
+      "sku": "CF1",
+      "active": true
+    },
+    {
+      "id": "cofre-mujer",
+      "name": "Cofre Mujer",
+      "aliases": [
+        "Cofre Mujer"
+      ],
+      "category": "breakfast",
+      "isKitchen": true,
+      "priceCop": 195000,
+      "description": "Porciones: 1 persona",
+      "containerId": "cofre-de-madera-color-pasteles-rosa-para-mujer-con-lazo-de-tela",
+      "wpProductId": 96,
+      "active": true
+    },
+    {
+      "id": "cristal",
+      "name": "Cristal",
+      "aliases": [
+        "Cristal"
+      ],
+      "category": "breakfast",
+      "isKitchen": true,
+      "priceCop": 320000,
+      "description": "Porciones: 1 persona",
+      "containerId": "mesa-blanca-de-madera-alta-con-patas-y-separador-de-bebidas",
+      "wpProductId": 308,
+      "sku": "CR1",
+      "active": true
+    },
+    {
+      "id": "endulzada",
+      "name": "Endulzada",
+      "aliases": [
+        "Endulzada"
+      ],
+      "category": "breakfast",
+      "isKitchen": true,
+      "priceCop": 58000,
+      "description": "Incluye una lata con refrescante jugo de naranja y pitillo loco, sándwich de croissant con jamón, queso mozzarella y lechuga baby, uvas verdes o moradas según disponibilidad y una dona cubierta de chocolate. Va decorada con lazo vino tinto, etiqueta especial de Amor & Amistad y una tarjeta personalizada: tú escribes el mensaje y nosotros lo imprimimos. Endulzada es ese detalle pequeño que tiene todo para alegrarle el día a alguien.",
+      "wpProductId": 74621,
+      "active": false
+    },
+    {
+      "id": "game-box",
+      "name": "Game box",
+      "aliases": [
+        "Game box"
+      ],
+      "category": "breakfast",
+      "isKitchen": true,
+      "priceCop": 115000,
+      "description": "Un pequeño juego… que se convierte en un gran recuerdo. Game Box es una experiencia inspirada en el mundo arcade, presentada en una caja con forma de máquina de videojuegos, con una abertura frontal que invita a descubrir cada detalle. En su interior encontrarás mini pancakes de fresa con Nutella, dos mini sándwiches con nuggets de pollo, lechuga baby y queso mozzarella, una porción de fruta fresca (mango, fresas y uvas), jugo de naranja con pitillo loco y una dona cubierta de chocolate. En la parte posterior de la caja, incluye un divertido laberinto que puede retirarse fácilmente para que el niño lo resuelva y continúe jugando. Está decorada con lazos y puedes agregar una tarjeta personalizada para hacerlo aún más especial.",
+      "wpProductId": 68631,
+      "active": true
+    },
+    {
+      "id": "glow",
+      "name": "Glow",
+      "aliases": [
+        "Glow"
+      ],
+      "category": "breakfast",
+      "isKitchen": true,
+      "priceCop": 195000,
+      "description": "Este desayuno es un detalle inolvidable que brilla por su estilo y presentación. Llega en un elegante cofre de crista l acrílico, pensado para sorprender y quedarse en la memoria de quien lo recibe. En su interior combina preparaciones únicas y contrastes deliciosos que elevan la experiencia, desde un sándwich en pan muffin inglés, un bowl con yogur griego, kiwi, fresas y granola de pistachos, hasta mini pancakes con fresas y Nutella, jugo a elección puede ser verde refrescante o zumo de naranja y pequeños complementos como la cuchara dorada y la cinta decorativa que hacen la diferencia. Incluye dos globos en helio y una tarjeta personalizada, convirtiendo cualquier mañana en un momento demasiado especial.",
+      "containerId": "cofre-de-cristal-acrilico-sin-patas",
+      "wpProductId": 57874,
+      "active": true
+    },
+    {
+      "id": "gold-basic",
+      "name": "Gold Basic",
+      "aliases": [
+        "Gold Basic"
+      ],
+      "category": "breakfast",
+      "isKitchen": true,
+      "priceCop": 165000,
+      "description": "Porciones: 1 persona",
+      "containerId": "mesa-de-madera-natural-con-patas",
+      "wpProductId": 556,
+      "sku": "G1",
+      "active": true
+    },
+    {
+      "id": "gold-pro",
+      "name": "Gold Pro",
+      "aliases": [
+        "Gold Pro",
+        "Gold pro"
+      ],
+      "category": "breakfast",
+      "isKitchen": true,
+      "priceCop": 190000,
+      "description": "Porciones: 1 persona",
+      "containerId": "mesa-de-madera-natural-con-patas",
+      "wpProductId": 1114,
+      "sku": "G2",
+      "active": true
+    },
+    {
+      "id": "level-up",
+      "name": "Level Up",
+      "aliases": [
+        "Level Up"
+      ],
+      "category": "breakfast",
+      "isKitchen": true,
+      "priceCop": 188000,
+      "description": "Un desayuno que tu bebé no va a olvidar. Level Up es una experiencia inspirada en el mundo arcade, presentada en una caja con forma de máquina de videojuegos, con una abertura frontal que invita a descubrir cada detalle. En su interior encontrarás mini pancakes de fresa con Nutella, dos mini sándwiches con nuggets de pollo, lechuga baby y queso mozzarella, una porción de fruta fresca (mango, fresas y uvas), jugo de naranja con pitillo loco y una dona cubierta de chocolate. Incluye un mini game player con batería , y en la parte posterior de la caja, un divertido laberinto que puede desprenderse fácilmente para que el niño lo resuelva y siga jugando. Para completar esta experiencia, el desayuno está acompañado de 3 globos en helio, una burbuja en helio y una etiqueta con la foto personalizada del niño.",
+      "wpProductId": 68591,
+      "active": true
+    },
+    {
+      "id": "libro",
+      "name": "Libro",
+      "aliases": [
+        "Libro"
+      ],
+      "category": "breakfast",
+      "isKitchen": true,
+      "priceCop": 150000,
+      "description": "Sorprende en Amor & Amistad con esta sutil opción Se trata de una caja en forma de libro, con un diseño único, incluye lapicero en forma de llave, mensaje personalizado para que escribas el mensaje que desees y adicional a eso un cartoncito con pregunta romántica de amor y de amistad: ¿Quieres ser mi inolvidable historia de amor? ¿Prometes ser mi amiga /o toda la vida? Para desayunar incluye: Sándwich de croissant con jamón de pollo, queso, chorizo español y mix de lechuga baby, jugo de naranja, bowl con yogur griego, mantequilla de maní, fresas, granola artesanal, flor comestible y kinder bueno, mini tabla de madera con quesos, jamón y chocolate blanco. Nota: Este producto será entregado el 21 de Septiembre en adelante, al momento de colocar la fecha debes colocar 21 Septiembre o un día después del 21, ya que antes no es posible debido a los insumos.",
+      "containerId": "caja-en-forma-de-libro-con-un-diseno-unico-perfecto-para-hombre-o-para-mujer",
+      "wpProductId": 38542,
+      "sku": "LNH21",
+      "active": true
+    },
+    {
+      "id": "luxury",
+      "name": "Luxury",
+      "aliases": [
+        "Luxury"
+      ],
+      "category": "breakfast",
+      "isKitchen": true,
+      "priceCop": 280000,
+      "description": "Porciones: 1 persona",
+      "containerId": "mesa-blanca-de-madera-alta-con-patas",
+      "wpProductId": 559,
+      "sku": "L1",
+      "active": true
+    },
+    {
+      "id": "maleta-basic",
+      "name": "MALETA BASIC",
+      "aliases": [
+        "MALETA BASIC",
+        "Maleta Basic"
+      ],
+      "category": "breakfast",
+      "isKitchen": true,
+      "priceCop": 110000,
+      "description": "Breakfast on Safari, es un desayuno creado para los más pequeños de la casa, inspirado en un amanecer en África. Caja tipo maleta safari con manija en cuero, sándwich de pan tajado, jamón y queso o waffles con arequipe y fresas, jugo de naranja o yogur, ensalada de frutas (kiwi, fresas, mango, papaya y melón), paquete de rosquitas, cucharita, pitillo de papel, huevo Kinder Sorpresa para niño o niña según escojas. No incluye globitos, puedes agregarlos por $10.000 c/u (helio certificado)",
+      "containerId": "caja-de-carton-tipo-maleta-con-diseno-de-animales",
+      "wpProductId": 16275,
+      "sku": "MB25",
+      "active": true
+    },
+    {
+      "id": "maleta-pro",
+      "name": "MALETA PRO",
+      "aliases": [
+        "MALETA PRO",
+        "Maleta Pro"
+      ],
+      "category": "breakfast",
+      "isKitchen": true,
+      "priceCop": 185000,
+      "description": "Breakfast on Safari, es un desayuno creado para los más pequeños de la casa, inspirado en un amanecer en África. Caja tipo maleta safari con manija en cuero, sándwich de jamón, queso, tomate y lechuga, panqueques con miel y frutos del bosque o waffles, bowl de yogur griego, cereal honey, mango y fresas, jugo de naranja, dos donas decoradas de la temática safari o mini brownies, cubiertos, pitillo de papel, huevo Kinder Sorpresa para niño o niña según escojas y recibe GRATIS binoculares de colores. Globo metalizado de algún animal que esté disponible: trigre, mariposa, león o koala. + 3 globos en helio.",
+      "containerId": "caja-de-carton-tipo-maleta-con-diseno-de-animales",
+      "wpProductId": 15089,
+      "sku": "MP24",
+      "active": true
+    },
+    {
+      "id": "mini-box",
+      "name": "Mini Box",
+      "aliases": [
+        "Mini Box"
+      ],
+      "category": "breakfast",
+      "isKitchen": true,
+      "priceCop": 49000,
+      "description": "Cajita elaborada en cartón plastificado apto para alimentos , con lazo de tela en el color que prefieras y tarjeta personalizada con el logo de tu empresa . En su interior contiene: sándwich de jamón y queso, bebida a elección entre té Hatsu o jugo de naranja, y parfait con yogur, granola y fruta. Nota importante: Este producto está diseñado especialmente para empresas e instituciones. El pedido mínimo es de 6 unidades para poder efectuar el pago y la producción. Ideal para celebraciones corporativas, fechas especiales o detalles institucionales .",
+      "wpProductId": 15819,
+      "active": true
+    },
+    {
+      "id": "morning",
+      "name": "Morning",
+      "aliases": [
+        "Morning"
+      ],
+      "category": "breakfast",
+      "isKitchen": true,
+      "priceCop": 190000,
+      "description": "Caja redonda con tapa de acetato, Jugo de naranja natural o Café MOCA, sándwich (pan croissant, jamón, queso y lechuga), 1 Bowl (Yogur griego, granola artesanal, fresa, banano y arándanos), 2 waffles, 2 Mini pastelitos de pollo, queso mozzarella en cubos y chorizo español, galletas con chips de chocolate, fresas enteras, durazno y uvas (pueden ser verdes o moradas según disponibilidad). Decoración: Caja redonda con cinta por fuera, lazo en el recipiente, carta, cucharita y 2 GLOBOS EN HELIO.",
+      "containerId": "caja-redonda-con-cinta-de-tela",
+      "wpProductId": 3950,
+      "sku": "M1",
+      "active": true
+    },
+    {
+      "id": "parejas",
+      "name": "Parejas",
+      "aliases": [
+        "Parejas"
+      ],
+      "category": "breakfast",
+      "isKitchen": true,
+      "priceCop": 260000,
+      "description": "Porciones: 2 persona",
+      "containerId": "mesa-blanca-de-madera-alta-con-patas",
+      "wpProductId": 472,
+      "sku": "P1",
+      "active": true
+    },
+    {
+      "id": "picnic",
+      "name": "Pícnic",
+      "aliases": [
+        "Pícnic",
+        "Brunch Pícnic"
+      ],
+      "category": "breakfast",
+      "isKitchen": true,
+      "priceCop": 190000,
+      "description": "Porciones: 1 persona",
+      "containerId": "canasta-de-madera-grande-sin-patas",
+      "wpProductId": 563,
+      "sku": "PC1",
+      "active": true
+    },
+    {
+      "id": "querida",
+      "name": "Querida",
+      "aliases": [
+        "Querida"
+      ],
+      "category": "breakfast",
+      "isKitchen": true,
+      "priceCop": 165000,
+      "description": "Un detalle femenino pensado para las amantes del buen café colombiano. Incluye Café Querida , un café tostado supremo especial elaborado por mujeres de Manizales, Caldas, con un delicioso perfil dulce y frutal; acompañado de prensa francesa , lapicero dorado y una hermosa cesta tejida con forro , perfecta para una salida, picnic o como bolso. Finalizamos este regalo con una delicada decoración en tonos rosados y un llavero tejido en crochet , convirtiéndolo en un detalle especial, femenino y lleno de encanto para sorprender en cualquier ocasión.",
+      "wpProductId": 74102,
+      "active": false
+    },
+    {
+      "id": "saludable",
+      "name": "Saludable",
+      "aliases": [
+        "Saludable"
+      ],
+      "category": "breakfast",
+      "isKitchen": true,
+      "priceCop": 185000,
+      "description": "¡Sorprende a esa persona que le gusta comer sano! Canasta de madera, jugo verde con (pepino, apio, jengibre, manzana y naranja), jugo de naranja natural 0% azúcar o hatsu té, 2 mini sándwiches con (pan sin gluten, jamón, queso y lechuga), bowl con (yogurt griego, semillas de chía, quinoa, fresa y kiwi), 1 arepa asada con (pechuga asada, aguacate y parmesano), roquillas integrales de arroz, muffin bajo en azúcar, frasco con frutos secos, barra de cereal, mini planta suculenta, menú impreso, cucharita de madera, decoración en los recipientes y 2 globos en helio.",
+      "containerId": "canasta-de-madera-blanca-con-interior-con-escaleras",
+      "wpProductId": 550,
+      "sku": "S1",
+      "active": true
+    },
+    {
+      "id": "3-mini-deditos-de-queso",
+      "name": "3 mini deditos de queso",
+      "aliases": [
+        "3 mini deditos de queso",
+        "Deditos"
+      ],
+      "category": "add_on",
+      "isKitchen": true,
+      "priceCop": 10000,
+      "wpProductId": 1134,
+      "sku": "DQ1",
+      "active": true
+    },
+    {
+      "id": "3-mini-empanaditas-de-carne",
+      "name": "3 mini empanaditas de carne",
+      "aliases": [
+        "3 mini empanaditas de carne",
+        "Empanaditas"
+      ],
+      "category": "add_on",
+      "isKitchen": true,
+      "priceCop": 10000,
+      "wpProductId": 1135,
+      "sku": "EC1",
+      "active": true
+    },
+    {
+      "id": "arepitas-rancheras",
+      "name": "Arepitas Rancheras",
+      "aliases": [
+        "Arepitas Rancheras"
+      ],
+      "category": "add_on",
+      "isKitchen": true,
+      "priceCop": 20000,
+      "description": "Masa de maíz rellena de queso y salchicha ranchera",
+      "active": false
+    },
+    {
+      "id": "arepitas-salchicha-y-queso",
+      "name": "Arepitas salchicha y queso",
+      "aliases": [
+        "Arepitas salchicha y queso"
+      ],
+      "category": "add_on",
+      "isKitchen": true,
+      "priceCop": 20000,
+      "wpProductId": 1132,
+      "sku": "AP1",
+      "active": true
+    },
+    {
+      "id": "bombones",
+      "name": "BOMBONES",
+      "aliases": [
+        "BOMBONES"
+      ],
+      "category": "add_on",
+      "isKitchen": false,
+      "priceCop": 25000,
+      "description": "4 Deliciosos bombones de chocolates rellenos de frutos secos. Cajita con diseño especial para mujer o para hombre.",
+      "wpProductId": 36478,
+      "sku": "BOMBON1",
+      "active": true
+    },
+    {
+      "id": "botella-de-vino-tinto-750ml",
+      "name": "Botella de vino tinto 750ml",
+      "aliases": [
+        "Botella de vino tinto 750ml"
+      ],
+      "category": "add_on",
+      "isKitchen": false,
+      "priceCop": 65000,
+      "wpProductId": 1140,
+      "sku": "BV1",
+      "active": true
+    },
+    {
+      "id": "buchanan-s-deluxe-12-anos",
+      "name": "Buchanan's Deluxe 12 años",
+      "aliases": [
+        "Buchanan's Deluxe 12 años",
+        "Buchanans Deluxe 12 Años"
+      ],
+      "category": "add_on",
+      "isKitchen": true,
+      "priceCop": 155000,
+      "description": "Whisky Buchanan's Deluxe 12 años.",
+      "active": false
+    },
+    {
+      "id": "burbuja-en-helio",
+      "name": "Burbuja en Helio",
+      "aliases": [
+        "Burbuja en Helio"
+      ],
+      "category": "add_on",
+      "isKitchen": false,
+      "priceCop": 40000,
+      "description": "Globo burbuja inflado con helio certificado.",
+      "active": false
+    },
+    {
+      "id": "burbuja-feliz-cumpleanos-helio",
+      "name": "Burbuja Feliz Cumpleaños Helio",
+      "aliases": [
+        "Burbuja Feliz Cumpleaños Helio"
+      ],
+      "category": "add_on",
+      "isKitchen": false,
+      "priceCop": 40000,
+      "description": "Burbuja Feliz Cumpleaños en helio",
+      "active": false
+    },
+    {
+      "id": "burbuja-feliz-cumpleanos-sin-helio",
+      "name": "Burbuja Feliz Cumpleaños SIN Helio",
+      "aliases": [
+        "Burbuja Feliz Cumpleaños SIN Helio"
+      ],
+      "category": "add_on",
+      "isKitchen": false,
+      "priceCop": 30000,
+      "description": "Burbuja Feliz Cumpleaños sin helio",
+      "active": false
+    },
+    {
+      "id": "burbuja-helio",
+      "name": "Burbuja Helio",
+      "aliases": [
+        "Burbuja Helio"
+      ],
+      "category": "add_on",
+      "isKitchen": false,
+      "priceCop": 40000,
+      "description": "Burbuja en helio",
+      "active": false
+    },
+    {
+      "id": "burbuja-sin-helio",
+      "name": "Burbuja sin Helio",
+      "aliases": [
+        "Burbuja sin Helio",
+        "Burbuja SIN Helio"
+      ],
+      "category": "add_on",
+      "isKitchen": false,
+      "priceCop": 30000,
+      "description": "Globo burbuja sin helio.",
+      "active": false
+    },
+    {
+      "id": "cerveza-coronita-200ml",
+      "name": "Cerveza coronita 200ml",
+      "aliases": [
+        "Cerveza coronita 200ml"
+      ],
+      "category": "add_on",
+      "isKitchen": false,
+      "priceCop": 9000,
+      "wpProductId": 1142,
+      "sku": "CC1",
+      "active": true
+    },
+    {
+      "id": "cerveza-coronita-extra",
+      "name": "Cerveza Coronita Extra",
+      "aliases": [
+        "Cerveza Coronita Extra"
+      ],
+      "category": "add_on",
+      "isKitchen": true,
+      "priceCop": 9000,
+      "description": "Cerveza Coronita Extra en presentación pequeña.",
+      "active": false
+    },
+    {
+      "id": "globo-en-helio",
+      "name": "Globo en Helio",
+      "aliases": [
+        "Globo en Helio",
+        "Globo EN Helio",
+        "Globo con helio"
+      ],
+      "category": "add_on",
+      "isKitchen": false,
+      "priceCop": 10000,
+      "description": "Globo inflado con helio certificado. Varios diseños disponibles: Feliz Cumpleaños, Hermosa, Birthday.",
+      "active": false
+    },
+    {
+      "id": "joyero",
+      "name": "Joyero",
+      "aliases": [
+        "Joyero",
+        "Joyero Rosado"
+      ],
+      "category": "add_on",
+      "isKitchen": false,
+      "priceCop": 50000,
+      "description": "Material: cuerina, incluye separadores y corredera. Color: rosa pastel únicamente. No incluye accesorios, viene solito.",
+      "wpProductId": 18058,
+      "sku": "JRC1",
+      "active": true
+    },
+    {
+      "id": "joyero-rosa-cuerina",
+      "name": "Joyero Rosa Cuerina",
+      "aliases": [
+        "Joyero Rosa Cuerina"
+      ],
+      "category": "add_on",
+      "isKitchen": false,
+      "priceCop": 50000,
+      "description": "Joyero rosa en cuerina",
+      "active": false
+    },
+    {
+      "id": "jp-chenete-200ml",
+      "name": "JP Chenete 200ml",
+      "aliases": [
+        "JP Chenete 200ml"
+      ],
+      "category": "add_on",
+      "isKitchen": false,
+      "priceCop": 38000,
+      "wpProductId": 1141,
+      "sku": "JP1",
+      "active": true
+    },
+    {
+      "id": "jugo-verde-300ml",
+      "name": "Jugo verde 300ml",
+      "aliases": [
+        "Jugo verde 300ml"
+      ],
+      "category": "add_on",
+      "isKitchen": true,
+      "priceCop": 14000,
+      "description": "Delicioso jugo verde con: manzana verde, jengibre, kiwi, apio, pepino y zumo de naranja.",
+      "wpProductId": 1138,
+      "sku": "JV1",
+      "active": true
+    },
+    {
+      "id": "mini-foto",
+      "name": "Mini Foto",
+      "aliases": [
+        "Mini Foto"
+      ],
+      "category": "add_on",
+      "isKitchen": false,
+      "priceCop": 10000,
+      "description": "Foto impresa en tamaño pequeño.",
+      "active": false
+    },
+    {
+      "id": "mini-puffy",
+      "name": "Mini Puffy",
+      "aliases": [
+        "Mini Puffy"
+      ],
+      "category": "add_on",
+      "isKitchen": false,
+      "priceCop": 38000,
+      "description": "Una cosita chiquitita hermosa, es un monedero y charms en forma de puffy bag.",
+      "wpProductId": 69404,
+      "active": true
+    },
+    {
+      "id": "mini-suculenta",
+      "name": "Mini suculenta",
+      "aliases": [
+        "Mini suculenta",
+        "Mini Suculenta con Maceta"
+      ],
+      "category": "add_on",
+      "isKitchen": false,
+      "priceCop": 28000,
+      "wpProductId": 1150,
+      "sku": "MS1",
+      "active": true
+    },
+    {
+      "id": "mini-suculenta-maceta-ceramica",
+      "name": "Mini Suculenta Maceta Ceramica",
+      "aliases": [
+        "Mini Suculenta Maceta Ceramica"
+      ],
+      "category": "add_on",
+      "isKitchen": false,
+      "priceCop": 28000,
+      "description": "Mini suculenta en maceta de cerámica",
+      "active": false
+    },
+    {
+      "id": "mini-tabla-de-jamones-y-quesos",
+      "name": "Mini tabla de quesos adicional (Picnic)",
+      "aliases": [
+        "Mini tabla de jamones y quesos",
+        "Mini Tabla Jamones"
+      ],
+      "category": "add_on",
+      "isKitchen": true,
+      "priceCop": 36000,
+      "wpProductId": 216,
+      "sku": "TQ1",
+      "active": true
+    },
+    {
+      "id": "mini-tabla-jamones",
+      "name": "Mini Tabla Jamones",
+      "aliases": [
+        "Mini Tabla Jamones"
+      ],
+      "category": "add_on",
+      "isKitchen": true,
+      "priceCop": 36000,
+      "description": "Chorizo español, serrano y queso mozzarella",
+      "active": false
+    },
+    {
+      "id": "mini-torta-personal-con-topper",
+      "name": "Mini torta personal con topper",
+      "aliases": [
+        "Mini torta personal con topper",
+        "Mini Torta"
+      ],
+      "category": "add_on",
+      "isKitchen": true,
+      "priceCop": 35000,
+      "wpProductId": 1137,
+      "sku": "TT1",
+      "active": true
+    },
+    {
+      "id": "parfait",
+      "name": "Parfait",
+      "aliases": [
+        "Parfait"
+      ],
+      "category": "add_on",
+      "isKitchen": true,
+      "priceCop": 20000,
+      "wpProductId": 1136,
+      "sku": "PF1",
+      "active": true
+    },
+    {
+      "id": "photobook-para-parejas",
+      "name": "PHOTOBOOK PARA PAREJAS",
+      "aliases": [
+        "PHOTOBOOK PARA PAREJAS"
+      ],
+      "category": "add_on",
+      "isKitchen": false,
+      "priceCop": 79900,
+      "description": "UN VIAJE JUNTOS Un photobook creado con mucho amor para que lo llenes con tu persona favorita. El amor es como un viaje en carretera, una aventura donde sentimos emoción cuando arrancamos, vemos paisajes maravillosos, escuchamos nuestra música favorita, discutimos sobre la ruta que tomaremos, nos reímos a carcajadas, superamos obstáculos, llenamos el tanque de gasolina y sin afán seguimos conduciendo hacia el destino de nuestros sueños. Páginas: 20 , las llenarás con fotos, textos, bono de regalo y mucho más para sorprender a tu pareja. Tamaño: Grande 25cm x 25cm Nota: NO incluye foticos, cámara, marcador, ni tijera. Recomendación: Para llenarlo vas a necesitar un marcador negro de punta delgada y aproximadamente 8-10 foticos que puedes imprimir en casa comprando papel fotográfico, ya que te sale más económico. Porque nuestras fotos son impresas en papel instantáneo por eso salen en $9.000 c/u, así que es mejor que las imprimas en casa o en una papelería.",
+      "wpProductId": 14473,
+      "sku": "PBUVJ23",
+      "active": true
+    },
+    {
+      "id": "rosa-eterna-2",
+      "name": "ROSA ETERNA",
+      "aliases": [
+        "ROSA ETERNA"
+      ],
+      "category": "add_on",
+      "isKitchen": false,
+      "priceCop": 175000,
+      "description": "Rosa natural 100% preservada colombiana, dura más de 3 años, incluye cúpula de cristal, lazo de tela, etiqueta y placa. Va empacada en una bolsa de regalo de lujo con lazo.",
+      "wpProductId": 1174,
+      "sku": "RE2",
+      "active": false
+    },
+    {
+      "id": "smoothie-de-frutos-rojos-300ml",
+      "name": "Smoothie de frutos rojos 300ml",
+      "aliases": [
+        "Smoothie de frutos rojos 300ml"
+      ],
+      "category": "add_on",
+      "isKitchen": true,
+      "priceCop": 16000,
+      "wpProductId": 1139,
+      "sku": "SF1",
+      "active": true
+    },
+    {
+      "id": "tequila-1800-reposado-750ml",
+      "name": "Tequila 1800 reposado 750ml",
+      "aliases": [
+        "Tequila 1800 reposado 750ml"
+      ],
+      "category": "add_on",
+      "isKitchen": true,
+      "description": "Drink option for Caja Salud (TEQUILA)",
+      "active": false
+    },
+    {
+      "id": "vaso-hermosa-birthday",
+      "name": "Vaso Hermosa Birthday",
+      "aliases": [
+        "Vaso Hermosa Birthday"
+      ],
+      "category": "add_on",
+      "isKitchen": false,
+      "priceCop": 60000,
+      "description": "Vaso Hermosa Birthday metálico con tapa de acrílico, conserva temperatura (dorado)",
+      "active": false
+    },
+    {
+      "id": "vaso-metalico",
+      "name": "Vaso metálico",
+      "aliases": [
+        "Vaso metálico",
+        "Vaso Metálico con Tapa"
+      ],
+      "category": "add_on",
+      "isKitchen": false,
+      "priceCop": 60000,
+      "description": "Vaso dorado con tapa de acrílico que conserva la temperatura de las bebida.",
+      "wpProductId": 18061,
+      "active": true
+    },
+    {
+      "id": "vaso-metalico-tapa-acrilico-termico",
+      "name": "Vaso Metalico Tapa Acrilico Termico",
+      "aliases": [
+        "Vaso Metalico Tapa Acrilico Termico"
+      ],
+      "category": "add_on",
+      "isKitchen": false,
+      "priceCop": 60000,
+      "description": "Vaso metálico con tapa de acrílico, térmico (dorado)",
+      "active": false
+    },
+    {
+      "id": "vaso-pink",
+      "name": "Vaso pink",
+      "aliases": [
+        "Vaso pink"
+      ],
+      "category": "add_on",
+      "isKitchen": false,
+      "priceCop": 60000,
+      "description": "Vaso en tono rosado mate, con sticker Queen Bloom, un detalle perfecto para complementar este día tan especial. Cuenta con tapa y pitillo , ideal para el día a día. Capacidad aproximada de 600 ml. Puedes agregarlo a cualquier detalle y complementar tu sorpresa con un toque femenino y práctico. Disponible todos los días.",
+      "wpProductId": 65908,
+      "active": true
+    },
+    {
+      "id": "vaso-pitillo-con-tapa",
+      "name": "Vaso Pitillo con Tapa",
+      "aliases": [
+        "Vaso Pitillo con Tapa"
+      ],
+      "category": "add_on",
+      "isKitchen": false,
+      "priceCop": 60000,
+      "description": "Vaso con pitillo, tapa y sticker decorativo.",
+      "active": false
+    },
+    {
+      "id": "vaso-pitillo-tapa-sticker",
+      "name": "Vaso Pitillo Tapa Sticker",
+      "aliases": [
+        "Vaso Pitillo Tapa Sticker"
+      ],
+      "category": "add_on",
+      "isKitchen": false,
+      "priceCop": 60000,
+      "description": "Vaso con pitillo, tapa y sticker (rosa)",
+      "active": false
+    },
+    {
+      "id": "vino-blanco-jp-chenet-ice",
+      "name": "Vino Blanco JP Chenet ICE",
+      "aliases": [
+        "Vino Blanco JP Chenet ICE",
+        "Vino Blanco JP Chenet ICE Edition"
+      ],
+      "category": "add_on",
+      "isKitchen": true,
+      "priceCop": 38000,
+      "description": "Botella de vino blanco JP Chenet ICE Edition.",
+      "active": false
+    },
+    {
+      "id": "vino-reservado-cabernet-750ml",
+      "name": "Vino Reservado Cabernet 750ml",
+      "aliases": [
+        "Vino Reservado Cabernet 750ml"
+      ],
+      "category": "add_on",
+      "isKitchen": true,
+      "description": "Drink option for Caja Salud (VINO)",
+      "active": false
+    },
+    {
+      "id": "vino-tinto-cabernet-sauvignon",
+      "name": "Vino Tinto Cabernet Sauvignon",
+      "aliases": [
+        "Vino Tinto Cabernet Sauvignon"
+      ],
+      "category": "add_on",
+      "isKitchen": true,
+      "priceCop": 65000,
+      "description": "Botella de vino tinto Cabernet Sauvignon.",
+      "active": false
+    },
+    {
+      "id": "whisky-buchanan-s-deluxe-12-anos-350ml",
+      "name": "Whisky Buchanan's Deluxe 12 años 350ml",
+      "aliases": [
+        "Whisky Buchanan's Deluxe 12 años 350ml"
+      ],
+      "category": "add_on",
+      "isKitchen": true,
+      "description": "Drink option for Caja Salud (BUCHANANS)",
+      "active": false
+    },
+    {
+      "id": "whisky-jack-daniel-s-750ml",
+      "name": "Whisky Jack Daniel's 750ml",
+      "aliases": [
+        "Whisky Jack Daniel's 750ml"
+      ],
+      "category": "add_on",
+      "isKitchen": true,
+      "description": "Drink option for Caja Salud (JACK_DANIELS)",
+      "active": false
+    },
+    {
+      "id": "12-rosas",
+      "name": "12 ROSAS",
+      "aliases": [
+        "12 ROSAS"
+      ],
+      "category": "flower",
+      "isKitchen": false,
+      "priceCop": 75000,
+      "description": "Ramo de rosas decorado con papel delicado, lazo de tela, bolsa de regalo, alimento para flores y tarjeta con cuidados para que las rosas duren más días. Incluye de 10 a 12 rosas naturales. Nota: El color de las rosas puede variar, ya que del cultivo llegan diferentes tipos de rosas, algunas rosadas pastel, otras rosadas oscuras, salmón, blancas con pétalos rosados difuminados, etc.",
+      "wpProductId": 20119,
+      "sku": "RM1012",
+      "active": true
+    },
+    {
+      "id": "24-rosas",
+      "name": "24 ROSAS",
+      "aliases": [
+        "24 ROSAS"
+      ],
+      "category": "flower",
+      "isKitchen": false,
+      "priceCop": 140000,
+      "description": "Ramo de rosas decorado con papel delicado, lazo de tela, bolsa de regalo, alimento para flores y tarjeta con cuidados para que las rosas duren más días. Incluye de 20 a 24 rosas naturales. Nota: El color de las rosas puede variar, ya que del cultivo llegan diferentes tipos de rosas, algunas rosadas pastel, otras rosadas oscuras, salmón, blancas con pétalos rosados difuminados, etc.",
+      "wpProductId": 20127,
+      "sku": "RG2024",
+      "active": true
+    },
+    {
+      "id": "5-rosas",
+      "name": "5 ROSAS",
+      "aliases": [
+        "5 ROSAS"
+      ],
+      "category": "flower",
+      "isKitchen": false,
+      "priceCop": 25000,
+      "description": "Pequeño, pero lleno de significado. Nuestro mini ramo está compuesto por 5 rosas cuidadosamente elegidas, ideal para quienes creen que los gestos más sutiles también pueden decir mucho. Perfecto para acompañar una carta, un desayuno o simplemente para sorprender sin motivo. Porque no siempre se necesita un gran ramo para expresar algo bonito, a veces basta con cinco rosas y un sentimiento sincero.",
+      "wpProductId": 60388,
+      "sku": "MINIRAMO5",
+      "active": false
+    },
+    {
+      "id": "50-rosas",
+      "name": "50 ROSAS",
+      "aliases": [
+        "50 ROSAS"
+      ],
+      "category": "flower",
+      "isKitchen": false,
+      "priceCop": 250000,
+      "description": "Ramo de rosas decorado con papel delicado, lazo de tela, bolsa de regalo, alimento para flores y tarjeta con cuidados para que las rosas duren más días. Incluye de 48 a 50 rosas naturales. Nota: El color de las rosas puede variar, ya que del cultivo llegan diferentes tipos de rosas, algunas rosadas pastel, otras rosadas oscuras, salmón, blancas con pétalos rosados difuminados, etc.",
+      "wpProductId": 20607,
+      "sku": "RR50",
+      "active": true
+    },
+    {
+      "id": "bloom",
+      "name": "Bloom",
+      "aliases": [
+        "Bloom",
+        "Ramo Bloom"
+      ],
+      "category": "flower",
+      "isKitchen": false,
+      "priceCop": 185000,
+      "description": "Un bouquet delicado y armonioso, diseñado para transmitir belleza, frescura y elegancia. Compuesto por hortensias, rosas de jardín, rosas y claveles , su forma redonda realza la suavidad y equilibrio de cada flor. Presentado en una caja tipo bolsa de regalo, con lazo, etiqueta y tarjeta personalizada, es el detalle perfecto para sorprender. Con 27 tallos cuidadosamente seleccionados, Bloom es sinónimo de encanto y sofisticación. Nota : Dado que trabajamos con flores naturales, algunas variedades pueden cambiar según disponibilidad, pero siempre garantizamos que el diseño y la armonía de colores se mantengan intactos.",
+      "wpProductId": 47533,
+      "sku": "BLOOM25",
+      "active": true
+    },
+    {
+      "id": "bouquet-rose",
+      "name": "Bouquet Rosé",
+      "aliases": [
+        "Bouquet Rosé"
+      ],
+      "category": "flower",
+      "isKitchen": false,
+      "priceCop": 115000,
+      "description": "Te presento Bouquet Rosé, nuestro nuevo ramo de flores. Una composición de gerberas, claveles y rosas en tonos rosas y bosque, creada para convertir cualquier momento en un recuerdo muuuuy especial. Ideal para sorprender en un cumpleaños, aniversario, grado… o, ¿por qué no?, cualquier día sin una excusa, simplemente para sacarle una sonrisa a tu persona favorita. Incluye bolsa de regalo , alimento floral y tarjeta con recomendaciones de cuidado para que disfruten sus flores por más tiempo. Disponible de lunes a domingo, en la ciudad de Bogotá.",
+      "wpProductId": 72537,
+      "active": true
+    },
+    {
+      "id": "caja-jardin-de-rosas",
+      "name": "CAJA JARDÍN DE ROSAS",
+      "aliases": [
+        "CAJA JARDÍN DE ROSAS",
+        "Caja Jardín de Rosas"
+      ],
+      "category": "flower",
+      "isKitchen": false,
+      "priceCop": 140000,
+      "description": "Sorprende con este súper regalo precioso e innovador. Caja grande con diseño único & exclusivo, ramo de 15 rosas con lazo y papel decorativo, alimento para flores, caja de chocolates con oro comestible de 24k, tarjeta para que escribas el mensaje que quieras decirle y nosotros lo imprimimos. También incluye stikers para pegar en el cel o en el compu, stiker de mariposa, stiker de flor y stiker de regadera. ¡Disponible todos los días!",
+      "wpProductId": 28398,
+      "sku": "CJDR99",
+      "active": true
+    },
+    {
+      "id": "florecer",
+      "name": "Florecer",
+      "aliases": [
+        "Florecer"
+      ],
+      "category": "flower",
+      "isKitchen": false,
+      "priceCop": 135000,
+      "description": "Composición floral elaborada con hortensias rosadas y blancas, claveles y rosas, un pequeño jardín que celebra la delicadeza y la fuerza femenina. Envuelto en papel blanco de acabado suave y presentado en bolsa de regalo, pensado para acompañar y sorprender en el Día de la Mujer. Cada arreglo es único, ya que trabajamos con flores naturales, manteniendo siempre la esencia, la paleta y el estilo que caracterizan este diseño. Importante: Este bouquet estará disponible durante el año 2026.",
+      "wpProductId": 65927,
+      "active": true
+    },
+    {
+      "id": "primavera",
+      "name": "PRIMAVERA",
+      "aliases": [
+        "PRIMAVERA",
+        "Tote Bag Primavera"
+      ],
+      "category": "flower",
+      "isKitchen": false,
+      "priceCop": 185000,
+      "description": "Se trata de una hermosa bolsa de lino (tote bag) estampada con diseño único, ramo de 24 rosas frescas y caja de bombones de chocolates con centro líquido, decorados con oro de 24K y estuche de lujo con cierre. Es una referencia muy linda ideal para regalar cualquier día, está disponible para entregas en la mañana y en la tarde. Es un producto único y exclusivo que no encontrarás en otro lugar, un kit completo para alegrarle el día a tu persona especial. Podrás adicionarle una carta sin ningún costo extra, el mensaje es personalizado.",
+      "wpProductId": 37089,
+      "sku": "TBP20",
+      "active": true
+    },
+    {
+      "id": "ramo-de-rosas-grande",
+      "name": "Ramo de Rosas Grande",
+      "aliases": [
+        "Ramo de Rosas Grande"
+      ],
+      "category": "flower",
+      "isKitchen": false,
+      "priceCop": 250000,
+      "description": "Un gesto delicado que complementa perfectamente un desayuno o puedes comprarlo solito.",
+      "active": false
+    },
+    {
+      "id": "ramo-de-rosas-mediano",
+      "name": "Ramo de Rosas Mediano",
+      "aliases": [
+        "Ramo de Rosas Mediano"
+      ],
+      "category": "flower",
+      "isKitchen": false,
+      "priceCop": 140000,
+      "description": "Un gesto delicado que complementa perfectamente un desayuno o puedes comprarlo solito.",
+      "active": false
+    },
+    {
+      "id": "ramo-de-rosas-pequeno",
+      "name": "Ramo de Rosas Pequeño",
+      "aliases": [
+        "Ramo de Rosas Pequeño"
+      ],
+      "category": "flower",
+      "isKitchen": false,
+      "priceCop": 75000,
+      "description": "Un gesto delicado que complementa perfectamente un desayuno o puedes comprarlo solito.",
+      "active": false
+    },
+    {
+      "id": "ramo-mariposa",
+      "name": "RAMO MARIPOSA",
+      "aliases": [
+        "RAMO MARIPOSA",
+        "Ramo Mariposa"
+      ],
+      "category": "flower",
+      "isKitchen": false,
+      "priceCop": 175000,
+      "description": "Hermoso ramo de 24 rosas frescas, con lazo de tela, etiqueta y envuelto con alas de mariposas que le dan un toque de magia a las flores. Incluye: Jarrón de cristal diseñado para dar realce al ramo de rosas y le permite a la persona que lo recibe colocarle agua de inmediato para hidratar las flores, aunque también puede usarse solo como adorno. La Belleza de las Rosas con el Encanto de las Mariposas. Nota: El color de las rosas puede variar, ya que del cultivo llegan diferentes tipos de rosas, algunas rosadas pastel, otras rosadas oscuras, salmón, blancas con pétalos rosados difuminados, etc.",
+      "wpProductId": 36992,
+      "sku": "RM24R",
+      "active": true
+    },
+    {
+      "id": "rosa-eterna",
+      "name": "ROSA ETERNA",
+      "aliases": [
+        "ROSA ETERNA",
+        "Regalo Rosa Eterna"
+      ],
+      "category": "flower",
+      "isKitchen": false,
+      "priceCop": 175000,
+      "description": "Rosa natural 100% colombiana, dura más de 3 años, incluye caja tipo cristal en acrílico, lazo de tela del color que desees y una bella carta. Va empacada con tejido tul y moño.",
+      "wpProductId": 5483,
+      "sku": "RE1",
+      "active": true
+    },
+    {
+      "id": "tulipanes",
+      "name": "Tulipanes",
+      "aliases": [
+        "Tulipanes"
+      ],
+      "category": "flower",
+      "isKitchen": false,
+      "priceCop": 210000,
+      "description": "Un ramo que derrite corazones. Nuestro bouquet de tulipanes es ese detalle delicado que convierte cualquier momento en algo especial. Incluye 10 tulipanes frescos , empacados con papel blanco y lazo de tela, listos para sorprender dentro de una bolsa de regalo . Viene acompañado de un jarrón de cristal , alimento floral , una tarjeta de cuidados para que se mantengan hermosos por más tiempo, y una tarjeta personalizada con: de / para / y mensaje que hace aún más personal el detalle. Nota: Pregunta por la disponibilidad de colores en WhatsApp. Trabajamos con flores naturales y, por eso, los colores pueden variar según el día.",
+      "wpProductId": 55957,
+      "sku": "TULIP25",
+      "active": true
+    },
+    {
+      "id": "baby",
+      "name": "BABY",
+      "aliases": [
+        "BABY",
+        "Peluche Baby"
+      ],
+      "category": "stuffed_animal",
+      "isKitchen": false,
+      "priceCop": 65000,
+      "description": "El compañero perfecto. Nuestro Oso Baby es tierno, ligero y seguro, ideal para acompañar cada momento especial. Su tela es ultra suave, elegida cuidadosamente para brindar una sensación de confort y calidez, cada Oso Baby es una obra de amor y dulzura. Tamaño: 34cm Telas atóxicas y antialérgicas, perfectas para bebés. Relleno 100% algodón siliconado, súper ligero y esponjoso. Elaborado con materiales importados de la mejor calidad.",
+      "wpProductId": 48768,
+      "sku": "BABY26",
+      "active": true
+    },
+    {
+      "id": "elefante",
+      "name": "Elefante",
+      "aliases": [
+        "Elefante"
+      ],
+      "category": "stuffed_animal",
+      "isKitchen": false,
+      "priceCop": 89000,
+      "description": "Suave y tierno elefante bebé, con moño en su cuello y esponjoso que lo hace aún más especial. Su diseño refleja la fusión de la estética italiana y colombiana, combinando ternura y estilo. Tela de pelo largo, ultra suave y esponjosa. Acabados impecables y diseño encantador. Relleno liviano y 100% algodón siliconado.",
+      "wpProductId": 68432,
+      "active": true
+    },
+    {
+      "id": "gata",
+      "name": "GATA",
+      "aliases": [
+        "GATA",
+        "Peluche Gata Deluxe"
+      ],
+      "category": "stuffed_animal",
+      "isKitchen": false,
+      "priceCop": 125000,
+      "description": "Elegante y encantadora, con suaves bigotes, un elegante moño en su cuello y un pelaje largo y esponjoso que la hace aún más especial. Su diseño refleja la fusión de la estética italiana y colombiana, combinando ternura y estilo. Tela de pelo largo, ultra suave y esponjosa. Acabados impecables y diseño encantador. Relleno liviano y 100% algodón siliconado.",
+      "wpProductId": 48789,
+      "sku": "GATA25",
+      "active": true
+    },
+    {
+      "id": "oso-clasico",
+      "name": "Oso clásico",
+      "aliases": [
+        "Oso clásico",
+        "Peluche Oso Clásico Grande"
+      ],
+      "category": "stuffed_animal",
+      "isKitchen": false,
+      "priceCop": 99000,
+      "description": "Lindo oso de peluche, tela clásica delicada y suavecita, incluye lazo en el cuello, excelente detalle para sorprender, tenemos disponibilidad en colores: vainilla, arequipe, chocolate y miel. Telas de poliéster importadas extra-suaves y relleno 100% de algodón Siliconado. Materiales atóxicos y analérgicos.",
+      "wpProductId": 446,
+      "active": true
+    },
+    {
+      "id": "oso-deluxe",
+      "name": "Oso deluxe",
+      "aliases": [
+        "Oso deluxe",
+        "Peluche Oso Deluxe Grande"
+      ],
+      "category": "stuffed_animal",
+      "isKitchen": false,
+      "priceCop": 135000,
+      "description": "Lindo oso de peluche, tela deluxe delicada y elegante, incluye lazo en el cuello, excelente detalle para sorprender, tenemos disponibilidad en colores: blanco, chocolate y rosa. Telas de poliéster importadas de pelo extra-largo y relleno 100% de algodón Siliconado. Materiales atóxicos y analérgicos.",
+      "wpProductId": 1151,
+      "sku": "OSODM",
+      "active": true
+    },
+    {
+      "id": "peluche-oso-clasico-gigante",
+      "name": "Peluche Oso Clásico Gigante",
+      "aliases": [
+        "Peluche Oso Clásico Gigante"
+      ],
+      "category": "stuffed_animal",
+      "isKitchen": false,
+      "priceCop": 295000,
+      "description": "Tierno, atemporal y perfecto para abrazar. Diseño italocolombiano lleno de amor y belleza.",
+      "active": false
+    },
+    {
+      "id": "peluche-oso-deluxe-gigante",
+      "name": "Peluche Oso Deluxe Gigante",
+      "aliases": [
+        "Peluche Oso Deluxe Gigante"
+      ],
+      "category": "stuffed_animal",
+      "isKitchen": false,
+      "priceCop": 360000,
+      "description": "Oso de peluche gigante elevado con detalles exquisitos y suavidad inigualable. Un peluche elegante que combina lo mejor de Italia y Colombia.",
+      "active": false
+    },
+    {
+      "id": "peluche-oso-deluxe-mediano",
+      "name": "Peluche Oso Deluxe Mediano",
+      "aliases": [
+        "Peluche Oso Deluxe Mediano"
+      ],
+      "category": "stuffed_animal",
+      "isKitchen": false,
+      "priceCop": 135000,
+      "description": "El clásico elevado con detalles exquisitos y suavidad inigualable. Un peluche elegante que combina lo mejor de Italia y Colombia.",
+      "active": false
+    },
+    {
+      "id": "perrito",
+      "name": "PERRITO",
+      "aliases": [
+        "PERRITO",
+        "Peluche Perrito Deluxe"
+      ],
+      "category": "stuffed_animal",
+      "isKitchen": false,
+      "priceCop": 115000,
+      "description": "Fiel, adorable y perfecto para acompañarte siempre. Su textura es irresistiblemente suave y su diseño refleja amor y calidez. Telas atóxicas y antialérgicas. Relleno 100% algodón siliconado, ligero y esponjoso. Materias primas importadas de excelente calidad.",
+      "wpProductId": 48779,
+      "sku": "PERRITO25",
+      "active": true
+    },
+    {
+      "id": "diario",
+      "name": "Diario",
+      "aliases": [
+        "Diario",
+        "Diario de Gratitud"
+      ],
+      "category": "accessory",
+      "isKitchen": false,
+      "priceCop": 49900,
+      "description": "Un lugarcito para escribir todo eso que quieres agradecer. A veces vivimos tan rápido que olvidamos reconocer todo lo bueno que ya está pasando, todo lo que hemos logrado y todo lo que tenemos alrededor. Nuestro Diario de Gratitud incluye 80 hojas, pasta dura, hoja de stickers y checklist, con espacios pensados para escribir, reflexionar y llevar este hábito de una forma sencilla y bonita. Agrega el lapicero diamante por $12.000",
+      "wpProductId": 75382,
+      "active": true
+    },
+    {
+      "id": "diario-de-gratitud",
+      "name": "DIARIO DE GRATITUD",
+      "aliases": [
+        "DIARIO DE GRATITUD",
+        "Diario de Gratitud"
+      ],
+      "category": "accessory",
+      "isKitchen": false,
+      "priceCop": 49900,
+      "description": "Diario para una mujer valiente , que expresa lo que siente día a día. Descripción: Pasta dura, 1 hoja de tareas para que cumplas este año y 80 hojas con espacio para: agradecimientos del día, aprendizaje, sentimientos diarios y espacio para que coloques que acciones que podrían mejorar el día siguiente. Nota: El lapicero estilo diamante es adicional, tiene un valor de $12.000",
+      "wpProductId": 12738,
+      "sku": "DIARIOGR",
+      "active": false
+    },
+    {
+      "id": "lapicero-diamante",
+      "name": "LAPICERO DIAMANTE",
+      "aliases": [
+        "LAPICERO DIAMANTE"
+      ],
+      "category": "accessory",
+      "isKitchen": false,
+      "priceCop": 12000,
+      "description": "Ideal para llevar junto a tu diario de gratitud. Descripción: bolígrafo con tinta negra, te puede llegar rosado, lila o fucsia.",
+      "wpProductId": 12737,
+      "active": true
+    },
+    {
+      "id": "photobook-un-viaje-juntos",
+      "name": "Photobook Un Viaje Juntos",
+      "aliases": [
+        "Photobook Un Viaje Juntos"
+      ],
+      "category": "accessory",
+      "isKitchen": false,
+      "priceCop": 79900,
+      "description": "Un álbum creado con mucho amor para que lo llenes con tu persona favorita. Inspirado en un viaje en carretera.",
+      "active": false
+    },
+    {
+      "id": "black-coffe",
+      "name": "BLACK COFFE",
+      "aliases": [
+        "BLACK COFFE",
+        "Detalle Caja Black Coffee"
+      ],
+      "category": "gift_box",
+      "isKitchen": false,
+      "priceCop": 200000,
+      "description": "Detalle para cualquier ocasión , incluye caja de madera, cafetera francesa negra, agenda para notas con 80 hojas, vaso térmico negro con pitillo, café clásico Juan Valdez, infusión de té, snack de frutos secos y decoración vintage.",
+      "wpProductId": 9378,
+      "sku": "CJBC1",
+      "active": true
+    },
+    {
+      "id": "box-school",
+      "name": "BOX SCHOOL",
+      "aliases": [
+        "BOX SCHOOL"
+      ],
+      "category": "gift_box",
+      "isKitchen": false,
+      "priceCop": 82000,
+      "wpProductId": 64844,
+      "sku": "BSCHOOL2026",
+      "active": false
+    },
+    {
+      "id": "caja-beauty",
+      "name": "CAJA BEAUTY",
+      "aliases": [
+        "CAJA BEAUTY",
+        "Detalle Caja Beauty"
+      ],
+      "category": "gift_box",
+      "isKitchen": false,
+      "priceCop": 190000,
+      "description": "← Volver Gracias por tu respuesta. ✨ Nombre (obligatorio) Correo electrónico (obligatorio) Web Mensaje Enviar Detalle para cualquier ocasión , incluye caja de madera, joyero, mascarilla para el rostro, diario de gratitud con 80 hojas, chocolatina grande vast, soda hatsu o mil 976 y decoración vintage. *No incluye accesorios que están dentro del joyero",
+      "wpProductId": 9376,
+      "sku": "CJB1",
+      "active": true
+    },
+    {
+      "id": "caja-oro",
+      "name": "CAJA ORO",
+      "aliases": [
+        "CAJA ORO",
+        "Detalle Caja Oro"
+      ],
+      "category": "gift_box",
+      "isKitchen": false,
+      "priceCop": 230000,
+      "description": "Detalle para cualquier ocasión , incluye caja de madera, Botella Bottega Gold o Champaña Chandon según escojas, vela de gratitud aromatizada con coco vainilla, copa de cristal, chocolatina grande vast, tarjeta floral relieve con mensaje personalizado y decoración vintage. Vino espumoso Chandon 750ml: $190.000 Vino espumoso Bottega Gold 750ml: $290.000",
+      "wpProductId": 9375,
+      "sku": "CJO",
+      "active": true
+    },
+    {
+      "id": "caja-pink-coffe",
+      "name": "CAJA PINK COFFE",
+      "aliases": [
+        "CAJA PINK COFFE"
+      ],
+      "category": "gift_box",
+      "isKitchen": false,
+      "priceCop": 200000,
+      "description": "Detalle para cualquier ocasión , incluye caja de madera, cafetera francesa negra, carta floral con mensaje personalizado, vaso térmico metálico dorado, café clásico Juan Valdez, snack de frutos secos, mini planta suculenta y decoración vintage.",
+      "wpProductId": 9377,
+      "sku": "CJPC",
+      "active": true
+    },
+    {
+      "id": "caja-rosa",
+      "name": "CAJA ROSA",
+      "aliases": [
+        "CAJA ROSA",
+        "Detalle Caja Rosa"
+      ],
+      "category": "gift_box",
+      "isKitchen": false,
+      "priceCop": 195000,
+      "description": "Detalle para cualquier ocasión , incluye caja de madera, estuche con pomos desmaquilladores reutilizables, vaso rosado con pitillo térmico, diario de gratitud 80 hojas, chocolatina grande vast, JP chenet en lata o hatsu en lata, mini planta suculenta con maceta, decoración vintage.",
+      "wpProductId": 9374,
+      "sku": "CROSA",
+      "active": true
+    },
+    {
+      "id": "caja-salud",
+      "name": "CAJA SALUD",
+      "aliases": [
+        "CAJA SALUD",
+        "Detalle Caja Salud"
+      ],
+      "category": "gift_box",
+      "isKitchen": false,
+      "priceCop": 185000,
+      "description": "Detalle para cualquier ocasión, incluye caja de madera, whisky, tequila o vino según escojas, vaso negro con pitillo térmico, agenda para notas 80 hojas, chocolatina grande vast, decoración vintage. Vino Reservado cabernet 750ml: $180.000 Whisky Jack Daniel&#8217;s 750ml: $250.000 Whisky Buchanan&#8217;s deluxe 350ml: $245.000 Tequila 1800 reposado 750ml: $290.000",
+      "wpProductId": 9379,
+      "sku": "CJSVINO",
+      "active": true
+    },
+    {
+      "id": "detalle-pink-coffee",
+      "name": "Detalle Pink Coffee",
+      "aliases": [
+        "Detalle Pink Coffee"
+      ],
+      "category": "gift_box",
+      "isKitchen": false,
+      "priceCop": 200000,
+      "description": "Caja de madera con set de café colombiano y accesorios.",
+      "active": false
+    },
+    {
+      "id": "detalle-tulipan",
+      "name": "DETALLE TULIPÁN",
+      "aliases": [
+        "DETALLE TULIPÁN"
+      ],
+      "category": "gift_box",
+      "isKitchen": false,
+      "priceCop": 220000,
+      "description": "Un regalo pensado para regalar a una hermosa madre. Incluye un bolso tejido, dos tulipanes, bombones de chocolate rellenos de maracuyá, un álbum para llenar con esas fotos y recuerdos que tenemos en casa, un joyero redondo de cuero sintético y una cadenita goldfield con dije MADRE en baño de oro. Todo decorado con un estilo sutil, elegante y lleno de amor. Fechas de entrega: estará disponible el 9, 10 y 11 de Mayo, 2025. En caso que selecciones otra fecha, los productos pueden variar.",
+      "wpProductId": 51508,
+      "sku": "BOTUL25",
+      "active": false
+    },
+    {
+      "id": "galardon-rosa-eterna",
+      "name": "GALARDÓN ROSA ETERNA",
+      "aliases": [
+        "GALARDÓN ROSA ETERNA"
+      ],
+      "category": "gift_box",
+      "isKitchen": false,
+      "priceCop": 174800,
+      "wpProductId": 73494,
+      "sku": "REPLACA25",
+      "active": false
+    },
+    {
+      "id": "garden-puffy",
+      "name": "Garden Puffy",
+      "aliases": [
+        "Garden Puffy"
+      ],
+      "category": "bag",
+      "isKitchen": false,
+      "priceCop": 130000,
+      "description": "El favorito de las girls. Bolso acolchado y súper cómodo, elaborado en tela antifluido, con lazo para cerrar y bolsillo interno. Un diseño único que no encontrarás en ningún otro lugar. Cada pieza es hecha en nuestro taller, por las manos de una mujer boyacense, cuidando cada detalle con dedicación y amor por el oficio. Incluye llavero tejido a mano en crochet , elaborado en San Jacinto, Bolívar, un complemento que resalta lo especial de esta pieza. Un detalle perfecto para regalar o regalarte. Envíos a todo el país. Disponible todos los días del 2026.",
+      "wpProductId": 65945,
+      "sku": "GPUFFY26",
+      "active": true
+    },
+    {
+      "id": "puffy-bag",
+      "name": "Puffy Bag",
+      "aliases": [
+        "Puffy Bag"
+      ],
+      "category": "bag",
+      "isKitchen": false,
+      "priceCop": 120000,
+      "description": "El favorito de las girls. Un regalo perfecto de ti para ti, porque sí… te lo mereces. Puffy Bag es un bolso de mano acolchado, en tendencia, pensado para acompañarte en tu día a día. Su tamaño es ideal para llevar contigo lo esencial y un poco más: portátil de hasta 13”, libro o diario, cargadores, maquillaje y todo eso que una girl necesita tener cerca. Disponible en rosa pastel y amarillo, dos tonos suaves que combinan con todo y elevan cualquier look. Incluye bolsillo interno para llaves y un charm (llavero) de tulipán tejido en crochet a mano , que lo convierte en un detalle aún más especial. Producto 100% colombiano , hecho en Bogotá . Perfecto para uso personal… y también ideal para regalar. Envíos a toda Colombia.",
+      "wpProductId": 63820,
+      "active": true
+    }
+  ],
+  "recipes": [
+    {
+      "productId": "box-mujer",
+      "components": [
+        {
+          "kind": "fixed",
+          "unitId": "paquete-de-papas-monterojo",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "ensalada-de-frutas-grande",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "galleta-tosh-crackers",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "sobre-de-nutella-de-15-gr",
+          "quantity": 1
+        },
+        {
+          "kind": "choice",
+          "label": "Jugo de naranja semi natural pequeño o Yogurt pequeño",
+          "required": true,
+          "options": [
+            {
+              "id": "jugo-de-naranja-semi-natural-pequeno",
+              "label": "Jugo de naranja semi natural pequeño",
+              "matchAliases": [
+                "Jugo de naranja semi natural pequeño",
+                "Jugo de naranja"
+              ],
+              "components": [
+                {
+                  "kind": "fixed",
+                  "unitId": "jugo-de-naranja-semi-natural-pequeno",
+                  "quantity": 1
+                }
+              ]
+            },
+            {
+              "id": "yogurt-pequeno",
+              "label": "Yogurt pequeño",
+              "matchAliases": [
+                "Yogurt pequeño",
+                "Yogur",
+                "Yogurt con granola"
+              ],
+              "components": [
+                {
+                  "kind": "fixed",
+                  "unitId": "yogurt-pequeno",
+                  "quantity": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "kind": "choice",
+          "label": "Sándwich sencillo o Waffle con arequipe y fresas",
+          "required": true,
+          "options": [
+            {
+              "id": "sandwich-sencillo",
+              "label": "Sándwich sencillo",
+              "matchAliases": [
+                "Sándwich sencillo",
+                "Sándwich de pan tajado artesano",
+                "Sándwich: Jamón y queso",
+                "Sandwich"
+              ],
+              "components": [
+                {
+                  "kind": "fixed",
+                  "unitId": "sandwich-sencillo",
+                  "quantity": 1
+                }
+              ]
+            },
+            {
+              "id": "waffle-con-arequipe-y-fresas",
+              "label": "Waffles con arequipe y fresas",
+              "matchAliases": [
+                "Waffles con arequipe y fresas",
+                "Waffle con arequipe y fresas",
+                "Waffle: Base de arequipe",
+                "Waffles",
+                "Waffle"
+              ],
+              "components": [
+                {
+                  "kind": "fixed",
+                  "unitId": "waffle-con-arequipe-y-fresas",
+                  "quantity": 1
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "productId": "box-hombre",
+      "components": [
+        {
+          "kind": "fixed",
+          "unitId": "paquete-de-papas-monterojo",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "galleta-tosh-crackers",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "sobre-de-nutella-de-15-gr",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "ensalada-de-frutas-grande",
+          "quantity": 1
+        },
+        {
+          "kind": "choice",
+          "label": "Jugo de naranja semi natural pequeño o Yogurt pequeño",
+          "required": true,
+          "options": [
+            {
+              "id": "jugo-de-naranja-semi-natural-pequeno",
+              "label": "Jugo de naranja semi natural pequeño",
+              "matchAliases": [
+                "Jugo de naranja semi natural pequeño",
+                "Jugo de naranja"
+              ],
+              "components": [
+                {
+                  "kind": "fixed",
+                  "unitId": "jugo-de-naranja-semi-natural-pequeno",
+                  "quantity": 1
+                }
+              ]
+            },
+            {
+              "id": "yogurt-pequeno",
+              "label": "Yogurt pequeño",
+              "matchAliases": [
+                "Yogurt pequeño",
+                "Yogur",
+                "Yogurt con granola"
+              ],
+              "components": [
+                {
+                  "kind": "fixed",
+                  "unitId": "yogurt-pequeno",
+                  "quantity": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "kind": "choice",
+          "label": "Sándwich sencillo o Waffle con arequipe y fresas",
+          "required": true,
+          "options": [
+            {
+              "id": "sandwich-sencillo",
+              "label": "Sándwich sencillo",
+              "matchAliases": [
+                "Sándwich sencillo",
+                "Sándwich de pan tajado artesano",
+                "Sándwich: Jamón y queso",
+                "Sandwich"
+              ],
+              "components": [
+                {
+                  "kind": "fixed",
+                  "unitId": "sandwich-sencillo",
+                  "quantity": 1
+                }
+              ]
+            },
+            {
+              "id": "waffle-con-arequipe-y-fresas",
+              "label": "Waffles con arequipe y fresas",
+              "matchAliases": [
+                "Waffles con arequipe y fresas",
+                "Waffle con arequipe y fresas",
+                "Waffle: Base de arequipe",
+                "Waffles",
+                "Waffle"
+              ],
+              "components": [
+                {
+                  "kind": "fixed",
+                  "unitId": "waffle-con-arequipe-y-fresas",
+                  "quantity": 1
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "productId": "canasta",
+      "components": [
+        {
+          "kind": "fixed",
+          "unitId": "ensalada-de-frutas-grande",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "mini-pastel-de-pollo",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "sobre-de-nutella-de-15-gr",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "muffin-en-caja",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "manzana-verde",
+          "quantity": 1
+        },
+        {
+          "kind": "choice",
+          "label": "Jugo de naranja semi natural grande, Yogurt grande o Hatsu té",
+          "required": true,
+          "options": [
+            {
+              "id": "jugo-de-naranja-semi-natural-grande",
+              "label": "Jugo de naranja semi natural grande",
+              "matchAliases": [
+                "Jugo de naranja semi natural grande",
+                "Jugo de naranja"
+              ],
+              "components": [
+                {
+                  "kind": "fixed",
+                  "unitId": "jugo-de-naranja-semi-natural-grande",
+                  "quantity": 1
+                }
+              ]
+            },
+            {
+              "id": "yogurt-grande",
+              "label": "Yogurt grande",
+              "matchAliases": [
+                "Yogurt grande",
+                "Yogur grande",
+                "Yogur",
+                "Yogurt con granola"
+              ],
+              "components": [
+                {
+                  "kind": "fixed",
+                  "unitId": "yogurt-grande",
+                  "quantity": 1
+                }
+              ]
+            },
+            {
+              "id": "hatsu-te",
+              "label": "Hatsu té",
+              "matchAliases": [
+                "Hatsu té"
+              ],
+              "components": [
+                {
+                  "kind": "fixed",
+                  "unitId": "hatsu-te",
+                  "quantity": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "kind": "choice",
+          "label": "Sándwich sencillo o Waffle con arequipe y fresas",
+          "required": true,
+          "options": [
+            {
+              "id": "sandwich-sencillo",
+              "label": "Sándwich sencillo",
+              "matchAliases": [
+                "Sándwich sencillo",
+                "Sándwich de pan tajado artesano",
+                "Sándwich: Jamón y queso",
+                "Sandwich"
+              ],
+              "components": [
+                {
+                  "kind": "fixed",
+                  "unitId": "sandwich-sencillo",
+                  "quantity": 1
+                }
+              ]
+            },
+            {
+              "id": "waffle-con-arequipe-y-fresas",
+              "label": "Waffles con arequipe y fresas",
+              "matchAliases": [
+                "Waffles con arequipe y fresas",
+                "Waffle con arequipe y fresas",
+                "Waffle: Base de arequipe",
+                "Waffles",
+                "Waffle"
+              ],
+              "components": [
+                {
+                  "kind": "fixed",
+                  "unitId": "waffle-con-arequipe-y-fresas",
+                  "quantity": 1
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "productId": "libro",
+      "components": [
+        {
+          "kind": "fixed",
+          "unitId": "jugo-de-naranja-semi-natural-pequeno",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "bowl-grande",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "mini-tabla-de-madera-con-quesos-jamon-y-chocolate-blanco",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "sandwich-en-croissant-para-libro",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "productId": "gold-basic",
+      "components": [
+        {
+          "kind": "fixed",
+          "unitId": "sandwich-sencillo",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "waffle-con-arequipe-y-fresas",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "ensalada-de-frutas-pequena",
+          "quantity": 2
+        },
+        {
+          "kind": "fixed",
+          "unitId": "mini-pastel-de-pollo",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "galleta-tosh-cremadas",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "sobre-de-nutella-de-15-gr",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "muffin-en-caja",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "jugo-de-naranja-semi-natural-pequeno",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "yogurt-pequeno",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "productId": "gold-pro",
+      "components": [
+        {
+          "kind": "fixed",
+          "unitId": "waffle-con-arequipe-y-fresas",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "sandwich-sencillo",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "ensalada-de-frutas-pequena",
+          "quantity": 2
+        },
+        {
+          "kind": "fixed",
+          "unitId": "mini-pastel-de-pollo",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "galleta-tosh-cremadas",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "sobre-de-nutella-de-15-gr",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "muffin-en-caja",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "jugo-de-naranja-semi-natural-pequeno",
+          "quantity": 1
+        },
+        {
+          "kind": "choice",
+          "label": "Frasco de chorizo español y queso mozzarella o Gomitas Trululu",
+          "required": true,
+          "options": [
+            {
+              "id": "frasco-de-chorizo-espanol-y-queso-mozzarella",
+              "label": "Frasco de chorizo español y queso mozzarella",
+              "matchAliases": [
+                "Frasco de chorizo español y queso mozzarella",
+                "Queso mozarella y chorizo español"
+              ],
+              "default": true,
+              "components": [
+                {
+                  "kind": "fixed",
+                  "unitId": "frasco-de-chorizo-espanol-y-queso-mozzarella",
+                  "quantity": 1
+                }
+              ]
+            },
+            {
+              "id": "gomitas-trululu",
+              "label": "Gomitas Trululu",
+              "matchAliases": [
+                "Gomitas Trululu",
+                "Gomitas Trululus"
+              ],
+              "components": [
+                {
+                  "kind": "fixed",
+                  "unitId": "gomitas-trululu",
+                  "quantity": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "kind": "fixed",
+          "unitId": "yogurt-pequeno",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "productId": "saludable",
+      "components": [
+        {
+          "kind": "fixed",
+          "unitId": "jugo-verde-grande",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "bowl-saludable",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "sandwich-saludable",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "arepa-asada-con-pechuga-asada-aguacate-y-parmesano",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "rosquillas-integrales-de-arroz",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "muffin-con-topper-bajo-en-azucar",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "frasco-con-frutos-secos",
+          "quantity": 1
+        },
+        {
+          "kind": "choice",
+          "label": "Jugo de naranja 100% natural 0% azúcar o Hatsu té",
+          "required": true,
+          "options": [
+            {
+              "id": "jugo-de-naranja-100-natural-0-azucar",
+              "label": "Jugo de naranja 100% natural 0% azúcar",
+              "matchAliases": [
+                "Jugo de naranja 100% natural 0% azúcar",
+                "Jugo de naranja"
+              ],
+              "components": [
+                {
+                  "kind": "fixed",
+                  "unitId": "jugo-de-naranja-100-natural",
+                  "quantity": 1
+                }
+              ]
+            },
+            {
+              "id": "hatsu-te",
+              "label": "Hatsu té",
+              "matchAliases": [
+                "Hatsu té",
+                "Dos Hatsu té"
+              ],
+              "components": [
+                {
+                  "kind": "fixed",
+                  "unitId": "hatsu-te",
+                  "quantity": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "kind": "fixed",
+          "unitId": "barra-de-cereal-tosh",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "productId": "bolso-fitness",
+      "components": [
+        {
+          "kind": "choice",
+          "label": "Jugo verde grande o Jugo de naranja 100% natural grande",
+          "required": true,
+          "options": [
+            {
+              "id": "jugo-verde-grande",
+              "label": "Jugo verde grande",
+              "matchAliases": [
+                "Jugo verde grande",
+                "Jugo verde"
+              ],
+              "components": [
+                {
+                  "kind": "fixed",
+                  "unitId": "jugo-verde-grande",
+                  "quantity": 1
+                }
+              ]
+            },
+            {
+              "id": "jugo-de-naranja-natural-grande",
+              "label": "Jugo de naranja 100% natural grande",
+              "matchAliases": [
+                "Jugo de naranja 100% natural grande",
+                "Jugo de naranja 100% natural 0% azúcar"
+              ],
+              "components": [
+                {
+                  "kind": "fixed",
+                  "unitId": "jugo-de-naranja-100-natural",
+                  "quantity": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "kind": "fixed",
+          "unitId": "mini-pancakes-para-fitness",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "wrapp-de-pollo",
+          "quantity": 2
+        },
+        {
+          "kind": "fixed",
+          "unitId": "parfait",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "galletas-de-avena-sin-azucar",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "productId": "brunch-chill",
+      "components": [
+        {
+          "kind": "fixed",
+          "unitId": "sandwich-en-croissant-para-brunch-chill",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "jugo-de-naranja-semi-natural-pequeno",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "bowl-pequeno-de-brunch",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "tablas-de-quesos-para-brunch",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "mini-pastel-de-pollo",
+          "quantity": 3
+        },
+        {
+          "kind": "fixed",
+          "unitId": "chocolatina-de-chocolate-blanco-con-pistachos",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "productId": "morning",
+      "components": [
+        {
+          "kind": "fixed",
+          "unitId": "sandwich-en-croissant-para-morning",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "bowl-pequeno-de-morning",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "waffle-suelto",
+          "quantity": 2
+        },
+        {
+          "kind": "fixed",
+          "unitId": "tablas-de-quesos-para-morning",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "galletas-con-chips-de-chocolate",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "fresa-entera",
+          "quantity": 3
+        },
+        {
+          "kind": "fixed",
+          "unitId": "un-durazno",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "uvas-moradas-o-verdes-segun-disponibilidad",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "lazo-en-la-bebida",
+          "quantity": 1
+        },
+        {
+          "kind": "choice",
+          "label": "Jugo de naranja semi natural grande o Café Mocca",
+          "required": true,
+          "options": [
+            {
+              "id": "jugo-de-naranja-semi-natural-grande",
+              "label": "Jugo de naranja semi natural grande",
+              "matchAliases": [
+                "Jugo de naranja semi natural grande",
+                "Jugo de naranja"
+              ],
+              "components": [
+                {
+                  "kind": "fixed",
+                  "unitId": "jugo-de-naranja-semi-natural-grande",
+                  "quantity": 1
+                }
+              ]
+            },
+            {
+              "id": "cafe-mocca",
+              "label": "Café Mocca",
+              "matchAliases": [
+                "Café Mocca",
+                "Café MOCA"
+              ],
+              "default": true,
+              "components": [
+                {
+                  "kind": "fixed",
+                  "unitId": "cafe-mocca",
+                  "quantity": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "kind": "fixed",
+          "unitId": "mini-pastel-de-pollo",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "productId": "cofre-mujer",
+      "components": [
+        {
+          "kind": "fixed",
+          "unitId": "kumis-pequeno",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "sandwich-sencillo",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "un-pincho-de-queso-mozzarella-y-chorizo-espanol",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "ensalada-de-frutas-grande",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "granola-artesanal",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "caja-de-chocolatinas-artesanales",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "galleta-tosh-cremadas",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "sobre-de-nutella-de-15-gr",
+          "quantity": 1
+        },
+        {
+          "kind": "choice",
+          "label": "Jugo de naranja semi natural grande o Hatsu té",
+          "required": true,
+          "options": [
+            {
+              "id": "jugo-de-naranja-semi-natural-grande",
+              "label": "Jugo de naranja semi natural grande",
+              "matchAliases": [
+                "Jugo de naranja semi natural grande",
+                "Jugo de naranja"
+              ],
+              "components": [
+                {
+                  "kind": "fixed",
+                  "unitId": "jugo-de-naranja-semi-natural-grande",
+                  "quantity": 1
+                }
+              ]
+            },
+            {
+              "id": "hatsu-te",
+              "label": "Hatsu té",
+              "matchAliases": [
+                "Hatsu té"
+              ],
+              "components": [
+                {
+                  "kind": "fixed",
+                  "unitId": "hatsu-te",
+                  "quantity": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "kind": "choice",
+          "label": "Quesadillas de nutella con fresas y banano o Waffles con nutella, fresas",
+          "required": true,
+          "options": [
+            {
+              "id": "quesadillas-de-nutella-con-fresas-y-banano",
+              "label": "Quesadillas de nutella con fresas y banano",
+              "matchAliases": [
+                "Quesadillas de nutella con fresas y banano",
+                "Quesadillas"
+              ],
+              "components": [
+                {
+                  "kind": "fixed",
+                  "unitId": "quesadillas-de-nutella-con-fresas-y-banano",
+                  "quantity": 1
+                }
+              ]
+            },
+            {
+              "id": "waffles-con-nutella-fresas",
+              "label": "Waffles con nutella, fresas",
+              "matchAliases": [
+                "Waffles con nutella, fresas",
+                "Waffle: Base de nutella",
+                "Waffles",
+                "Waffle"
+              ],
+              "components": [
+                {
+                  "kind": "fixed",
+                  "unitId": "waffles-con-nutella-fresas",
+                  "quantity": 1
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "productId": "cofre-hombre",
+      "components": [
+        {
+          "kind": "fixed",
+          "unitId": "kumis-grande",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "sandwich-sencillo",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "un-pincho-de-queso-mozzarella-y-chorizo-espanol",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "ensalada-de-frutas-grande",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "granola-artesanal",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "caja-de-chocolatinas-artesanales",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "galleta-tosh-cremadas",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "sobre-de-nutella-de-15-gr",
+          "quantity": 1
+        },
+        {
+          "kind": "choice",
+          "label": "Jugo de naranja semi natural grande o Hatsu té",
+          "required": true,
+          "options": [
+            {
+              "id": "jugo-de-naranja-semi-natural-grande",
+              "label": "Jugo de naranja semi natural grande",
+              "matchAliases": [
+                "Jugo de naranja semi natural grande",
+                "Jugo de naranja"
+              ],
+              "components": [
+                {
+                  "kind": "fixed",
+                  "unitId": "jugo-de-naranja-semi-natural-grande",
+                  "quantity": 1
+                }
+              ]
+            },
+            {
+              "id": "hatsu-te",
+              "label": "Hatsu té",
+              "matchAliases": [
+                "Hatsu té"
+              ],
+              "components": [
+                {
+                  "kind": "fixed",
+                  "unitId": "hatsu-te",
+                  "quantity": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "kind": "choice",
+          "label": "Quesadillas de nutella con fresas y banano o Waffles con nutella, fresas",
+          "required": true,
+          "options": [
+            {
+              "id": "quesadillas-de-nutella-con-fresas-y-banano",
+              "label": "Quesadillas de nutella con fresas y banano",
+              "matchAliases": [
+                "Quesadillas de nutella con fresas y banano",
+                "Quesadillas"
+              ],
+              "components": [
+                {
+                  "kind": "fixed",
+                  "unitId": "quesadillas-de-nutella-con-fresas-y-banano",
+                  "quantity": 1
+                }
+              ]
+            },
+            {
+              "id": "waffles-con-nutella-fresas",
+              "label": "Waffles con nutella, fresas",
+              "matchAliases": [
+                "Waffles con nutella, fresas",
+                "Waffle: Base de nutella",
+                "Waffles",
+                "Waffle"
+              ],
+              "components": [
+                {
+                  "kind": "fixed",
+                  "unitId": "waffles-con-nutella-fresas",
+                  "quantity": 1
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "productId": "bolso",
+      "components": [
+        {
+          "kind": "fixed",
+          "unitId": "sandwich-en-croissant-para-bolso",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "jugo-de-naranja-semi-natural-grande",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "parfait",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "productId": "glow",
+      "components": [
+        {
+          "kind": "fixed",
+          "unitId": "sandwich-en-croissant-para-glow",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "bowl-pequeno-de-glow",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "mini-pancakes-con-fresas-y-nutella",
+          "quantity": 1
+        },
+        {
+          "kind": "choice",
+          "label": "Jugo verde refrescante o Jugo de naranja semi natural pequeño",
+          "required": true,
+          "options": [
+            {
+              "id": "jugo-verde-refrescante",
+              "label": "Jugo verde refrescante",
+              "matchAliases": [
+                "Jugo verde refrescante"
+              ],
+              "default": true,
+              "components": [
+                {
+                  "kind": "fixed",
+                  "unitId": "jugo-verde",
+                  "quantity": 1
+                }
+              ]
+            },
+            {
+              "id": "jugo-de-naranja-semi-natural-pequeno",
+              "label": "Jugo de naranja semi natural pequeño",
+              "matchAliases": [
+                "Jugo de naranja semi natural pequeño",
+                "Jugo de Naranja"
+              ],
+              "components": [
+                {
+                  "kind": "fixed",
+                  "unitId": "jugo-de-naranja-semi-natural-pequeno",
+                  "quantity": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "kind": "fixed",
+          "unitId": "mini-pastel-de-pollo",
+          "quantity": 3
+        }
+      ]
+    },
+    {
+      "productId": "parejas",
+      "components": [
+        {
+          "kind": "fixed",
+          "unitId": "sandwich-sencillo",
+          "quantity": 2
+        },
+        {
+          "kind": "fixed",
+          "unitId": "waffles-con-arequipe-y-fresas-porcion-grande",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "yogurt-pequeno",
+          "quantity": 2
+        },
+        {
+          "kind": "fixed",
+          "unitId": "ensalada-de-frutas-grande",
+          "quantity": 2
+        },
+        {
+          "kind": "fixed",
+          "unitId": "granola-artesanal",
+          "quantity": 2
+        },
+        {
+          "kind": "fixed",
+          "unitId": "mini-pastel-de-pollo",
+          "quantity": 2
+        },
+        {
+          "kind": "fixed",
+          "unitId": "muffin-de-torta-de-zanahoria",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "sobre-de-nutella-de-15-gr",
+          "quantity": 2
+        },
+        {
+          "kind": "fixed",
+          "unitId": "galleta-tosh-cremadas",
+          "quantity": 2
+        },
+        {
+          "kind": "choice",
+          "label": "Dos jugos de naranja o Dos Hatsu té",
+          "required": true,
+          "options": [
+            {
+              "id": "dos-jugos-de-naranja",
+              "label": "Dos jugos de naranja",
+              "matchAliases": [
+                "Dos jugos de naranja",
+                "2 Jugos de naranja",
+                "Jugo de Naranja"
+              ],
+              "components": [
+                {
+                  "kind": "fixed",
+                  "unitId": "jugo-de-naranja-semi-natural-pequeno",
+                  "quantity": 2
+                }
+              ]
+            },
+            {
+              "id": "dos-hatsu-te",
+              "label": "Dos Hatsu té",
+              "matchAliases": [
+                "Dos Hatsu té",
+                "Hatsu té",
+                "2 hatsu té"
+              ],
+              "default": true,
+              "components": [
+                {
+                  "kind": "fixed",
+                  "unitId": "hatsu-te",
+                  "quantity": 2
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "kind": "fixed",
+          "unitId": "parfait",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "productId": "luxury",
+      "components": [
+        {
+          "kind": "fixed",
+          "unitId": "parfait",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "ensalada-de-frutas-pequena",
+          "quantity": 2
+        },
+        {
+          "kind": "fixed",
+          "unitId": "sandwich-sencillo",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "waffles-con-arequipe-y-fresas-porcion-grande",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "jugo-de-naranja-semi-natural-grande",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "smoothie-de-frutos-rojos",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "mini-torta-personal",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "mini-pastel-de-pollo",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "quesos-casita",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "cafe-con-insta-cream-y-splenda",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "sobre-de-nutella-de-15-gr",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "productId": "cristal",
+      "components": [
+        {
+          "kind": "fixed",
+          "unitId": "jugo-de-naranja-semi-natural-grande",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "bowl-en-copa-de-cristal",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "sandwich-en-croissant-para-cristal",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "bombones-de-chocolate",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "vino-jp-chenet-ice-en-lata",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "tablas-de-quesos-barquito",
+          "quantity": 1
+        },
+        {
+          "kind": "choice",
+          "label": "Zona dulce o Zona de sal",
+          "required": true,
+          "options": [
+            {
+              "id": "cristal-zone-dulce",
+              "label": "Zona dulce del domo de cristal",
+              "matchAliases": [
+                "Zona dulce del domo de cristal",
+                "Cristal zone dulce",
+                "Zona dulce"
+              ],
+              "components": [
+                {
+                  "kind": "fixed",
+                  "unitId": "cristal-zone-dulce",
+                  "quantity": 1
+                }
+              ]
+            },
+            {
+              "id": "cristal-zone-salado",
+              "label": "Zona salada del domo de cristal",
+              "matchAliases": [
+                "Zona salada del domo de cristal",
+                "Cristal zone salado",
+                "Zona de sal"
+              ],
+              "components": [
+                {
+                  "kind": "fixed",
+                  "unitId": "cristal-zone-salado",
+                  "quantity": 1
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "productId": "picnic",
+      "components": [
+        {
+          "kind": "fixed",
+          "unitId": "tablas-de-quesos-para-picnic",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "copa-de-cristal-de-vino",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "botella-de-vino-gato-negro-750ml-casillero-del-diablo-350ml-reservado-750ml-o-frontera-750ml",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "porcion-de-uvas",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "porcion-de-fresas",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "sobre-de-nutella-de-15-gr",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "bolsita-con-mani-salado",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "productId": "maleta-basic",
+      "components": [
+        {
+          "kind": "fixed",
+          "unitId": "ensalada-de-frutas-pequena",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "paquete-de-papas-monterojo",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "huevo-kinder",
+          "quantity": 1
+        },
+        {
+          "kind": "choice",
+          "label": "Jugo de naranja semi natural grande o Yogur con granola",
+          "required": true,
+          "options": [
+            {
+              "id": "jugo-de-naranja-semi-natural-pequeno",
+              "label": "Jugo de naranja semi natural grande",
+              "matchAliases": [
+                "Jugo de naranja semi natural pequeño",
+                "Jugo de naranja"
+              ],
+              "components": [
+                {
+                  "kind": "fixed",
+                  "unitId": "jugo-de-naranja-semi-natural-grande",
+                  "quantity": 1
+                }
+              ]
+            },
+            {
+              "id": "yogur-con-granola",
+              "label": "Yogurt con granola",
+              "matchAliases": [
+                "Yogur con granola",
+                "Yogurt con granola"
+              ],
+              "components": [
+                {
+                  "kind": "fixed",
+                  "unitId": "yogurt-grande",
+                  "quantity": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "kind": "choice",
+          "label": "Sándwich sencillo o Waffles con arequipe y fresas",
+          "required": true,
+          "options": [
+            {
+              "id": "sandwich-sencillo",
+              "label": "Sándwich sencillo",
+              "matchAliases": [
+                "Sándwich sencillo",
+                "Sándwich de pan tajado artesano",
+                "Sándwich: Jamón y queso",
+                "Sandwich"
+              ],
+              "components": [
+                {
+                  "kind": "fixed",
+                  "unitId": "sandwich-sencillo",
+                  "quantity": 1
+                }
+              ]
+            },
+            {
+              "id": "waffle-con-arequipe-y-fresas",
+              "label": "Waffles con arequipe y fresas",
+              "matchAliases": [
+                "Waffles con arequipe y fresas",
+                "Waffle con arequipe y fresas",
+                "Waffle pequeño de arequipe",
+                "Waffle: Base de arequipe",
+                "Waffles",
+                "Waffle"
+              ],
+              "components": [
+                {
+                  "kind": "fixed",
+                  "unitId": "waffle-con-arequipe-y-fresas",
+                  "quantity": 1
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "productId": "maleta-pro",
+      "components": [
+        {
+          "kind": "fixed",
+          "unitId": "jugo-de-naranja-semi-natural-grande",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "sandwich-en-croissant-para-maleta-pro",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "pancakes-para-maleta-pro",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "bowl-para-maleta-pro",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "huevo-kinder",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "dona-pequena",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "productId": "3-mini-deditos-de-queso",
+      "components": [
+        {
+          "kind": "fixed",
+          "unitId": "deditos-de-queso",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "productId": "3-mini-empanaditas-de-carne",
+      "components": [
+        {
+          "kind": "fixed",
+          "unitId": "empanaditas",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "productId": "bombones",
+      "components": [
+        {
+          "kind": "fixed",
+          "unitId": "bombones-de-chocolate",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "productId": "botella-de-vino-tinto-750ml",
+      "components": [
+        {
+          "kind": "fixed",
+          "unitId": "botella-de-vino-gato-negro-750ml-casillero-del-diablo-350ml-reservado-750ml-o-frontera-750ml",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "productId": "cerveza-coronita-200ml",
+      "components": [
+        {
+          "kind": "fixed",
+          "unitId": "cerveza-coronita",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "productId": "cerveza-coronita-extra",
+      "components": [
+        {
+          "kind": "fixed",
+          "unitId": "cerveza-coronita",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "productId": "mini-torta-personal-con-topper",
+      "components": [
+        {
+          "kind": "fixed",
+          "unitId": "mini-torta-personal",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "productId": "parfait",
+      "components": [
+        {
+          "kind": "fixed",
+          "unitId": "parfait",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "productId": "smoothie-de-frutos-rojos-300ml",
+      "components": [
+        {
+          "kind": "fixed",
+          "unitId": "smoothie-de-frutos-rojos",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "productId": "mini-tabla-de-jamones-y-quesos",
+      "components": [
+        {
+          "kind": "fixed",
+          "unitId": "tablas-de-quesos-para-picnic",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "productId": "classic",
+      "components": [
+        {
+          "kind": "fixed",
+          "unitId": "jugo-de-lata",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "parfait-classic",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "sandwich-classic",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "productId": "mini-box",
+      "components": [
+        {
+          "kind": "choice",
+          "label": "Jugo de naranja o Hatsu té",
+          "required": true,
+          "options": [
+            {
+              "id": "jugo-de-naranja-semi-natural-pequeno",
+              "label": "Jugo de naranja semi natural pequeño",
+              "matchAliases": [
+                "Jugo de naranja semi natural pequeño",
+                "Jugo de naranja"
+              ],
+              "components": [
+                {
+                  "kind": "fixed",
+                  "unitId": "jugo-de-naranja-semi-natural-pequeno",
+                  "quantity": 1
+                }
+              ]
+            },
+            {
+              "id": "hatsu-te",
+              "label": "Hatsu té",
+              "matchAliases": [
+                "Hatsu té"
+              ],
+              "components": [
+                {
+                  "kind": "fixed",
+                  "unitId": "hatsu-te",
+                  "quantity": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "kind": "fixed",
+          "unitId": "sandwich-mini-box",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "parfait",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "productId": "game-box",
+      "components": [
+        {
+          "kind": "fixed",
+          "unitId": "jugo-de-naranja-semi-natural-grande",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "sandwich-nino",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "ensalada-de-frutas-pequena",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "dona-pequena",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "sobre-de-nutella-de-15-gr",
+          "quantity": 2
+        }
+      ]
+    },
+    {
+      "productId": "level-up",
+      "components": [
+        {
+          "kind": "fixed",
+          "unitId": "jugo-de-naranja-semi-natural-grande",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "sandwich-nino",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "mini-pancakes-con-fresas-y-nutella",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "ensalada-de-frutas-pequena",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "dona-pequena",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "sobre-de-nutella-de-15-gr",
+          "quantity": 2
+        }
+      ]
+    },
+    {
+      "productId": "brunch-mujer",
+      "components": [
+        {
+          "kind": "fixed",
+          "unitId": "jugo-de-naranja-semi-natural-pequeno",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "bowl-mujer",
+          "quantity": 1
+        },
+        {
+          "kind": "fixed",
+          "unitId": "sandwich-brunch-mujer",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "productId": "arepitas-salchicha-y-queso",
+      "components": [
+        {
+          "kind": "fixed",
+          "unitId": "arepas-rancheras",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "productId": "jp-chenete-200ml",
+      "components": [
+        {
+          "kind": "fixed",
+          "unitId": "vino-jp-chenet-ice-en-lata",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "productId": "jugo-verde-300ml",
+      "components": [
+        {
+          "kind": "fixed",
+          "unitId": "jugo-verde-grande",
+          "quantity": 1
+        }
+      ]
+    }
+  ],
+  "containers": [
+    {
+      "id": "bolso-de-yute-artesanal-con-lazo-ancho-de-tela-y-etiqueta",
+      "name": "Bolso de yute artesanal con lazo ancho de tela y etiqueta",
+      "aliases": [
+        "Bolso de yute artesanal con lazo ancho de tela y etiqueta"
+      ],
+      "active": true
+    },
+    {
+      "id": "bolso-de-yute-plastificado-blanco-con-panoleta-de-seda",
+      "name": "Bolso de yute plastificado blanco con pañoleta de seda",
+      "aliases": [
+        "Bolso de yute plastificado blanco con pañoleta de seda"
+      ],
+      "active": true
+    },
+    {
+      "id": "caja-de-carton-blanco-redonda-y-bajita-con-lazo-de-tela-tapa-transparente",
+      "name": "Caja de cartón blanco, redonda y bajita, con lazo de tela, tapa transparente",
+      "aliases": [
+        "Caja de cartón blanco, redonda y bajita, con lazo de tela, tapa transparente"
+      ],
+      "active": true
+    },
+    {
+      "id": "caja-de-carton-color-beige-con-centro-azul-para-hombre-levemente-alargada",
+      "name": "Caja de cartón color beige con centro azul, para hombre, levemente alargada",
+      "aliases": [
+        "Caja de cartón color beige con centro azul, para hombre, levemente alargada"
+      ],
+      "active": true
+    },
+    {
+      "id": "caja-de-carton-con-diseno-de-flores",
+      "name": "Caja de cartón con diseño de flores",
+      "aliases": [
+        "Caja de cartón con diseño de flores"
+      ],
+      "active": true
+    },
+    {
+      "id": "caja-de-carton-estilo-baul",
+      "name": "Caja de cartón estilo baúl",
+      "aliases": [
+        "Caja de cartón estilo baúl"
+      ],
+      "active": true
+    },
+    {
+      "id": "caja-de-carton-tipo-maleta-con-diseno-de-animales",
+      "name": "Caja de cartón tipo maleta con diseño de animales",
+      "aliases": [
+        "Caja de cartón tipo maleta con diseño de animales"
+      ],
+      "active": true
+    },
+    {
+      "id": "caja-en-forma-de-libro-con-un-diseno-unico-perfecto-para-hombre-o-para-mujer",
+      "name": "Caja en forma de libro, con un diseño único perfecto para hombre o para mujer",
+      "aliases": [
+        "Caja en forma de libro, con un diseño único perfecto para hombre o para mujer"
+      ],
+      "active": true
+    },
+    {
+      "id": "caja-redonda-con-cinta-de-tela",
+      "name": "Caja redonda con cinta de tela",
+      "aliases": [
+        "Caja redonda con cinta de tela"
+      ],
+      "active": true
+    },
+    {
+      "id": "caja-tematica-para-brunch-chill",
+      "name": "Caja temática para Brunch Chill",
+      "aliases": [
+        "Caja temática para Brunch Chill"
+      ],
+      "active": true
+    },
+    {
+      "id": "canasta-de-madera-blanca-con-interior-con-escaleras",
+      "name": "Canasta de madera blanca con interior con escaleras",
+      "aliases": [
+        "Canasta de madera blanca con interior con escaleras"
+      ],
+      "active": true
+    },
+    {
+      "id": "canasta-de-madera-grande-sin-patas",
+      "name": "Canasta de madera grande sin patas",
+      "aliases": [
+        "Canasta de madera grande sin patas"
+      ],
+      "active": true
+    },
+    {
+      "id": "canasta-de-madera-pequena-sin-patas",
+      "name": "Canasta de madera pequeña sin patas",
+      "aliases": [
+        "Canasta de madera pequeña sin patas"
+      ],
+      "active": true
+    },
+    {
+      "id": "cofre-de-cristal-acrilico-sin-patas",
+      "name": "Cofre de cristal acrílico sin patas",
+      "aliases": [
+        "Cofre de cristal acrílico sin patas"
+      ],
+      "active": true
+    },
+    {
+      "id": "cofre-de-madera-color-negro-para-hombre-con-lazo-dorado",
+      "name": "Cofre de madera color negro para hombre con lazo dorado",
+      "aliases": [
+        "Cofre de madera color negro para hombre con lazo dorado"
+      ],
+      "active": true
+    },
+    {
+      "id": "cofre-de-madera-color-pasteles-rosa-para-mujer-con-lazo-de-tela",
+      "name": "Cofre de madera color pasteles (rosa) para mujer con lazo de tela",
+      "aliases": [
+        "Cofre de madera color pasteles (rosa) para mujer con lazo de tela"
+      ],
+      "active": true
+    },
+    {
+      "id": "mesa-blanca-de-madera-alta-con-patas",
+      "name": "Mesa blanca de madera alta, con patas",
+      "aliases": [
+        "Mesa blanca de madera alta, con patas"
+      ],
+      "active": true
+    },
+    {
+      "id": "mesa-blanca-de-madera-alta-con-patas-y-separador-de-bebidas",
+      "name": "Mesa blanca de madera alta, con patas y separador de bebidas",
+      "aliases": [
+        "Mesa blanca de madera alta, con patas y separador de bebidas"
+      ],
+      "active": true
+    },
+    {
+      "id": "mesa-de-madera-natural-con-patas",
+      "name": "Mesa de madera natural con patas",
+      "aliases": [
+        "Mesa de madera natural con patas"
+      ],
+      "active": true
+    }
+  ],
+  "labelParsing": {
+    "quantityPatterns": [
+      "^(?<name>.+?)\\s+X\\s+(?<quantity>\\d+)(?:\\s*[:,]\\s*(?<options>.*))?$"
+    ],
+    "productSeparators": [
+      "|"
+    ],
+    "optionSeparators": [
+      ",",
+      "|"
+    ],
+    "noisePatterns": [
+      "^DOMICILIO EXCLUSIVO",
+      "^Observaciones:",
+      "^es oficina",
+      "^es un local"
+    ]
+  }
+}

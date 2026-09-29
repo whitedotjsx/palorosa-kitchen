@@ -1,0 +1,24 @@
+{
+	"name": "@palorosa-kitchen/catalog-editor",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
+	"description": "Local review and CRUD web app for the catalog seed. Dev only.",
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build",
+		"preview": "vite preview",
+		"check": "svelte-check --tsconfig ./tsconfig.json"
+	},
+	"devDependencies": {
+		"@sveltejs/vite-plugin-svelte": "^6.2.4",
+		"@types/node": "^26.6.3",
+		"svelte": "^5.49.2",
+		"svelte-check": "^4.3.6",
+		"typescript": "^5.9.3",
+		"vite": "^7.3.1"
+	},
+	"dependencies": {
+		"@palorosa-kitchen/core": "workspace:*"
+	}
+}

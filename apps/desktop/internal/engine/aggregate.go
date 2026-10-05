@@ -12,15 +12,26 @@ var UnitCategoryOrder = []string{"drink", "main", "side", "dessert", "fruit", "c
 
 var spanishCollator = collate.New(language.Spanish)
 
+// KitchenUnitSource is one order line that contributes to a unit, so the panel
+// can show where each counted unit comes from (its breakfast or add-on).
+type KitchenUnitSource struct {
+	OrderNumber string `json:"orderNumber,omitempty"`
+	ProductText string `json:"productText"`
+	// Source is "breakfast" or "add_on".
+	Source   string `json:"source,omitempty"`
+	Quantity int    `json:"quantity"`
+}
+
 // KitchenListEntry is one aggregated unit row.
 type KitchenListEntry struct {
-	UnitID     string   `json:"unitId"`
-	Name       string   `json:"name"`
-	Measure    string   `json:"measure"`
-	Category   string   `json:"category"`
-	Note       string   `json:"note,omitempty"`
-	Quantity   int      `json:"quantity"`
-	References []string `json:"references"`
+	UnitID     string              `json:"unitId"`
+	Name       string              `json:"name"`
+	Measure    string              `json:"measure"`
+	Category   string              `json:"category"`
+	Note       string              `json:"note,omitempty"`
+	Quantity   int                 `json:"quantity"`
+	References []string            `json:"references"`
+	Sources    []KitchenUnitSource `json:"sources,omitempty"`
 }
 
 // UnresolvedEntry is an aggregated unresolved row.
@@ -132,7 +143,12 @@ func AggregateUnits(resolved []ResolvedLine, index *Index) KitchenList {
 				addIgnored(ignoredUnits, unit.ID, unit.Name, reason, contribution.Quantity, reference)
 				continue
 			}
-			addEntry(entries, unit, contribution.Quantity, reference)
+			addEntry(entries, unit, contribution.Quantity, reference, KitchenUnitSource{
+				OrderNumber: line.Line.OrderNumber,
+				ProductText: line.Line.ProductText,
+				Source:      line.Line.Source,
+				Quantity:    contribution.Quantity,
+			})
 		}
 	}
 
@@ -160,6 +176,18 @@ func AggregateUnits(resolved []ResolvedLine, index *Index) KitchenList {
 	}
 
 	sort.SliceStable(list.Entries, func(i, j int) bool { return byCategoryThenName(list.Entries[i], list.Entries[j]) })
+	for index := range list.Entries {
+		sources := list.Entries[index].Sources
+		sort.SliceStable(sources, func(i, j int) bool {
+			if sources[i].Quantity != sources[j].Quantity {
+				return sources[i].Quantity > sources[j].Quantity
+			}
+			if sources[i].ProductText != sources[j].ProductText {
+				return spanishCollator.CompareString(sources[i].ProductText, sources[j].ProductText) < 0
+			}
+			return sources[i].OrderNumber < sources[j].OrderNumber
+		})
+	}
 	sort.SliceStable(list.Unresolved, func(i, j int) bool {
 		a, b := list.Unresolved[i], list.Unresolved[j]
 		if a.Reason != b.Reason {
@@ -192,10 +220,11 @@ func rank(category string) int {
 	return len(UnitCategoryOrder)
 }
 
-func addEntry(entries map[string]*KitchenListEntry, unit *KitchenUnit, quantity int, reference string) {
+func addEntry(entries map[string]*KitchenListEntry, unit *KitchenUnit, quantity int, reference string, source KitchenUnitSource) {
 	if existing, ok := entries[unit.ID]; ok {
 		existing.Quantity += quantity
 		existing.References = pushReference(existing.References, reference)
+		addSource(existing, source)
 		return
 	}
 	entry := &KitchenListEntry{
@@ -207,7 +236,24 @@ func addEntry(entries map[string]*KitchenListEntry, unit *KitchenUnit, quantity 
 		Quantity: quantity,
 	}
 	entry.References = pushReference(nil, reference)
+	addSource(entry, source)
 	entries[unit.ID] = entry
+}
+
+// addSource merges a line contribution into the entry's provenance, so the
+// same breakfast of the same order is one row and different orders stay apart.
+func addSource(entry *KitchenListEntry, source KitchenUnitSource) {
+	if source.ProductText == "" {
+		return
+	}
+	for index := range entry.Sources {
+		existing := &entry.Sources[index]
+		if existing.OrderNumber == source.OrderNumber && existing.ProductText == source.ProductText && existing.Source == source.Source {
+			existing.Quantity += source.Quantity
+			return
+		}
+	}
+	entry.Sources = append(entry.Sources, source)
 }
 
 func addIgnored(entries map[string]*IgnoredEntry, id, name, reason string, quantity int, reference string) {

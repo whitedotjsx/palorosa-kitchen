@@ -55,8 +55,12 @@ type Order struct {
 	Status string `json:"status"`
 	// Note is the customer's observation on the order, empty when none.
 	Note string `json:"note,omitempty"`
-	// Facets are the order's variant values (breakfast, add-ons, colors and
-	// other options) the panel uses for its attach filters.
+	// Color is the chosen balloon color, empty when the order has none.
+	Color string `json:"color,omitempty"`
+	// Reason is the order's occasion (motivo), empty when none.
+	Reason string `json:"reason,omitempty"`
+	// Facets are the order's variant values (breakfast, add-ons, colors,
+	// reasons and other options) the panel uses for its attach filters.
 	Facets []Facet `json:"facets,omitempty"`
 }
 
@@ -75,6 +79,8 @@ type OrderDetail struct {
 	Number  string      `json:"number"`
 	Status  string      `json:"status"`
 	Note    string      `json:"note,omitempty"`
+	Color   string      `json:"color,omitempty"`
+	Reason  string      `json:"reason,omitempty"`
 	Units   int         `json:"units"`
 	Lines   []OrderLine `json:"lines"`
 	Entries []Entry     `json:"entries"`
@@ -82,9 +88,9 @@ type OrderDetail struct {
 
 // OrderLine is one product line of an order.
 type OrderLine struct {
-	ProductText string     `json:"productText"`
-	Quantity    int        `json:"quantity"`
-	Options     []string   `json:"options"`
+	ProductText string   `json:"productText"`
+	Quantity    int      `json:"quantity"`
+	Options     []string `json:"options"`
 	// Source is "breakfast" or "add_on".
 	Source string `json:"source"`
 	// Status is "resolved", "unresolved" or "ignored".
@@ -123,11 +129,23 @@ type Unresolved struct {
 
 // Entry is one prepared unit in the list.
 type Entry struct {
-	UnitID   string `json:"unitId"`
-	Name     string `json:"name"`
-	Measure  string `json:"measure"`
-	Category string `json:"category"`
-	Note     string `json:"note"`
+	UnitID     string        `json:"unitId"`
+	Name       string        `json:"name"`
+	Measure    string        `json:"measure"`
+	Category   string        `json:"category"`
+	Note       string        `json:"note"`
+	Quantity   int           `json:"quantity"`
+	References []string      `json:"references,omitempty"`
+	Sources    []EntrySource `json:"sources,omitempty"`
+}
+
+// EntrySource is one order line that contributes to a prepared unit, so the
+// panel can show where the counted units come from.
+type EntrySource struct {
+	OrderNumber string `json:"orderNumber,omitempty"`
+	ProductText string `json:"productText"`
+	// Source is "breakfast" or "add_on".
+	Source   string `json:"source,omitempty"`
 	Quantity int    `json:"quantity"`
 }
 

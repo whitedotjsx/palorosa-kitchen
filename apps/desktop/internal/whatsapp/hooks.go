@@ -147,6 +147,8 @@ func (c *Client) handleHookOrder(w http.ResponseWriter, r *http.Request) {
 		Lines        []engine.ParsedOrderLine `json:"lines"`
 		Note         string                   `json:"note"`
 		Observacion  string                   `json:"observacion"`
+		Color        string                   `json:"color"`
+		Motivo       string                   `json:"motivo"`
 	}
 	if err := decodeJSON(r, &payload); err != nil {
 		writeJSON(w, http.StatusBadRequest, map[string]any{"ok": false, "error": "Invalid JSON body"})
@@ -161,7 +163,11 @@ func (c *Client) handleHookOrder(w http.ResponseWriter, r *http.Request) {
 	if note == "" {
 		note = payload.Observacion
 	}
-	result := c.applyOrder(payload.DeliveryDate, number, payload.Lines, fmt.Sprintf("%s #%s", labels.Bot.NewOrder, number), note, eventNew)
+	annotation := engine.OrderAnnotation{
+		Color:  engine.AnnotationLabel(payload.Color),
+		Reason: engine.AnnotationLabel(payload.Motivo),
+	}
+	result := c.applyOrder(payload.DeliveryDate, number, payload.Lines, fmt.Sprintf("%s #%s", labels.Bot.NewOrder, number), note, annotation, eventNew)
 	writeJSON(w, http.StatusOK, result)
 }
 
@@ -179,6 +185,8 @@ func (c *Client) handleHookOrders(w http.ResponseWriter, r *http.Request) {
 		Orders       []struct {
 			OrderNumber any                      `json:"orderNumber"`
 			Lines       []engine.ParsedOrderLine `json:"lines"`
+			Color       string                   `json:"color"`
+			Motivo      string                   `json:"motivo"`
 		} `json:"orders"`
 	}
 	if err := decodeJSON(r, &payload); err != nil {
@@ -190,6 +198,7 @@ func (c *Client) handleHookOrders(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	orders := map[string][]engine.ParsedOrderLine{}
+	annotations := map[string]engine.OrderAnnotation{}
 	for index, order := range payload.Orders {
 		number := orderNumberString(order.OrderNumber)
 		if number == "" {
@@ -200,12 +209,19 @@ func (c *Client) handleHookOrders(w http.ResponseWriter, r *http.Request) {
 			lines = []engine.ParsedOrderLine{}
 		}
 		orders[number] = lines
+		annotation := engine.OrderAnnotation{
+			Color:  engine.AnnotationLabel(order.Color),
+			Reason: engine.AnnotationLabel(order.Motivo),
+		}
+		if annotation.Color != "" || annotation.Reason != "" {
+			annotations[number] = annotation
+		}
 	}
-	result := c.applyOrders(payload.DeliveryDate, orders, labels.Bot.UpdatedOrder, "", eventUpdate)
+	result := c.applyOrders(payload.DeliveryDate, orders, annotations, labels.Bot.UpdatedOrder, "", eventUpdate)
 	writeJSON(w, http.StatusOK, result)
 }
 
-func (c *Client) applyOrder(date, number string, lines []engine.ParsedOrderLine, title, note, kind string) map[string]any {
+func (c *Client) applyOrder(date, number string, lines []engine.ParsedOrderLine, title, note string, annotation engine.OrderAnnotation, kind string) map[string]any {
 	if c.kitchen.Index() == nil {
 		return map[string]any{"ok": false, "error": "Catalog not loaded"}
 	}
@@ -225,6 +241,14 @@ func (c *Client) applyOrder(date, number string, lines []engine.ParsedOrderLine,
 			c.kitchen.state.Observations[date] = map[string]string{}
 		}
 		c.kitchen.state.Observations[date][number] = note
+	}
+	if annotation.Color != "" || annotation.Reason != "" {
+		if c.kitchen.state.Annotations[date] == nil {
+			c.kitchen.state.Annotations[date] = map[string]engine.OrderAnnotation{}
+		}
+		c.kitchen.state.Annotations[date][number] = annotation
+	} else {
+		delete(c.kitchen.state.Annotations[date], number)
 	}
 	next := c.listFromStateLocked(date)
 	if next != nil {
@@ -307,6 +331,7 @@ func (c *Client) applyRemoval(date, number, title string) map[string]any {
 	if observations, ok := c.kitchen.state.Observations[date]; ok {
 		delete(observations, number)
 	}
+	delete(c.kitchen.state.Annotations[date], number)
 	delete(c.kitchen.state.Notified[date], number)
 	if len(previousLines) > 0 {
 		addEventLocked(c.kitchen.state, "removed", strings.ReplaceAll(labels.Activity.Removed, "{n}", number))
@@ -419,13 +444,18 @@ func (c *Client) totalsFor(list *engine.KitchenList, names map[string]string) []
 	return out
 }
 
-func (c *Client) applyOrders(date string, orders map[string][]engine.ParsedOrderLine, title, note, kind string) map[string]any {
+func (c *Client) applyOrders(date string, orders map[string][]engine.ParsedOrderLine, annotations map[string]engine.OrderAnnotation, title, note, kind string) map[string]any {
 	if c.kitchen.Index() == nil {
 		return map[string]any{"ok": false, "error": "Catalog not loaded"}
 	}
 	c.kitchen.mu.Lock()
 	previous := c.previousListLocked(date)
 	c.kitchen.state.Orders[date] = orders
+	if len(annotations) > 0 {
+		c.kitchen.state.Annotations[date] = annotations
+	} else {
+		delete(c.kitchen.state.Annotations, date)
+	}
 	next := c.listFromStateLocked(date)
 	if next != nil {
 		c.kitchen.state.Lists[date] = *next

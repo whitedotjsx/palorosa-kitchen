@@ -13,6 +13,9 @@ type OrdersExport struct {
 	DeliveryDate string
 	Lines        []ParsedOrderLine
 	Skipped      []SkippedText
+	// Annotations holds the color and motivo of each order, keyed by order
+	// number. The wide export carries them as metadata columns.
+	Annotations map[string]OrderAnnotation
 }
 
 // DefaultWideExportMetadataColumns are the columns that are not food choices.
@@ -175,12 +178,19 @@ func ParseWideOrderRows(rows []map[string]any, options WideExportOptions) Orders
 		juiceFallbacks = []string{"Hatsu té", "Café Mocca"}
 	}
 
-	result := OrdersExport{Lines: []ParsedOrderLine{}, Skipped: []SkippedText{}}
+	result := OrdersExport{Lines: []ParsedOrderLine{}, Skipped: []SkippedText{}, Annotations: map[string]OrderAnnotation{}}
 	for _, record := range rows {
 		orderNumber := firstString(record["ID orden"], record["ID"], record["orderNumber"])
 		context := orderNumber
 		if result.DeliveryDate == "" {
 			result.DeliveryDate = ParseSpanishDeliveryDate(record["Fecha de Entrega"])
+		}
+		annotation := OrderAnnotation{
+			Color:  AnnotationLabel(stringOf(record["color"])),
+			Reason: AnnotationLabel(stringOf(record["motivo"])),
+		}
+		if orderNumber != "" && (annotation.Color != "" || annotation.Reason != "") {
+			result.Annotations[orderNumber] = annotation
 		}
 
 		var optionTexts []string

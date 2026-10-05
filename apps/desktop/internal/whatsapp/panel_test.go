@@ -14,7 +14,7 @@ func TestOrderFacetsGroupsVariants(t *testing.T) {
 		{ProductText: "Box Mujer", Quantity: 1, Source: "breakfast", Options: []string{"Rosado"}},
 		{ProductText: "Mini tabla de quesos adicional (Picnic)", Quantity: 1, Source: "add_on"},
 	}
-	facets := orderFacets(lines)
+	facets := orderFacets(lines, engine.OrderAnnotation{})
 	if len(facets) != 5 {
 		t.Fatalf("facets = %+v", facets)
 	}
@@ -23,6 +23,60 @@ func TestOrderFacetsGroupsVariants(t *testing.T) {
 	assertFacet(t, facets, "color", "Rosado")
 	assertFacet(t, facets, "color", "color: Azul")
 	assertFacet(t, facets, "other", "Jugo de naranja")
+}
+
+func TestOrderFacetsIncludeAnnotation(t *testing.T) {
+	lines := []engine.ParsedOrderLine{
+		{ProductText: "Canasta", Quantity: 1, Source: "breakfast"},
+	}
+	facets := orderFacets(lines, engine.OrderAnnotation{Color: "Palorosa", Reason: "Cumpleaños"})
+	assertFacet(t, facets, "color", "Palorosa")
+	assertFacet(t, facets, "reason", "Cumpleaños")
+	if len(facets) != 3 {
+		t.Fatalf("facets = %+v", facets)
+	}
+}
+
+func TestDayLockedCarriesAnnotation(t *testing.T) {
+	c := testClient(t)
+	date := "2026-10-04"
+	c.kitchen.state.Orders[date] = map[string][]engine.ParsedOrderLine{
+		"7": {{ProductText: "Box Mujer", Quantity: 1, Source: "breakfast"}},
+	}
+	c.kitchen.state.Annotations[date] = map[string]engine.OrderAnnotation{
+		"7": {Color: "Palorosa", Reason: "Cumpleaños"},
+	}
+	day := c.dayLocked(date)
+	if len(day.Orders) != 1 || day.Orders[0].Color != "Palorosa" || day.Orders[0].Reason != "Cumpleaños" {
+		t.Fatalf("orders = %+v", day.Orders)
+	}
+	assertFacet(t, day.Orders[0].Facets, "color", "Palorosa")
+	assertFacet(t, day.Orders[0].Facets, "reason", "Cumpleaños")
+}
+
+func TestEntriesCarrySources(t *testing.T) {
+	c := testClient(t)
+	date := "2026-10-04"
+	c.kitchen.state.Orders[date] = map[string][]engine.ParsedOrderLine{
+		"7": {{ProductText: "Box Mujer", Quantity: 1, Source: "breakfast", OrderNumber: "7", Options: []string{"Jugo de naranja", "Sándwich sencillo"}}},
+	}
+	detail, err := c.OrderDetail(date, "7")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(detail.Entries) == 0 {
+		t.Fatal("expected entries")
+	}
+	for _, entry := range detail.Entries {
+		if len(entry.Sources) == 0 {
+			t.Fatalf("entry %q has no sources", entry.Name)
+		}
+		for _, source := range entry.Sources {
+			if source.ProductText != "Box Mujer" || source.OrderNumber != "7" {
+				t.Fatalf("source = %+v", source)
+			}
+		}
+	}
 }
 
 func assertFacet(t *testing.T, facets []panelmodel.Facet, kind, value string) {

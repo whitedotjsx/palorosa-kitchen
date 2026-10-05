@@ -116,6 +116,9 @@ export const labels = {
       ambiguous_match: 'Coincidencia ambigua',
       missing_unit: 'Unidad no encontrada',
     } as Record<string, string>,
+    origin: 'De dónde viene',
+    originMore: '+{n} más',
+    originFewer: 'Ver menos',
   },
 
   day: {
@@ -168,10 +171,13 @@ export const labels = {
     attachedGroup: '{n} pedidos en un ticket',
     separate: 'Separar',
     noFilterResults: 'Ningún pedido coincide con las variantes marcadas.',
+    color: 'Color',
+    reason: 'Motivo',
     facetKinds: {
       breakfast: 'Desayuno',
       add_on: 'Adicionales',
       color: 'Color',
+      reason: 'Motivo',
       other: 'Otros',
     } as Record<string, string>,
   },

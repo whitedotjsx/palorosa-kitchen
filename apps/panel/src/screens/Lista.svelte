@@ -1,7 +1,7 @@
 <script lang="ts">
   import { labels } from '../lib/labels'
   import { api } from '../lib/api'
-  import type { PanelList } from '../lib/types'
+  import type { PanelEntry, PanelEntrySource, PanelList } from '../lib/types'
   import { loadTemplate, printSheet, sheetHtml } from '../lib/print'
   import { day, longDate } from '../lib/day.svelte'
   import DayPicker from '../components/DayPicker.svelte'
@@ -16,6 +16,31 @@
   let list = $state<PanelList | null>(null)
 
   let printing = $state(false)
+
+  // Per-unit provenance: the breakfast/add-on lines each count comes from.
+  // Only the first few show until the row is expanded.
+  const sourcePreview = 3
+  let expandedSources = $state<string[]>([])
+
+  function toggleSources (unitId: string) {
+    expandedSources = expandedSources.includes(unitId)
+      ? expandedSources.filter((item) => item !== unitId)
+      : [...expandedSources, unitId]
+  }
+
+  function visibleSources (entry: PanelEntry): PanelEntrySource[] {
+    const sources = entry.sources ?? []
+    return expandedSources.includes(entry.unitId) ? sources : sources.slice(0, sourcePreview)
+  }
+
+  function sourceKey (source: PanelEntrySource) {
+    return `${source.productText}|${source.orderNumber ?? ''}|${source.source ?? ''}`
+  }
+
+  function sourceToggleText (entry: PanelEntry) {
+    const hidden = (entry.sources?.length ?? 0) - sourcePreview
+    return labels.lista.originMore.replace('{n}', String(hidden))
+  }
 
   // Prints the kitchen sheet with the saved layout (Catálogo → Formato PDF).
   // "Guardar como PDF" in the print dialog produces the PDF.
@@ -141,7 +166,25 @@
             {#each group.entries as entry (entry.unitId)}
               <div class="row">
                 <div class="qty">{entry.quantity}</div>
-                <div class="prod">{entry.name}</div>
+                <div class="prod">
+                  <span>{entry.name}</span>
+                  {#if entry.sources && entry.sources.length > 0}
+                    <div class="from" title={labels.lista.origin}>
+                      {#each visibleSources(entry) as source (sourceKey(source))}
+                        <span class="from-item">
+                          <b>{source.quantity}×</b>
+                          <span class="from-name">{source.productText}</span>
+                          {#if source.orderNumber}<span class="from-ref mono">#{source.orderNumber}</span>{/if}
+                        </span>
+                      {/each}
+                      {#if entry.sources.length > sourcePreview}
+                        <button class="from-toggle" onclick={() => toggleSources(entry.unitId)}>
+                          {expandedSources.includes(entry.unitId) ? labels.lista.originFewer : sourceToggleText(entry)}
+                        </button>
+                      {/if}
+                    </div>
+                  {/if}
+                </div>
                 <div class="medida">{entry.measure ? (labels.measures[entry.measure] ?? entry.measure) : '-'}</div>
                 <div class="nota">{entry.note || '-'}</div>
               </div>

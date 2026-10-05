@@ -123,7 +123,7 @@
   })
 
   const facetGroups = $derived.by(() => {
-    const kindOrder = ['breakfast', 'add_on', 'color', 'other']
+    const kindOrder = ['breakfast', 'add_on', 'color', 'reason', 'other']
     const map = new Map<string, Map<string, number>>()
     for (const order of searched) {
       for (const facet of order.facets ?? []) {
@@ -255,6 +255,17 @@
   function previewMembers (orders: PanelOrder[]) {
     return orders.slice(0, 10)
   }
+
+  // Unique color/motivo values of a merged ticket, so the group head still
+  // shows the personalization its members share.
+  function uniqueAnnotation (orders: PanelOrder[], field: 'color' | 'reason') {
+    const values = new Set<string>()
+    for (const order of orders) {
+      const value = order[field]
+      if (value) values.add(value)
+    }
+    return [...values]
+  }
 </script>
 
 {#snippet unitList (key: string, entries: PanelEntry[], total: number)}
@@ -277,6 +288,16 @@
       {/if}
     </div>
   {/if}
+{/snippet}
+
+{#snippet annotationChips (order: PanelOrder)}
+  {#if order.color}<span class="chip mini tone-color">{labels.pedidos.color}: {order.color}</span>{/if}
+  {#if order.reason}<span class="chip mini tone-reason">{labels.pedidos.reason}: {order.reason}</span>{/if}
+{/snippet}
+
+{#snippet groupAnnotationChips (orders: PanelOrder[])}
+  {#each uniqueAnnotation(orders, 'color') as value (value)}<span class="chip mini tone-color">{labels.pedidos.color}: {value}</span>{/each}
+  {#each uniqueAnnotation(orders, 'reason') as value (value)}<span class="chip mini tone-reason">{labels.pedidos.reason}: {value}</span>{/each}
 {/snippet}
 
 {#snippet lineList (numbers: string[])}
@@ -383,6 +404,7 @@
                 {#each previewMembers(group.orders) as member (member.number)}<span class="chip mono">#{member.number}</span>{/each}
                 {#if group.orders.length > 10}<span class="chip mono">+{group.orders.length - 10}</span>{/if}
               </span>
+              {@render groupAnnotationChips(group.orders)}
               <span class="spacer"></span>
               <span class="t-total">
                 {#if hasDetails(group.numbers)}{mergedTotal(group.numbers)} {labels.pedidos.unitsWord}{:else}{group.orders.length} {labels.pedidos.ordersWord}{/if}
@@ -407,6 +429,7 @@
                     {/if}
                     <span class="t-num small">#{member.number}</span>
                     <span class="stamp {member.status === 'notified' ? 'herb' : 'honey'}">{statusText(member)}</span>
+                    {@render annotationChips(member)}
                     <span class="t-line">{member.text}</span>
                   </div>
                   {#if member.note}
@@ -430,6 +453,7 @@
                 {#each previewMembers(filterMatches) as member (member.number)}<span class="chip mono">#{member.number}</span>{/each}
                 {#if filterMatches.length > 10}<span class="chip mono">+{filterMatches.length - 10}</span>{/if}
               </span>
+              {@render groupAnnotationChips(filterMatches)}
               <span class="spacer"></span>
               <span class="t-total">
                 {#if hasDetails(filterMatches.map((order) => order.number))}{filterTotal} {labels.pedidos.unitsWord}{:else}{filterMatches.length} {labels.pedidos.ordersWord}{/if}
@@ -453,6 +477,7 @@
                     {/if}
                     <span class="t-num small">#{member.number}</span>
                     <span class="stamp {member.status === 'notified' ? 'herb' : 'honey'}">{statusText(member)}</span>
+                    {@render annotationChips(member)}
                     <span class="t-line">{member.text}</span>
                   </div>
                   {#if member.note}
@@ -479,6 +504,7 @@
             <button class="t-toggle" aria-expanded={expanded.includes(key)} onclick={() => toggleTicket(key, [order.number])}>
               <span class="t-num">#{order.number}</span>
               <span class="stamp {order.status === 'notified' ? 'herb' : 'honey'}">{statusText(order)}</span>
+              {@render annotationChips(order)}
               <span class="t-line">{order.text}</span>
               <span class="spacer"></span>
               <span class="t-total">{labels.pedidos.units.replace('{n}', String(order.units))}</span>

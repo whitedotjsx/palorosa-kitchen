@@ -108,6 +108,79 @@ func TestActiveTwinWins(t *testing.T) {
 	}
 }
 
+func TestAggregateSources(t *testing.T) {
+	index := IndexCatalog(testCatalog())
+	lines := []ParsedOrderLine{
+		{ProductText: "Desayuno 1", Quantity: 1, Options: []string{"Jugo de naranja"}, Source: "breakfast", OrderNumber: "1"},
+		{ProductText: "Desayuno 1", Quantity: 1, Options: []string{"Jugo de naranja"}, Source: "breakfast", OrderNumber: "1"},
+		{ProductText: "Desayuno 1", Quantity: 3, Options: []string{"Jugo de naranja"}, Source: "breakfast", OrderNumber: "2"},
+	}
+	list := AggregateUnits(ResolveLines(lines, index), index)
+	var entry *KitchenListEntry
+	for index := range list.Entries {
+		if list.Entries[index].UnitID == "u-sandwich" {
+			entry = &list.Entries[index]
+		}
+	}
+	if entry == nil || entry.Quantity != 5 {
+		t.Fatalf("entry = %+v, want quantity 5", entry)
+	}
+	if len(entry.Sources) != 2 {
+		t.Fatalf("sources = %+v, want 2", entry.Sources)
+	}
+	if entry.Sources[0].OrderNumber != "2" || entry.Sources[0].Quantity != 3 {
+		t.Fatalf("first source = %+v, want order 2 x3 first", entry.Sources[0])
+	}
+	if entry.Sources[1].OrderNumber != "1" || entry.Sources[1].Quantity != 2 {
+		t.Fatalf("second source = %+v, want order 1 x2", entry.Sources[1])
+	}
+	if entry.Sources[0].ProductText != "Desayuno 1" || entry.Sources[0].Source != "breakfast" {
+		t.Fatalf("source line = %+v", entry.Sources[0])
+	}
+}
+
+func TestAnnotationLabel(t *testing.T) {
+	cases := map[string]string{
+		"oro-rosa":      "Oro rosa",
+		"cumpleanos":    "Cumpleaños",
+		"palorosa":      "Palorosa",
+		"dorado-rosado": "Dorado/rosado",
+		"sin-motivo":    "Sin motivo",
+		"algo-raro":     "Algo raro",
+		"":              "",
+	}
+	for input, want := range cases {
+		if got := AnnotationLabel(input); got != want {
+			t.Errorf("AnnotationLabel(%q) = %q, want %q", input, got, want)
+		}
+	}
+}
+
+func TestWideOrderAnnotations(t *testing.T) {
+	rows := []map[string]any{
+		{
+			"ID orden":         "7",
+			"Fecha de Entrega": "29 Septiembre, 2026",
+			"Productos":        "Saludable X 1",
+			"color":            "oro-rosa",
+			"motivo":           "cumpleanos",
+		},
+		{
+			"ID orden":         "8",
+			"Fecha de Entrega": "29 Septiembre, 2026",
+			"Productos":        "Canasta X 1",
+		},
+	}
+	export := ParseWideOrderRows(rows, WideExportOptions{})
+	if len(export.Annotations) != 1 {
+		t.Fatalf("annotations = %+v", export.Annotations)
+	}
+	annotation := export.Annotations["7"]
+	if annotation.Color != "Oro rosa" || annotation.Reason != "Cumpleaños" {
+		t.Fatalf("annotation = %+v", annotation)
+	}
+}
+
 func TestAggregateAndDiff(t *testing.T) {
 	index := IndexCatalog(testCatalog())
 	lines := []ParsedOrderLine{

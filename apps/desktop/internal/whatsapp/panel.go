@@ -76,13 +76,16 @@ func (c *Client) dayLocked(date string) panelmodel.Day {
 		if c.kitchen.state.Notified[date][number] {
 			status = "notified"
 		}
+		annotation := c.kitchen.state.Annotations[date][number]
 		day.Orders = append(day.Orders, panelmodel.Order{
 			Number: number,
 			Text:   orderText(lines),
 			Units:  len(c.orderUnits(lines)),
 			Status: status,
 			Note:   c.kitchen.state.Observations[date][number],
-			Facets: orderFacets(lines),
+			Color:  annotation.Color,
+			Reason: annotation.Reason,
+			Facets: orderFacets(lines, annotation),
 		})
 	}
 	if list, ok := c.kitchen.state.Lists[date]; ok {
@@ -119,12 +122,30 @@ func entriesSnapshot(entries []engine.KitchenListEntry) []panelmodel.Entry {
 	out := make([]panelmodel.Entry, 0, len(entries))
 	for _, entry := range entries {
 		out = append(out, panelmodel.Entry{
-			UnitID:   entry.UnitID,
-			Name:     entry.Name,
-			Measure:  entry.Measure,
-			Category: entry.Category,
-			Note:     entry.Note,
-			Quantity: entry.Quantity,
+			UnitID:     entry.UnitID,
+			Name:       entry.Name,
+			Measure:    entry.Measure,
+			Category:   entry.Category,
+			Note:       entry.Note,
+			Quantity:   entry.Quantity,
+			References: entry.References,
+			Sources:    entrySources(entry.Sources),
+		})
+	}
+	return out
+}
+
+func entrySources(sources []engine.KitchenUnitSource) []panelmodel.EntrySource {
+	if len(sources) == 0 {
+		return nil
+	}
+	out := make([]panelmodel.EntrySource, 0, len(sources))
+	for _, source := range sources {
+		out = append(out, panelmodel.EntrySource{
+			OrderNumber: source.OrderNumber,
+			ProductText: source.ProductText,
+			Source:      source.Source,
+			Quantity:    source.Quantity,
 		})
 	}
 	return out
@@ -179,6 +200,7 @@ func (c *Client) OrderDetail(date, number string) (panelmodel.OrderDetail, error
 		return panelmodel.OrderDetail{}, fmt.Errorf("pedido no encontrado")
 	}
 	note := c.kitchen.state.Observations[date][number]
+	annotation := c.kitchen.state.Annotations[date][number]
 	status := "pending"
 	if c.kitchen.state.Notified[date][number] {
 		status = "notified"
@@ -190,6 +212,8 @@ func (c *Client) OrderDetail(date, number string) (panelmodel.OrderDetail, error
 		Number:  number,
 		Status:  status,
 		Note:    note,
+		Color:   annotation.Color,
+		Reason:  annotation.Reason,
 		Lines:   make([]panelmodel.OrderLine, 0, len(lines)),
 		Entries: []panelmodel.Entry{},
 	}
@@ -243,8 +267,9 @@ var colorWords = []string{
 }
 
 // orderFacets collects the attachable values of an order: its breakfasts, its
-// add-ons, its color options and every other option. Duplicates collapse.
-func orderFacets(lines []engine.ParsedOrderLine) []panelmodel.Facet {
+// add-ons, its color options and every other option, plus the order's color
+// and motivo annotations. Duplicates collapse.
+func orderFacets(lines []engine.ParsedOrderLine, annotation engine.OrderAnnotation) []panelmodel.Facet {
 	facets := []panelmodel.Facet{}
 	seen := map[string]bool{}
 	add := func(kind, value string) {
@@ -273,6 +298,8 @@ func orderFacets(lines []engine.ParsedOrderLine) []panelmodel.Facet {
 			}
 		}
 	}
+	add("color", annotation.Color)
+	add("reason", annotation.Reason)
 	return facets
 }
 

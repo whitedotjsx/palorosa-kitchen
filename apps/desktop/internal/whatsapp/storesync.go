@@ -39,12 +39,12 @@ func (c *Client) SyncFromExport(ctx context.Context, fetch ExportRows, dates []s
 	}
 	var failures []string
 	for _, date := range dates {
-		orders, notes, err := exportOrders(ctx, fetch, date)
+		orders, notes, annotations, err := exportOrders(ctx, fetch, date)
 		if err != nil {
 			failures = append(failures, fmt.Sprintf("%s: %v", date, err))
 			continue
 		}
-		added, removed := c.replaceDay(date, orders, notes)
+		added, removed := c.replaceDay(date, orders, notes, annotations)
 		result.Added += added
 		result.Removed += removed
 		result.Kept += len(orders)
@@ -65,18 +65,19 @@ func (c *Client) SyncFromExport(ctx context.Context, fetch ExportRows, dates []s
 // exportOrders runs the export for one date and parses it into order lines.
 // A sheet whose rows belong to another date means the filter did not apply,
 // and is rejected rather than wiping the day.
-func exportOrders(ctx context.Context, fetch ExportRows, date string) (map[string][]engine.ParsedOrderLine, map[string]string, error) {
+func exportOrders(ctx context.Context, fetch ExportRows, date string) (map[string][]engine.ParsedOrderLine, map[string]string, map[string]engine.OrderAnnotation, error) {
 	rows, err := fetch(ctx, date)
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, nil, err
 	}
 	orders := map[string][]engine.ParsedOrderLine{}
 	notes := map[string]string{}
+	annotations := map[string]engine.OrderAnnotation{}
 	if len(rows) == 0 || (len(rows) == 1 && isBlankRow(rows[0])) {
-		return orders, notes, nil
+		return orders, notes, annotations, nil
 	}
 	if !engine.IsWideOrderHeader(rows[0]) {
-		return nil, nil, errors.New("el export no tiene las columnas esperadas («ID orden», «Productos»)")
+		return nil, nil, nil, errors.New("el export no tiene las columnas esperadas («ID orden», «Productos»)")
 	}
 	for _, record := range engine.TableToRecords(rows) {
 		number := strings.TrimSpace(fmt.Sprint(record["ID orden"]))
@@ -85,14 +86,17 @@ func exportOrders(ctx context.Context, fetch ExportRows, date string) (map[strin
 		}
 		parsed := engine.ParseWideOrderRows([]map[string]any{record}, engine.WideExportOptions{})
 		if parsed.DeliveryDate != "" && parsed.DeliveryDate != date {
-			return nil, nil, fmt.Errorf("el export devolvió pedidos del %s; el filtro de fecha no se aplicó", parsed.DeliveryDate)
+			return nil, nil, nil, fmt.Errorf("el export devolvió pedidos del %s; el filtro de fecha no se aplicó", parsed.DeliveryDate)
 		}
 		orders[number] = append(orders[number], parsed.Lines...)
+		if annotation, ok := parsed.Annotations[number]; ok {
+			annotations[number] = annotation
+		}
 		if note := strings.TrimSpace(fmt.Sprint(record["Observaciones"])); note != "" && note != "<nil>" {
 			notes[number] = note
 		}
 	}
-	return orders, notes, nil
+	return orders, notes, annotations, nil
 }
 
 func isBlankRow(row []string) bool {
@@ -105,7 +109,7 @@ func isBlankRow(row []string) bool {
 }
 
 // replaceDay swaps a day's orders for the exported ones and rebuilds its list.
-func (c *Client) replaceDay(date string, orders map[string][]engine.ParsedOrderLine, notes map[string]string) (added, removed int) {
+func (c *Client) replaceDay(date string, orders map[string][]engine.ParsedOrderLine, notes map[string]string, annotations map[string]engine.OrderAnnotation) (added, removed int) {
 	c.kitchen.mu.Lock()
 	defer c.kitchen.mu.Unlock()
 	state := c.kitchen.state
@@ -123,12 +127,17 @@ func (c *Client) replaceDay(date string, orders map[string][]engine.ParsedOrderL
 	if len(orders) == 0 {
 		delete(state.Orders, date)
 		delete(state.Observations, date)
+		delete(state.Annotations, date)
 	} else {
 		state.Orders[date] = orders
 		if state.Observations == nil {
 			state.Observations = map[string]map[string]string{}
 		}
 		state.Observations[date] = notes
+		if state.Annotations == nil {
+			state.Annotations = map[string]map[string]engine.OrderAnnotation{}
+		}
+		state.Annotations[date] = annotations
 	}
 	if next := c.listFromStateLocked(date); next != nil {
 		state.Lists[date] = *next

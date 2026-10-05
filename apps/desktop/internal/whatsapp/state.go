@@ -21,6 +21,8 @@ type botState struct {
 	Notifications *notificationSettings `json:"notifications,omitempty"`
 	// Observations holds the order observation per delivery date and order.
 	Observations map[string]map[string]string `json:"observations,omitempty"`
+	// Annotations holds the color and motivo per delivery date and order.
+	Annotations map[string]map[string]engine.OrderAnnotation `json:"annotations,omitempty"`
 	// Checkpoint is the snapshot saved by the LISTO command; NUEVO diffs it.
 	Checkpoint *checkpointState `json:"checkpoint,omitempty"`
 	// Notified marks the orders an immediate notice already went out for.
@@ -107,6 +109,7 @@ func newBotState() *botState {
 		Orders:       map[string]map[string][]engine.ParsedOrderLine{},
 		Lists:        map[string]engine.KitchenList{},
 		Observations: map[string]map[string]string{},
+		Annotations:  map[string]map[string]engine.OrderAnnotation{},
 		Notified:     map[string]map[string]bool{},
 	}
 }
@@ -128,6 +131,9 @@ func loadBotState(path string) *botState {
 	}
 	if state.Observations == nil {
 		state.Observations = map[string]map[string]string{}
+	}
+	if state.Annotations == nil {
+		state.Annotations = map[string]map[string]engine.OrderAnnotation{}
 	}
 	if state.Notified == nil {
 		state.Notified = map[string]map[string]bool{}

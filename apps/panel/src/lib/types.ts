@@ -78,6 +78,13 @@ export interface SessionRow {
   expiresAt: string
 }
 
+export interface PanelEntrySource {
+  orderNumber?: string
+  productText: string
+  source?: string
+  quantity: number
+}
+
 export interface PanelEntry {
   unitId: string
   name: string
@@ -85,6 +92,8 @@ export interface PanelEntry {
   category: string
   note: string
   quantity: number
+  references?: string[]
+  sources?: PanelEntrySource[]
 }
 
 export interface PanelUnresolved {
@@ -114,6 +123,8 @@ export interface PanelOrder {
   units: number
   status: string
   note?: string
+  color?: string
+  reason?: string
   facets?: OrderFacet[]
 }
 
@@ -137,6 +148,8 @@ export interface PanelOrderDetail {
   number: string
   status: string
   note?: string
+  color?: string
+  reason?: string
   units: number
   lines: PanelOrderLine[]
   entries: PanelEntry[]

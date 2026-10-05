@@ -93,7 +93,7 @@ func (c *Client) handleWooCommerce(w http.ResponseWriter, r *http.Request) {
 		kind = eventUpdate
 		title = labels.Bot.UpdatedOrder
 	}
-	result := c.applyOrder(export.DeliveryDate, number, export.Lines, title+" #"+number, wooObservation(&order), kind)
+	result := c.applyOrder(export.DeliveryDate, number, export.Lines, title+" #"+number, wooObservation(&order), export.Annotations[number], kind)
 	result["lines"] = len(export.Lines)
 	writeJSON(w, http.StatusOK, result)
 }
@@ -140,6 +140,12 @@ func wooRow(order *woocommerceOrder) map[string]any {
 	if value, ok := meta["adicionales_excel"]; ok {
 		row["Adicionales"] = stringOfAny(value)
 	}
+	if value, ok := meta["color"]; ok {
+		row["color"] = stringOfAny(value)
+	}
+	if value, ok := meta["motivo"]; ok {
+		row["motivo"] = stringOfAny(value)
+	}
 
 	// Choices live on the line items. A chosen drink suppresses the export's
 	// juice fallback and adds the real drink option; food choices and the
@@ -156,7 +162,22 @@ func wooRow(order *woocommerceOrder) map[string]any {
 			if value, ok := item.Value.(string); ok && value != "" {
 				row[value] = 1
 			}
-		case item.Key == "pa_elige-el-motivo", item.Key == "pa_elige-los-globos":
+		case item.Key == "pa_elige-el-motivo":
+			// Personalization, not a kitchen choice: kept as the order's
+			// motivo annotation.
+			if value, ok := item.Value.(string); ok && value != "" {
+				if existing, _ := row["motivo"].(string); existing == "" {
+					row["motivo"] = value
+				}
+			}
+		case item.Key == "pa_globos":
+			// The chosen balloon color, kept as the order's color annotation.
+			if value, ok := item.Value.(string); ok && value != "" {
+				if existing, _ := row["color"].(string); existing == "" {
+					row["color"] = value
+				}
+			}
+		case item.Key == "pa_elige-los-globos":
 			// Personalization, not a kitchen choice.
 		case strings.HasPrefix(item.Key, "pa_elige-"):
 			if value, ok := item.Value.(string); ok && value != "" {

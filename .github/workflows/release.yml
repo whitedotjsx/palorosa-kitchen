@@ -37,6 +37,12 @@ jobs:
           go-version-file: apps/desktop/go.mod
           cache-dependency-path: apps/desktop/go.sum
 
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: apps/desktop/third_party/cf-quick-tunnel-rs
+
       - run: pnpm install --frozen-lockfile
 
       - name: Build the desktop exe

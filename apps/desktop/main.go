@@ -398,7 +398,8 @@ func startTunnel(cfg config.Config) {
 		Service:         cfg.TunnelService,
 		Token:           cfg.TunnelToken,
 		DataDir:         cfg.DataDir,
-		CloudflaredPath: cloudflaredPath(cfg),
+		CloudflaredPath: cfg.CloudflaredPath,
+		Library:         bundled("cf-tunnel.dll"),
 		OnStatus: func(status tunnel.Status, _ string) {
 			tray.SetTunnel(labels.TunnelLabel(int(status)))
 			publishPanel("tunnel")
@@ -418,7 +419,7 @@ func startTunnel(cfg config.Config) {
 		if err := manager.Ensure(ctx); err != nil {
 			fmt.Fprintln(os.Stderr, "tunnel:", err)
 			if errors.Is(err, tunnel.ErrNotLoggedIn) {
-				fmt.Fprintln(os.Stderr, "tunnel: ejecuta 'cloudflared tunnel login' una vez y vuelve a abrir la aplicación")
+				fmt.Fprintln(os.Stderr, "tunnel: configura un token del túnel en Ajustes, o ejecuta 'cloudflared tunnel login' una vez y vuelve a abrir la aplicación")
 			}
 			tray.SetTunnel(labels.Tunnel.Errored)
 			return
@@ -869,15 +870,6 @@ func readPanel(cfg config.Config) []byte {
 		return nil
 	}
 	return raw
-}
-
-// cloudflaredPath prefers an explicit CLOUDFLARED_PATH, then the connector
-// embedded in the exe, and finally lets the tunnel package search the system.
-func cloudflaredPath(cfg config.Config) string {
-	if cfg.CloudflaredPath != "" {
-		return cfg.CloudflaredPath
-	}
-	return bundledCloudflared(cfg.DataDir)
 }
 
 // readPanelIcon returns the embedded 512x512 PWA icon.

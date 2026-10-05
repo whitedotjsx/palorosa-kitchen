@@ -30,7 +30,7 @@ const DefaultAsset = "palorosa-kitchen.exe"
 // defaultAPIBase is the GitHub REST API root; tests point it at httptest.
 const defaultAPIBase = "https://api.github.com"
 
-// maxDownload caps the asset size (the exe embeds cloudflared and the panel).
+// maxDownload caps the asset size (the exe embeds the panel and the tunnel connector).
 const maxDownload = 256 << 20
 
 // maxErrorBody caps how much of an error response is quoted back.

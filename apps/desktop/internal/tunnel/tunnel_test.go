@@ -6,73 +6,124 @@ import (
 	"context"
 	"os"
 	"path/filepath"
-	"slices"
 	"strings"
 	"testing"
 )
 
-// newStubManager builds a manager whose cloudflared path is a stub file, so
-// token mode can be tested without running the real binary.
-func newStubManager(t *testing.T, token string) *Manager {
+// newTestManager builds a manager without the connector library or a
+// cloudflared binary, so the configuration side can be tested in isolation.
+func newTestManager(t *testing.T, cfg Config) *Manager {
 	t.Helper()
-	dir := t.TempDir()
-	binary := filepath.Join(dir, "cloudflared.exe")
-	if err := os.WriteFile(binary, []byte("stub"), 0o755); err != nil {
-		t.Fatal(err)
+	if cfg.DataDir == "" {
+		cfg.DataDir = t.TempDir()
 	}
-	manager, err := New(Config{
-		Name:            "palorosa-kitchen",
-		Hostname:        "cocina.example.com",
-		Service:         "http://127.0.0.1:5211",
-		Token:           token,
-		DataDir:         dir,
-		CloudflaredPath: binary,
-	})
+	if cfg.Name == "" {
+		cfg.Name = "palorosa-kitchen"
+	}
+	if cfg.Hostname == "" {
+		cfg.Hostname = "cocina.example.com"
+	}
+	if cfg.Service == "" {
+		cfg.Service = "http://127.0.0.1:5211"
+	}
+	manager, err := New(cfg)
 	if err != nil {
 		t.Fatal(err)
 	}
 	return manager
 }
 
-func TestTokenModeWritesIngressOnlyConfig(t *testing.T) {
-	manager := newStubManager(t, "tok")
+func TestTokenModeIsReadyWithoutCertificate(t *testing.T) {
+	manager := newTestManager(t, Config{Token: "tok"})
 	if !manager.TokenMode() || !manager.LoggedIn() {
 		t.Fatal("token mode should be ready without cert.pem")
 	}
 	if err := manager.Login(context.Background()); err != nil {
 		t.Fatalf("login should be a no-op in token mode: %v", err)
 	}
+}
+
+func TestEnsureTokenModeIsNoop(t *testing.T) {
+	// The token identifies the tunnel and the ingress travels with the
+	// in-process connector, so nothing is provisioned locally.
+	manager := newTestManager(t, Config{Token: "tok"})
 	if err := manager.Ensure(context.Background()); err != nil {
 		t.Fatal(err)
 	}
-	raw, err := os.ReadFile(manager.configYML)
-	if err != nil {
-		t.Fatal(err)
-	}
-	config := string(raw)
-	if strings.Contains(config, "credentials-file") || strings.Contains(config, "tunnel:") {
-		t.Fatalf("token config must not use local credentials:\n%s", config)
-	}
-	if !strings.Contains(config, "hostname: cocina.example.com") || !strings.Contains(config, "service: http://127.0.0.1:5211") {
-		t.Fatalf("token config lost the ingress:\n%s", config)
-	}
-	args := manager.runArgs()
-	if !slices.Contains(args, "--token") || !slices.Contains(args, "tok") {
-		t.Fatalf("runArgs = %v, want --token", args)
-	}
-	if slices.Contains(args, "palorosa-kitchen") {
-		t.Fatalf("token mode should not pass the tunnel name: %v", args)
+	if _, err := os.Stat(manager.configYML); !os.IsNotExist(err) {
+		t.Fatalf("token mode should not write a cloudflared config: %v", err)
 	}
 }
 
-func TestRunArgsUsesTunnelNameWithoutToken(t *testing.T) {
-	manager := newStubManager(t, "")
-	if manager.TokenMode() {
-		t.Fatal("no token configured")
+func TestEnsureWithoutTokenOrCertificateFails(t *testing.T) {
+	// An isolated home, so the real account certificate of the test machine
+	// cannot provision anything.
+	dir := t.TempDir()
+	manager := &Manager{
+		cfg: Config{
+			Name:     "palorosa-kitchen",
+			Hostname: "cocina.example.com",
+			Service:  "http://127.0.0.1:5211",
+			DataDir:  dir,
+		},
+		home:      filepath.Join(dir, "home"),
+		configYML: filepath.Join(dir, "cloudflared.yml"),
 	}
-	args := manager.runArgs()
-	if !slices.Contains(args, "palorosa-kitchen") || slices.Contains(args, "--token") {
-		t.Fatalf("runArgs = %v, want the tunnel name", args)
+	if err := manager.Ensure(context.Background()); err == nil {
+		t.Fatal("expected an error without token or certificate")
+	}
+}
+
+func TestIngressYAML(t *testing.T) {
+	manager := newTestManager(t, Config{Token: "tok"})
+	ingress := manager.ingressYAML()
+	for _, want := range []string{"hostname: cocina.example.com", "service: http://127.0.0.1:5211", "http_status:404"} {
+		if !strings.Contains(ingress, want) {
+			t.Fatalf("ingress = %q, want %q", ingress, want)
+		}
+	}
+}
+
+func TestCredentialReadsProvisionedFile(t *testing.T) {
+	dir := t.TempDir()
+	home := t.TempDir()
+	id := "95ece313-03c2-4ba6-91be-d19fbf384cf7"
+	credentialsPath := filepath.Join(home, id+".json")
+	if err := os.WriteFile(credentialsPath, []byte(`{"AccountTag":"acct"}`), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	config := "tunnel: " + id + "\ncredentials-file: " + filepath.ToSlash(credentialsPath) + "\n"
+	manager := &Manager{
+		cfg:       Config{DataDir: dir},
+		home:      home,
+		configYML: filepath.Join(dir, "cloudflared.yml"),
+	}
+	if err := os.WriteFile(manager.configYML, []byte(config), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	got, err := manager.credential()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got != `{"AccountTag":"acct"}` {
+		t.Fatalf("credential = %q", got)
+	}
+}
+
+func TestCredentialWithoutSetupFails(t *testing.T) {
+	manager := newTestManager(t, Config{})
+	if _, err := manager.credential(); err == nil {
+		t.Fatal("expected an error without a token or provisioned credentials")
+	}
+}
+
+func TestRunWithoutConnectorFails(t *testing.T) {
+	manager := newTestManager(t, Config{Token: "tok"})
+	if err := manager.Run(context.Background()); err == nil {
+		t.Fatal("expected an error without the connector library")
+	}
+	if status, _ := manager.Status(); status != Errored {
+		t.Fatalf("status = %v, want errored", status.Name())
 	}
 }
 

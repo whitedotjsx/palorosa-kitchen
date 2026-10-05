@@ -307,7 +307,7 @@ export const labels = {
     exportConfig: 'Exportar configuración',
     importConfig: 'Importar configuración',
     configExported: 'Configuración exportada',
-    configImported: 'Configuración importada',
+    configImported: 'Configuración importada. Reinicia la aplicación para aplicarla al túnel.',
     importConfirm: 'Esto reemplaza la configuración actual de este equipo. ¿Continuar?',
     openLogFolder: 'Abrir carpeta (en el PC)',
     logsFolderOpened: 'Carpeta abierta en el PC de la cocina',

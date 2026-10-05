@@ -528,6 +528,9 @@
         <span class="k">{labels.ajustes.tunnelAuth}</span>
         <span class="v">{tunnel?.token ? labels.ajustes.tunnelTokenSet : (tunnel?.certPresent ? labels.ajustes.tunnelPresent : labels.ajustes.tunnelMissing)}</span>
       </div>
+      {#if tunnel?.detail && tunnel.status !== 'running'}
+        <p class="helper">{tunnel.detail}</p>
+      {/if}
       <div class="actions">
         {#if !tunnel?.certPresent && !tunnel?.token}
           <button class="btn btn-kraft" onclick={loginTunnel}>{labels.ajustes.tunnelLogin}</button>

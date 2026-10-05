@@ -2,10 +2,11 @@
 <#
   Builds the self-contained desktop exe (apps/desktop/dist/palorosa-kitchen.exe).
 
-  1. Builds the Svelte panel and copies it into apps/desktop/assets/bundle.
+  1. Builds the Svelte panel and copies it, plus data/seed.json as
+     catalog.json, into apps/desktop/assets/bundle.
   2. Builds the vendored cf-quick-tunnel connector (Rust, static CRT) and
      copies it into the same folder as cf-tunnel.dll.
-  3. Builds the Go exe, stripped (-s -w) and with both files embedded.
+  3. Builds the Go exe, stripped (-s -w) and with all three files embedded.
 
       pnpm desktop:build
       pwsh -File scripts/build-desktop.ps1 [-SkipPanel] [-RefreshTunnel]
@@ -46,6 +47,12 @@ if (-not $SkipPanel) {
 }
 if (-not (Test-Path $panelHtml)) { throw "Panel not built: $panelHtml" }
 Copy-Item -Force $panelHtml (Join-Path $bundle 'panel.html')
+
+# The catalog seed ships in the exe: a machine without the repository gets a
+# usable catalog copied once to its data directory on first run.
+$seed = Join-Path $root 'data\seed.json'
+if (-not (Test-Path $seed)) { throw "Catalog seed missing: $seed" }
+Copy-Item -Force $seed (Join-Path $bundle 'catalog.json')
 
 Write-Step 'Building the tunnel connector (Rust)'
 if (-not (Get-Command cargo -ErrorAction SilentlyContinue)) {

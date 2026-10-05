@@ -117,6 +117,9 @@ func main() {
 	// credentials) before deciding host or spectator, so no manual restart is
 	// needed to reach the invite screen.
 	setupMode := !store.Exists()
+	// Resolve the catalog, but do not persist it during setup: writing
+	// settings.json would hide the first-run page.
+	applyCatalogFallback(&cfg, store, !setupMode)
 
 	options := window.Options{
 		Title:  labels.Tray.Title,
@@ -140,6 +143,7 @@ func main() {
 	if setupMode {
 		bindSetup(store, func() {
 			next := config.Load()
+			applyCatalogFallback(&next, store, true)
 			if remoteHost(next) {
 				fmt.Fprintln(os.Stderr, "host: otro equipo ya es el host de", next.TunnelHostname, "- modo espectador")
 				startSpectator(next)
@@ -381,8 +385,9 @@ func (b *botShell) close() {
 }
 
 var (
-	tunnelMu     sync.Mutex
-	activeTunnel *tunnel.Manager
+	tunnelMu      sync.Mutex
+	activeTunnel  *tunnel.Manager
+	tunnelInitErr error
 )
 
 // startTunnel creates (once) and runs the Cloudflare named tunnel that exposes
@@ -407,11 +412,15 @@ func startTunnel(cfg config.Config) {
 	})
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "tunnel:", err)
+		tunnelMu.Lock()
+		tunnelInitErr = err
+		tunnelMu.Unlock()
 		tray.SetTunnel(labels.Tunnel.Errored)
 		return
 	}
 	tunnelMu.Lock()
 	activeTunnel = manager
+	tunnelInitErr = nil
 	tunnelMu.Unlock()
 
 	go func() {
@@ -738,15 +747,22 @@ func startPanel(cfg config.Config, bot *botShell, targets *notify.Manager, store
 			manager := activeTunnel
 			tunnelMu.Unlock()
 			if manager == nil {
+				tunnelMu.Lock()
+				initErr := tunnelInitErr
+				tunnelMu.Unlock()
 				status := "stopped"
+				detail := labels.Tunnel.Disabled
 				if cfg.TunnelHostname == "" {
 					status = "disabled"
+				} else if initErr != nil {
+					status = "errored"
+					detail = initErr.Error()
 				}
 				return panelserver.TunnelInfo{
 					Hostname: cfg.TunnelHostname,
 					Service:  cfg.TunnelService,
 					Status:   status,
-					Detail:   labels.Tunnel.Disabled,
+					Detail:   detail,
 				}
 			}
 			status, detail := manager.Status()
@@ -870,6 +886,25 @@ func readPanel(cfg config.Config) []byte {
 		return nil
 	}
 	return raw
+}
+
+// applyCatalogFallback resolves the catalog the app will use: the configured
+// path when it exists, otherwise the embedded seed deployed once to the data
+// directory (a machine without the repository, or a path imported from another
+// computer that no longer exists). With persist, the resolved path is saved so
+// Ajustes shows what the app really reads; setup mode skips it so writing
+// settings.json does not hide the first-run page.
+func applyCatalogFallback(cfg *config.Config, store *settings.Store, persist bool) {
+	resolved := config.EnsureCatalog(cfg.CatalogPath, cfg.DataDir, bundled("catalog.json"))
+	cfg.CatalogPath = resolved
+	if !persist || resolved == "" || store == nil || store.Values().CatalogPath == resolved {
+		return
+	}
+	values := store.Values()
+	values.CatalogPath = resolved
+	if err := store.Update(values); err != nil {
+		fmt.Fprintln(os.Stderr, "settings:", err)
+	}
 }
 
 // readPanelIcon returns the embedded 512x512 PWA icon.

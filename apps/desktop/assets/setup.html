@@ -179,6 +179,10 @@
     var status = document.getElementById('status');
     var save = document.getElementById('save');
     var skip = document.getElementById('skip');
+    // The settings object of the imported file. The form only shows some
+    // fields, so the whole object travels back on save (the hidden ones, like
+    // the tunnel token and the catalog path, would be lost otherwise).
+    var imported = null;
 
     function setStatus (text, error) {
       status.textContent = text || '';
@@ -190,10 +194,12 @@
       fields.forEach(function (id) {
         payload[id] = document.getElementById(id).value.trim();
       });
+      if (imported) { payload.imported = imported; }
       return payload;
     }
 
     function fill (settings) {
+      imported = settings || null;
       var wp = (settings && settings.wp) || {};
       var map = {
         tunnelHostname: settings.tunnelHostname,

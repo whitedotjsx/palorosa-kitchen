@@ -67,3 +67,33 @@ func TestApplySetupMergesAndKeepsSecrets(t *testing.T) {
 		t.Fatalf("secrets were altered: %+v %q", merged.WP, merged.WebhookSecret)
 	}
 }
+
+func TestApplySetupImportsHiddenFields(t *testing.T) {
+	minutes := 15
+	imported := settings.Values{
+		Domain:         "palorosabreakfast.com",
+		TunnelHostname: "cocina.wsuites.dev",
+		TunnelToken:    "token-importado",
+		CatalogPath:    `C:\otro\equipo\seed.json`,
+		SyncMinutes:    &minutes,
+		Access:         settings.Access{Enabled: true},
+		WebhookSecret:  "hook-importado",
+		WP:             settings.WP{AdminPassword: "secreta"},
+	}
+	merged := applySetup(settings.Values{}, setupPayload{Imported: &imported})
+	if merged.TunnelToken != "token-importado" || merged.CatalogPath != `C:\otro\equipo\seed.json` {
+		t.Fatalf("hidden fields were dropped: %+v", merged)
+	}
+	if merged.SyncMinutes == nil || *merged.SyncMinutes != 15 || !merged.Access.Enabled {
+		t.Fatalf("sync/access were dropped: %+v", merged)
+	}
+	if merged.WP.AdminPassword != "secreta" {
+		t.Fatalf("imported secret was dropped: %+v", merged.WP)
+	}
+
+	// The visible form wins over the imported file; the rest still arrives.
+	overridden := applySetup(settings.Values{}, setupPayload{Imported: &imported, TunnelHostname: "cocina.nueva.dev"})
+	if overridden.TunnelHostname != "cocina.nueva.dev" || overridden.TunnelToken != "token-importado" {
+		t.Fatalf("form or token precedence wrong: %+v", overridden)
+	}
+}

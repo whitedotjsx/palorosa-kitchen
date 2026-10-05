@@ -13,6 +13,8 @@ import (
 // the dev layout on disk.
 //
 //   - panel.html    the built Svelte panel (apps/panel/dist/index.html)
+//   - catalog.json  the catalog seed (data/seed.json), deployed once to the
+//     data directory so a machine without the repository resolves orders
 //   - cf-tunnel.dll the vendored cf-quick-tunnel connector
 //     (third_party/cf-quick-tunnel-rs), built as a shared library so the
 //     tunnel runs in process with no cloudflared subprocess

@@ -140,6 +140,34 @@ func catalogPath() string {
 	return ""
 }
 
+// EnsureCatalog returns a usable catalog path. A configured path that exists
+// wins; when it is empty or missing (a machine without the repository, or a
+// path imported from another computer that no longer exists) the embedded seed
+// is written once to the data directory and used, so orders resolve out of the
+// box. It never overwrites a catalog.json that is already there, so panel
+// edits survive app updates.
+func EnsureCatalog(configured, dataDir string, embedded []byte) string {
+	if configured != "" {
+		if info, err := os.Stat(configured); err == nil && !info.IsDir() {
+			return configured
+		}
+	}
+	if len(embedded) == 0 || dataDir == "" {
+		return configured
+	}
+	path := filepath.Join(dataDir, "catalog.json")
+	if info, err := os.Stat(path); err == nil && !info.IsDir() {
+		return path
+	}
+	if err := os.MkdirAll(dataDir, 0o755); err != nil {
+		return configured
+	}
+	if err := os.WriteFile(path, embedded, 0o644); err != nil {
+		return configured
+	}
+	return path
+}
+
 func port(value string, fallback int) int {
 	parsed, err := strconv.Atoi(value)
 	if err != nil || parsed <= 0 || parsed > 65535 {

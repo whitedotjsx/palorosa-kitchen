@@ -190,7 +190,7 @@
     {:else if screen === 'ajustes'}
       <Ajustes {notify} {tunnel} reloadTunnel={loadTunnel} />
     {:else if screen === 'bots'}
-      <Bots {revision} />
+      <Bots {revision} {notify} />
     {:else if screen === 'destinos'}
       <Destinos {revision} {notify} />
     {:else if screen === 'pedidos'}

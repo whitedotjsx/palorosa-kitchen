@@ -43,9 +43,10 @@
   })
 
   function edit (target: Target) {
-    editing = structuredClone(target)
-    quietFrom = target.schedule.quietHours?.[0] ?? ''
-    quietTo = target.schedule.quietHours?.[1] ?? ''
+    const copy = $state.snapshot(target)
+    editing = copy
+    quietFrom = copy.schedule.quietHours?.[0] ?? ''
+    quietTo = copy.schedule.quietHours?.[1] ?? ''
   }
 
   function addNew () {
@@ -75,10 +76,12 @@
   }
 
   async function save () {
-    if (!editing.phone.trim()) {
+    const phone = editing.phone.replace(/[^0-9]/g, '')
+    if (!phone) {
       notify?.('Falta el número', true)
       return
     }
+    editing.phone = phone
     editing.schedule.quietHours = quietFrom && quietTo ? [quietFrom, quietTo] : []
     busy = true
     try {

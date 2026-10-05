@@ -311,6 +311,7 @@ func (m *Manager) startLocked(bot Bot) *whatsapp.Client {
 	client, err := whatsapp.New(whatsapp.Config{
 		DataDir:       filepath.Join(m.common.BaseDir, "bots", bot.ID),
 		Allowlist:     bot.Allowlist,
+		Loopback:      bot.Loopback,
 		PairingPhone:  m.common.PairingPhone,
 		HookToken:     m.common.HookToken,
 		WebhookSecret: m.common.WebhookSecret,

@@ -572,6 +572,20 @@ func TestTargetsCrud(t *testing.T) {
 	if created.Target.ID == "" {
 		t.Fatal("no target id")
 	}
+	if created.Target.Phone != "57300" {
+		t.Fatalf("phone = %q, want 57300 (digits only)", created.Target.Phone)
+	}
+
+	recorder = httptest.NewRecorder()
+	update := `{"label":"Doña Marta","phone":"+57 300 123 4567","kinds":["new"],"schedule":{"mode":"immediate"},"enabled":true}`
+	server.Handler().ServeHTTP(recorder, loopback(httptest.NewRequest(http.MethodPatch, "/api/panel/targets/"+created.Target.ID, bytes.NewBufferString(update))))
+	if recorder.Code != http.StatusOK {
+		t.Fatalf("update status = %d, body %s", recorder.Code, recorder.Body)
+	}
+	decode(t, recorder, &created)
+	if created.Target.Phone != "573001234567" {
+		t.Fatalf("updated phone = %q, want 573001234567", created.Target.Phone)
+	}
 
 	recorder = httptest.NewRecorder()
 	server.Handler().ServeHTTP(recorder, loopback(httptest.NewRequest(http.MethodGet, "/api/panel/targets", nil)))

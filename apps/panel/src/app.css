@@ -891,6 +891,21 @@ svg {
   box-shadow: 0 2px 0 rgba(47, 32, 19, .25);
 }
 
+.qr-waiting {
+  width: 200px;
+  height: 200px;
+  display: grid;
+  place-items: center;
+  padding: 22px;
+  box-sizing: border-box;
+  text-align: center;
+  background: var(--surface);
+  border-radius: 8px;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
 .qr i {
   display: block;
   border-radius: 1px;

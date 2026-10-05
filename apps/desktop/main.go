@@ -293,8 +293,13 @@ func startBot(cfg config.Config, homeURL string) *botShell {
 		HookToken:     cfg.HookToken,
 		WebhookSecret: cfg.WebhookSecret,
 		Debug:         cfg.Debug,
-		OnOrder:       func() { publishPanel("orders") },
-		OnQR:          func(_, page string) { shell.refreshPairing(page) },
+		OnOrder: func() { publishPanel("orders") },
+		OnQR: func(_, page string) {
+			shell.refreshPairing(page)
+			// The panel's Bots drawer shows the live QR; each rotation must
+			// refresh the image even when the pairing page is not on view.
+			publishPanel("whatsapp")
+		},
 		OnLinked:      func(string) { shell.onLinked() },
 		OnStatus: func(_ string, status whatsapp.Status) {
 			tray.SetStatus(status.Label())
@@ -362,16 +367,18 @@ func (b *botShell) showList() {
 }
 
 // onLinked runs when the connection is established. It only brings the window
-// up when the operator was pairing; a normal startup stays in the tray.
+// up when the operator was pairing; a normal startup or a reconnect (for
+// example after saving a bot in the panel) must not reload the open panel.
 func (b *botShell) onLinked() {
 	b.mu.Lock()
 	wasPairing := b.pairingOnView
 	b.pairingOnView = false
 	b.mu.Unlock()
-	window.Navigate(b.homeURL)
-	if wasPairing {
-		window.Show()
+	if !wasPairing {
+		return
 	}
+	window.Navigate(b.homeURL)
+	window.Show()
 }
 
 func (b *botShell) close() {

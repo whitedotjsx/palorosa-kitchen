@@ -205,6 +205,9 @@ export const labels = {
     logout: 'Cerrar sesión de WhatsApp',
     logoutConfirm: '¿Cerrar la sesión de WhatsApp de esta cuenta? Tendrás que vincularla otra vez.',
     scan: 'Escanea este código con WhatsApp',
+    qrWaiting: 'Esperando el código QR…',
+    loopback: 'Modo loopback',
+    loopbackHint: 'Responde a los comandos que la propia cuenta se envía a sí misma (chat contigo mismo).',
   },
 
   destinos: {

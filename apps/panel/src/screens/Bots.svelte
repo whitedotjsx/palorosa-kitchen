@@ -17,8 +17,16 @@
 
   let editName = $state('')
   let editEnabled = $state(true)
+  let editLoopback = $state(false)
   let editNumbers = $state('')
   let editBusy = $state(false)
+
+  // The QR rotates while pairing. A missing code (not generated yet or
+  // expired) returns 404, which shows as a broken image; retry on a timer and
+  // refresh on every server event through `revision`.
+  let qrNonce = $state(0)
+  let qrBroken = $state(false)
+  let qrTimer: number | undefined
 
   const selectedBot = $derived(bots.find((bot) => bot.id === selected) ?? bots[0] ?? null)
 
@@ -35,13 +43,45 @@
     void load()
   })
 
+  // The drawer form only reloads when another account is selected. Resetting
+  // it on every bots refresh wiped the numbers while the operator typed them.
+  let formFor = ''
   $effect(() => {
     const bot = selectedBot
-    if (!bot) return
+    if (!bot) {
+      formFor = ''
+      return
+    }
+    if (bot.id === formFor) return
+    formFor = bot.id
     editName = bot.name
     editEnabled = bot.enabled
+    editLoopback = bot.loopback ?? false
     editNumbers = (bot.allowlist ?? []).join(', ')
   })
+
+  $effect(() => {
+    void selectedBot?.id
+    qrBroken = false
+    qrNonce = 0
+    clearTimeout(qrTimer)
+    return () => clearTimeout(qrTimer)
+  })
+
+  function onQRLoad () {
+    qrBroken = false
+    clearTimeout(qrTimer)
+  }
+
+  function onQRError () {
+    qrBroken = true
+    clearTimeout(qrTimer)
+    qrTimer = window.setTimeout(() => { qrNonce += 1 }, 2000)
+  }
+
+  function canPair (bot: Bot | null) {
+    return bot?.status === 'unlinked'
+  }
 
   function parseNumbers (value: string) {
     return value.split(',').map((item) => item.replace(/[^0-9]/g, '')).filter(Boolean)
@@ -76,7 +116,7 @@
     try {
       await api(`/api/panel/bots/${selectedBot.id}`, {
         method: 'PATCH',
-        body: JSON.stringify({ name: editName.trim() || selectedBot.name, enabled: editEnabled, allowlist: parseNumbers(editNumbers) }),
+        body: JSON.stringify({ name: editName.trim() || selectedBot.name, enabled: editEnabled, loopback: editLoopback, allowlist: parseNumbers(editNumbers) }),
       })
       notify?.(labels.bots.saved)
       await load()
@@ -176,9 +216,19 @@
           <h3>{labels.bots.edit}</h3>
         </div>
 
-        {#if selectedBot.status === 'unlinked' || selectedBot.status === 'connecting'}
+        {#if canPair(selectedBot)}
           <div class="qr-wrap">
-            <img src={`/api/panel/bots/${selectedBot.id}/qr.png?v=${revision}`} alt="Código QR" style="width:200px;height:200px;background:#fff;padding:8px;border-radius:8px" />
+            <img
+              src={`/api/panel/bots/${selectedBot.id}/qr.png?v=${revision}-${qrNonce}`}
+              alt="Código QR"
+              style="width:200px;height:200px;background:#fff;padding:8px;border-radius:8px"
+              style:display={qrBroken ? 'none' : 'block'}
+              onload={onQRLoad}
+              onerror={onQRError}
+            />
+            {#if qrBroken}
+              <div class="qr-waiting">{labels.bots.qrWaiting}</div>
+            {/if}
             <div class="qr-cap">{labels.bots.scan}</div>
           </div>
         {/if}
@@ -194,6 +244,10 @@
         </div>
         <div class="field">
           <label class="check"><input type="checkbox" bind:checked={editEnabled} /> {labels.bots.enabled}</label>
+        </div>
+        <div class="field">
+          <label class="check"><input type="checkbox" bind:checked={editLoopback} /> {labels.bots.loopback}</label>
+          <p class="helper">{labels.bots.loopbackHint}</p>
         </div>
 
         <div class="drawer-foot">

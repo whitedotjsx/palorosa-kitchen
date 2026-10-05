@@ -761,6 +761,19 @@ func (s *Server) handleTargets(w http.ResponseWriter, _ *http.Request) {
 	writeJSON(w, http.StatusOK, map[string]any{"ok": true, "targets": targets})
 }
 
+// normalizePhone keeps the digits of a phone number. Targets store the JID
+// user form ("573001112233") no matter how the operator typed the number, so
+// the sender can address it (including the bot's own number for loopback).
+func normalizePhone(value string) string {
+	var builder strings.Builder
+	for _, r := range value {
+		if r >= '0' && r <= '9' {
+			builder.WriteRune(r)
+		}
+	}
+	return builder.String()
+}
+
 // handleTargetCreate adds a target (host only).
 func (s *Server) handleTargetCreate(w http.ResponseWriter, r *http.Request) {
 	if s.cfg.Targets == nil {
@@ -768,10 +781,11 @@ func (s *Server) handleTargetCreate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var target notify.Target
-	if err := decodeJSON(r, &target); err != nil || target.Phone == "" {
+	if err := decodeJSON(r, &target); err != nil || normalizePhone(target.Phone) == "" {
 		writeJSON(w, http.StatusBadRequest, map[string]any{"ok": false, "error": "Falta el número"})
 		return
 	}
+	target.Phone = normalizePhone(target.Phone)
 	created, err := s.cfg.Targets.AddTarget(target)
 	if err != nil {
 		writeJSON(w, http.StatusInternalServerError, map[string]any{"ok": false, "error": err.Error()})
@@ -788,11 +802,12 @@ func (s *Server) handleTargetUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var target notify.Target
-	if err := decodeJSON(r, &target); err != nil {
-		writeJSON(w, http.StatusBadRequest, map[string]any{"ok": false, "error": "Invalid JSON body"})
+	if err := decodeJSON(r, &target); err != nil || normalizePhone(target.Phone) == "" {
+		writeJSON(w, http.StatusBadRequest, map[string]any{"ok": false, "error": "Falta el número"})
 		return
 	}
 	target.ID = r.PathValue("id")
+	target.Phone = normalizePhone(target.Phone)
 	if err := s.cfg.Targets.UpdateTarget(target); err != nil {
 		writeJSON(w, http.StatusNotFound, map[string]any{"ok": false, "error": err.Error()})
 		return

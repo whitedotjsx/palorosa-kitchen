@@ -71,6 +71,10 @@ type Config struct {
 	HookPort     int
 	HookToken    string
 
+	// Loopback lets the linked account talk to itself: a message the account
+	// sends to its own chat is processed as a command and answered there.
+	Loopback bool
+
 	WebhookSecret string
 	Debug         bool
 
@@ -103,6 +107,12 @@ type Client struct {
 	pairing        bool
 	pairingExpired bool
 	ctx            context.Context
+
+	// sent tracks the ids this account sent, so their echo (WhatsApp delivers
+	// own messages back to the account) is not processed as a loopback command,
+	// which would make the bot answer itself forever.
+	sentMu sync.Mutex
+	sent   map[types.MessageID]time.Time
 }
 
 // New opens (or creates) the session store and builds the client. It does not
@@ -138,6 +148,7 @@ func New(cfg Config) (*Client, error) {
 		cli:     whatsmeow.NewClient(device, log),
 		status:  StatusUnlinked,
 		kitchen: kitchen,
+		sent:    map[types.MessageID]time.Time{},
 	}
 	client.cli.AddEventHandler(client.handleEvent)
 	return client, nil
@@ -245,6 +256,8 @@ func (c *Client) Logout() error {
 	}
 	c.cli.Store.ID = nil
 	c.setStatus(StatusUnlinked)
+	// Show a fresh QR right away instead of an empty pairing state.
+	c.RetryPairing()
 	return nil
 }
 
@@ -344,22 +357,70 @@ func (c *Client) handleEvent(raw any) {
 }
 
 func (c *Client) handleMessage(event *events.Message) {
-	if event.Info.IsFromMe || event.Info.IsGroup {
+	if !c.accepted(event.Info) {
+		c.log.Infof("Ignored message from %s (sender %s)", phoneNumber(event.Info.Sender, event.Info.SenderAlt, event.Info.Chat), event.Info.Sender)
 		return
 	}
-	number := phoneNumber(event.Info.Sender, event.Info.SenderAlt, event.Info.Chat)
-	if number == "" || !c.allowed(number) {
-		c.log.Infof("Ignored message from %s (sender %s)", number, event.Info.Sender)
-		return
-	}
-	c.log.Infof("Command from %s: %q", number, messageText(event.Message))
+	c.log.Infof("Command from %s: %q", event.Info.Sender, messageText(event.Message))
 	reply := c.reply(context.Background(), messageText(event.Message))
 	if reply == "" {
 		return
 	}
-	if _, err := c.send(context.Background(), replyTarget(event.Info), reply); err != nil {
+	target := replyTarget(event.Info)
+	// A self-chat answered in the chat as received keeps the loopback reply in
+	// the operator's own conversation, even when the message arrived by LID.
+	if isSelfChat(event.Info) && c.cli.Store.ID != nil {
+		target = c.cli.Store.ID.ToNonAD()
+	}
+	if _, err := c.send(context.Background(), target, reply); err != nil {
 		c.log.Errorf("Reply failed: %v", err)
 	}
+}
+
+// accepted reports whether a message is handled: messages from an allowlisted
+// number, plus, when loopback is on, one the account sent to itself.
+func (c *Client) accepted(info types.MessageInfo) bool {
+	if info.IsGroup || c.wasSentByUs(info.ID) {
+		return false
+	}
+	if info.IsFromMe {
+		return c.cfg.Loopback && isSelfChat(info)
+	}
+	number := phoneNumber(info.Sender, info.SenderAlt, info.Chat)
+	return number != "" && c.allowed(number)
+}
+
+// rememberSent records a message id this account sent. Old ids are pruned on
+// every call, so the map stays tiny.
+func (c *Client) rememberSent(id types.MessageID) {
+	if id == "" {
+		return
+	}
+	cutoff := time.Now().Add(-10 * time.Minute)
+	c.sentMu.Lock()
+	defer c.sentMu.Unlock()
+	for key, at := range c.sent {
+		if at.Before(cutoff) {
+			delete(c.sent, key)
+		}
+	}
+	c.sent[id] = time.Now()
+}
+
+func (c *Client) wasSentByUs(id types.MessageID) bool {
+	if id == "" {
+		return false
+	}
+	c.sentMu.Lock()
+	defer c.sentMu.Unlock()
+	_, ok := c.sent[id]
+	return ok
+}
+
+// isSelfChat reports whether the sender and the chat are the same user, which
+// is how WhatsApp represents "message yourself" (also across LID addressing).
+func isSelfChat(info types.MessageInfo) bool {
+	return info.Chat.User != "" && info.Chat.User == info.Sender.User
 }
 
 // phoneNumber returns the phone-number form of the first JID that carries one.
@@ -740,16 +801,25 @@ func (c *Client) knownDates(_ context.Context) []string {
 }
 
 func (c *Client) send(ctx context.Context, to types.JID, text string) (whatsmeow.SendResponse, error) {
-	return c.cli.SendMessage(ctx, to, &waE2E.Message{Conversation: proto.String(text)})
+	response, err := c.cli.SendMessage(ctx, to, &waE2E.Message{Conversation: proto.String(text)})
+	if err == nil {
+		c.rememberSent(response.ID)
+	}
+	return response, err
 }
 
 // SendTo sends a text to a phone number. The notification dispatcher uses it to
-// reach a target through this account.
+// reach a target through this account. The number is normalized to its digits,
+// so a target typed as "+57 300 123 4567" still resolves to a JID.
 func (c *Client) SendTo(phone, text string) error {
 	if !c.cli.IsConnected() {
 		return fmt.Errorf("whatsapp no conectado")
 	}
-	_, err := c.send(context.Background(), types.NewJID(phone, types.DefaultUserServer), text)
+	number := digitsOnly(phone)
+	if number == "" {
+		return fmt.Errorf("número inválido")
+	}
+	_, err := c.send(context.Background(), types.NewJID(number, types.DefaultUserServer), text)
 	return err
 }
 
@@ -915,6 +985,18 @@ var (
 func normalizeCommand(text string) string {
 	lower := accentReplacer.Replace(strings.ToLower(text))
 	return strings.TrimSpace(nonAlnum.ReplaceAllString(lower, " "))
+}
+
+// digitsOnly keeps only the digits of a phone number: a WhatsApp JID user is
+// the international number without "+" or separators.
+func digitsOnly(value string) string {
+	var builder strings.Builder
+	for _, r := range value {
+		if r >= '0' && r <= '9' {
+			builder.WriteRune(r)
+		}
+	}
+	return builder.String()
 }
 
 func loadBogota() *time.Location {

@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Palorosa · Configurar este equipo</title>
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #f9eadc;
+    --surface: #fffaf5;
+    --surface-alt: #f6e3d5;
+    --border: #f3d1c7;
+    --border-strong: #e3b8a6;
+    --text: #6a4b20;
+    --text-muted: #8a6a54;
+    --accent: #a55d26;
+    --accent-hover: #8f4d1e;
+    --danger: #9c3a1c;
+    --font-ui: "Poppins", "Segoe UI", system-ui, sans-serif;
+    --font-mono: "Cascadia Mono", Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-ui);
+    font-size: 14px;
+    padding: 24px 16px 48px;
+  }
+  .wrap { max-width: 620px; margin: 0 auto; }
+  .brand {
+    font-weight: 600;
+    font-size: 22px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+  .brand small {
+    display: block;
+    font-size: 11px;
+    letter-spacing: .3em;
+    color: var(--text-muted);
+  }
+  h1 { margin: 18px 0 6px; font-size: 22px; }
+  .lead { margin: 0 0 20px; color: var(--text-muted); line-height: 1.5; }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--surface-alt);
+    border-radius: 12px;
+    box-shadow: 0 1px 0 rgba(138, 90, 43, .12);
+    padding: 18px;
+    margin-bottom: 16px;
+  }
+  .card h2 { margin: 0 0 4px; font-size: 15px; }
+  .card p.hint { margin: 0 0 14px; color: var(--text-muted); font-size: 12.5px; line-height: 1.5; }
+  label.field { display: block; margin-bottom: 12px; }
+  label.field span { display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 5px; }
+  input[type="text"], input[type="password"], input[type="file"] {
+    width: 100%;
+    font: inherit;
+    color: var(--text);
+    background: var(--bg);
+    border: 1px solid var(--border-strong);
+    border-radius: 9px;
+    padding: 9px 11px;
+  }
+  input:focus { outline: 2px solid color-mix(in srgb, var(--accent) 45%, transparent); outline-offset: 1px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; }
+  @media (max-width: 560px) { .grid { grid-template-columns: 1fr; } }
+  details { border-top: 1px dashed var(--border); padding-top: 12px; margin-top: 4px; }
+  details summary { cursor: pointer; font-weight: 600; font-size: 13px; }
+  details[open] summary { margin-bottom: 12px; }
+  .actions { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
+  button {
+    font: inherit;
+    font-weight: 600;
+    border-radius: 9px;
+    padding: 10px 16px;
+    cursor: pointer;
+    border: 1px solid transparent;
+  }
+  .primary { background: var(--accent); color: #fff; }
+  .primary:hover { background: var(--accent-hover); }
+  .ghost { background: transparent; border-color: var(--border-strong); color: var(--accent); }
+  .ghost:hover { background: var(--surface-alt); }
+  button:disabled { opacity: .55; cursor: default; }
+  .status { min-height: 18px; margin: 10px 0 0; font-size: 12.5px; color: var(--text-muted); }
+  .status.error { color: var(--danger); font-weight: 600; }
+  .mono { font-family: var(--font-mono); }
+  .note {
+    display: flex;
+    gap: 8px;
+    background: var(--surface-alt);
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    padding: 10px 12px;
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">Palorosa<small>Kitchen</small></div>
+  <h1>Configurar este equipo</h1>
+  <p class="lead">
+    Es la primera vez que abres la aplicación aquí. Dinos cuál es el túnel de la cocina
+    y, si este equipo atiende la tienda, sus credenciales. Si otro equipo ya es la cocina,
+    la app lo detecta sola y te pedirá entrar como espectador.
+  </p>
+
+  <div class="note">
+    <span>Consejo: si tienes el archivo de configuración exportado del equipo de la cocina
+    (Ajustes → Copia de la configuración), impórtalo aquí y se llenará todo.</span>
+  </div>
+
+  <div class="card">
+    <h2>Túnel de Cloudflare</h2>
+    <p class="hint">Déjalo vacío si este equipo no recibe pedidos de la tienda ni otros dispositivos.</p>
+    <label class="field">
+      <span>Hostname del túnel</span>
+      <input id="tunnelHostname" type="text" class="mono" placeholder="cocina.midominio.com" autocomplete="off" spellcheck="false" />
+    </label>
+  </div>
+
+  <div class="card">
+    <h2>Tienda</h2>
+    <p class="hint">Solo si este equipo atiende los pedidos de la tienda (host).</p>
+    <label class="field">
+      <span>Dominio de la tienda</span>
+      <input id="domain" type="text" class="mono" placeholder="palorosabreakfast.com" autocomplete="off" spellcheck="false" />
+    </label>
+    <details>
+      <summary>WordPress y WooCommerce (credenciales)</summary>
+      <label class="field">
+        <span>URL de WordPress</span>
+        <input id="adminUrl" type="text" class="mono" placeholder="https://palorosabreakfast.com/wp-admin" autocomplete="off" spellcheck="false" />
+      </label>
+      <div class="grid">
+        <label class="field"><span>Usuario</span><input id="adminUser" type="text" autocomplete="off" /></label>
+        <label class="field"><span>Contraseña</span><input id="adminPassword" type="password" autocomplete="new-password" /></label>
+        <label class="field"><span>Consumer key</span><input id="consumerKey" type="text" class="mono" autocomplete="off" /></label>
+        <label class="field"><span>Consumer secret</span><input id="consumerSecret" type="password" autocomplete="new-password" /></label>
+        <label class="field"><span>Export ID</span><input id="exportId" type="text" class="mono" autocomplete="off" /></label>
+        <label class="field"><span>Cron key</span><input id="exportCronKey" type="password" autocomplete="new-password" /></label>
+      </div>
+      <label class="field">
+        <span>Webhook secret</span>
+        <input id="webhookSecret" type="password" autocomplete="new-password" />
+      </label>
+    </details>
+  </div>
+
+  <div class="card">
+    <h2>Importar configuración</h2>
+    <p class="hint">Archivo JSON exportado desde el equipo de la cocina. Rellena el formulario; revísalo antes de guardar.</p>
+    <input id="importFile" type="file" accept=".json,application/json" />
+  </div>
+
+  <div class="actions">
+    <button id="skip" type="button" class="ghost">Omitir por ahora</button>
+    <button id="save" type="button" class="primary">Guardar y continuar</button>
+  </div>
+  <p id="status" class="status" role="status"></p>
+</div>
+
+<script>
+  (function () {
+    var fields = [
+      'tunnelHostname', 'domain', 'adminUrl', 'adminUser', 'adminPassword',
+      'consumerKey', 'consumerSecret', 'exportId', 'exportCronKey', 'webhookSecret'
+    ];
+    var status = document.getElementById('status');
+    var save = document.getElementById('save');
+    var skip = document.getElementById('skip');
+
+    function setStatus (text, error) {
+      status.textContent = text || '';
+      status.className = error ? 'status error' : 'status';
+    }
+
+    function collect () {
+      var payload = {};
+      fields.forEach(function (id) {
+        payload[id] = document.getElementById(id).value.trim();
+      });
+      return payload;
+    }
+
+    function fill (settings) {
+      var wp = (settings && settings.wp) || {};
+      var map = {
+        tunnelHostname: settings.tunnelHostname,
+        domain: settings.domain,
+        adminUrl: wp.adminUrl,
+        adminUser: wp.adminUser,
+        adminPassword: wp.adminPassword,
+        consumerKey: wp.consumerKey,
+        consumerSecret: wp.consumerSecret,
+        exportId: wp.exportId,
+        exportCronKey: wp.exportCronKey,
+        webhookSecret: settings.webhookSecret
+      };
+      Object.keys(map).forEach(function (id) {
+        if (map[id]) { document.getElementById(id).value = map[id]; }
+      });
+    }
+
+    document.getElementById('importFile').addEventListener('change', function (event) {
+      var file = event.target.files && event.target.files[0];
+      if (!file) { return; }
+      file.text().then(function (text) {
+        var data;
+        try { data = JSON.parse(text); } catch (error) { data = null; }
+        if (!data || !data.settings || data.format !== 'palorosa-kitchen/settings') {
+          setStatus('Ese archivo no es una configuración de Palorosa Kitchen.', true);
+          return;
+        }
+        fill(data.settings);
+        setStatus('Configuración importada. Revísala y guarda.');
+      }).catch(function () {
+        setStatus('No pudimos leer el archivo.', true);
+      });
+    });
+
+    function busy (working) {
+      save.disabled = working;
+      skip.disabled = working;
+    }
+
+    function submit (payload) {
+      if (typeof window.palorosaSetup !== 'function') {
+        setStatus('Abre esta pantalla desde la aplicación de escritorio.', true);
+        return;
+      }
+      busy(true);
+      setStatus('Guardando…');
+      window.palorosaSetup(payload).then(function () {
+        setStatus('Listo.');
+      }).catch(function (error) {
+        busy(false);
+        setStatus((error && error.message) || 'No pudimos guardar la configuración.', true);
+      });
+    }
+
+    save.addEventListener('click', function () { submit(collect()); });
+    skip.addEventListener('click', function () { submit({ skip: true }); });
+  })();
+</script>
+</body>
+</html>

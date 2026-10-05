@@ -241,7 +241,7 @@ export function formatKitchenTemplateHtml (
   .sheet-header { display: flex; width: 744px; justify-content: space-between; align-items: center; margin: 0 0 10px; }
   .sheet-header .title, .sheet-header .date { background: #f6d5cd; color: #6a4b20; font-size: 12pt; font-weight: bold; padding: 2px 8px; }
   .sheet-footer { position: fixed; right: 10px; bottom: 10px; text-align: right; }
-  .sheet-footer .logo { width: 36px; height: 36px; display: inline-block; vertical-align: bottom; }
+  .sheet-footer .logo { height: 36px; width: auto; max-width: 120px; object-fit: contain; display: inline-block; vertical-align: bottom; }
   .sheet { display: flex; width: 744px; justify-content: space-between; align-items: flex-start; }
   table { border-collapse: collapse; table-layout: fixed; }
   table.panel { width: 344px; }

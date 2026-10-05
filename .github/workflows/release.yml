@@ -1,0 +1,64 @@
+name: Release desktop
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Tag to publish (vX.Y.Z)
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.13.1
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: apps/desktop/go.mod
+          cache-dependency-path: apps/desktop/go.sum
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Build the desktop exe
+        shell: pwsh
+        run: |
+          $tag = '${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}'
+          if ($tag -notmatch '^v\d+\.\d+\.\d+$') { throw "Tag '$tag' is not vX.Y.Z" }
+          ./scripts/build-desktop.ps1 -Version $tag.TrimStart('v')
+
+      - name: Publish the release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $tag = '${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}'
+          $exe = 'apps/desktop/dist/palorosa-kitchen.exe'
+          $hash = (Get-FileHash $exe -Algorithm SHA256).Hash.ToLower()
+          $sidecar = "$exe.sha256"
+          Set-Content -NoNewline -Path $sidecar -Value "$hash  palorosa-kitchen.exe"
+          gh release view $tag *> $null
+          if ($LASTEXITCODE -eq 0) {
+            gh release upload $tag $exe $sidecar --clobber
+          } else {
+            gh release create $tag $exe $sidecar --title $tag --generate-notes
+          }

@@ -7,10 +7,12 @@ import { join, resolve } from 'node:path'
 import {
   formatKitchenTemplateHtml,
   serverLabels,
+  type Catalog,
   type KitchenList,
   type KitchenListEntry,
   type UnresolvedEntry,
 } from '@palorosa-kitchen/core'
+import { buildDayList, configFromEnv as ordersConfigFromEnv } from '@palorosa-kitchen/orders-export'
 
 const appDir = resolve(import.meta.dirname, '..')
 const rootDir = resolve(appDir, '../..')
@@ -27,6 +29,58 @@ const stateDir = join(appDir, '.state')
 const statePath = join(stateDir, 'lists.json')
 const listHtmlPath = join(rootDir, 'apps', 'standalone', 'dist', 'index.html')
 const editorAutoStart = process.env.KITCHEN_EDITOR_AUTOSTART !== 'off'
+const catalogPath = process.env.KITCHEN_CATALOG_PATH ?? join(rootDir, 'data', 'seed.json')
+const ordersAutoAt = /^\d{2}:\d{2}$/.test(process.env.KITCHEN_ORDERS_AUTO_AT ?? '')
+  ? (process.env.KITCHEN_ORDERS_AUTO_AT as string)
+  : ''
+
+let catalogCache: Catalog | null = null
+
+async function loadCatalog (): Promise<Catalog> {
+  catalogCache ??= JSON.parse(await readFile(catalogPath, 'utf8')) as Catalog
+  return catalogCache
+}
+
+function bogotaTime (): string {
+  return new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'America/Bogota',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  }).format(new Date())
+}
+
+/** Pulls the day's orders from the store and publishes the computed list. */
+async function buildOrders (date: string): Promise<PublishedList> {
+  const result = await buildDayList(ordersConfigFromEnv(), date, await loadCatalog())
+  const list: PublishedList = {
+    deliveryDate: date,
+    source: 'store orders (WP All Export)',
+    orderCount: result.orderCount,
+    publishedAt: new Date().toISOString(),
+    entries: result.list.entries,
+    unresolved: result.list.unresolved,
+  }
+  state.lists[date] = list
+  await saveState()
+  return list
+}
+
+let lastAutoOrders = ''
+
+/** Optional daily auto-run: KITCHEN_ORDERS_AUTO_AT=HH:MM (America/Bogota). */
+function startOrdersTimer (): void {
+  if (!ordersAutoAt) return
+  console.log(`Auto orders export at ${ordersAutoAt} America/Bogota`)
+  setInterval(() => {
+    const today = bogotaDate()
+    if (bogotaTime() !== ordersAutoAt || lastAutoOrders === today) return
+    lastAutoOrders = today
+    buildOrders(today)
+      .then((list) => console.log(`Auto orders published for ${list.deliveryDate} (${list.entries.length} entries)`))
+      .catch((error: unknown) => console.error('Auto orders export failed:', error))
+  }, 60_000)
+}
 
 export interface PublishedList {
   deliveryDate: string
@@ -328,6 +382,31 @@ async function handle (req: IncomingMessage, res: ServerResponse): Promise<void>
     return
   }
 
+  if (url.pathname === '/api/orders' && req.method === 'POST') {
+    if (!isLocal(req)) {
+      sendJson(res, 403, { ok: false, error: serverLabels.editorLocalOnly })
+      return
+    }
+    const date = url.searchParams.get('date') ?? bogotaDate()
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+      sendJson(res, 400, { ok: false, error: 'date must be YYYY-MM-DD' })
+      return
+    }
+    try {
+      const list = await buildOrders(date)
+      sendJson(res, 200, {
+        ok: true,
+        deliveryDate: list.deliveryDate,
+        orderCount: list.orderCount,
+        entries: list.entries.length,
+        unresolved: list.unresolved?.length ?? 0,
+      })
+    } catch (error) {
+      sendJson(res, 500, { ok: false, error: (error as Error).message })
+    }
+    return
+  }
+
   if (url.pathname === '/editor' || url.pathname.startsWith('/editor/') || url.pathname === '/api/catalog' || url.pathname === '/api/overrides') {
     if (!isLocal(req)) {
       sendPage(res, 403, serverLabels.editorLocalOnly)
@@ -353,6 +432,7 @@ server.listen(port, host, () => {
   console.log(`List API:          http://localhost:${port}/api/list?date=YYYY-MM-DD`)
   console.log(`Catalog editor:    http://localhost:${port}/editor/ (only from this machine)`)
   ensureEditor().catch((error: unknown) => console.error('Could not start the catalog editor', error))
+  startOrdersTimer()
 })
 
 function shutdown (): void {

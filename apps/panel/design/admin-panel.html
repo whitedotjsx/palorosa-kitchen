@@ -1,0 +1,1533 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Palorosa Cocina | Panel</title>
+<style>
+@font-face { font-family: 'Poppins'; src: url('fonts/poppins-400.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'Poppins'; src: url('fonts/poppins-600.woff2') format('woff2'); font-weight: 600; font-display: swap; }
+@font-face { font-family: 'Julius Sans One'; src: url('fonts/julius-sans-one.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+
+:root {
+  /* Palorosa brand palette, copied from router-palorosa astro/src/styles/app.css */
+  --bg: #f9eadc;            /* cream: main background */
+  --surface: #fffaf5;           /* surface */
+  --surface-alt: #f9e9e5;           /* pink-light: panels / shelves */
+  --border-strong: #b58574;         /* rose-brown: strong borders, icons */
+  --text: #6a4b20;           /* brown-dark: primary text */
+  --text-muted: #7d5c45;            /* text-muted (contrast-safe taupe) */
+  --accent: #a55d26;       /* terracotta: the accent */
+  --accent-soft: #f6d5cd;  /* blush */
+  --warning: #9c5722;            /* warning */
+  --warning-soft: #fdeee2;       /* warning bg */
+  --success: #646d1c;          /* success */
+  --success-soft: #f4f3e4;     /* success bg */
+  --border: #f3d1c7;            /* pink-border */
+
+  /* brand extras used below */
+  --blush: #f6d5cd;
+  --pink-button: #f2d0c5;
+  --brown-medium: #997152;
+  --gold: #caa63f;
+  --olive: #9f9570;
+  --danger: #9c3a1c;
+  --accent-hover: #8f4d1e;
+  --label: var(--text-muted);
+  --on-dark-ok: #c6caa0;
+  --on-dark-warn: #e6c86a;
+
+  --font-brand: 'Julius Sans One', 'Poppins', system-ui, sans-serif;
+  --font-display: 'Poppins', system-ui, -apple-system, Roboto, sans-serif;
+  --font-ui: 'Poppins', system-ui, -apple-system, Roboto, sans-serif;
+  --font-mono: 'Poppins', ui-monospace, monospace;
+}
+
+* { box-sizing: border-box; }
+
+html { height: 100%; background: var(--bg); }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  line-height: 1.45;
+  display: flex;
+  min-height: 100%;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9998;
+  background-image:
+    radial-gradient(120% 85% at 50% -12%, transparent 52%, rgba(106, 75, 32, .07) 100%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23g)' opacity='0.05'/%3E%3C/svg%3E");
+}
+
+::selection { background: var(--accent-soft); }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+svg { display: block; }
+
+/* ---------------- Sidebar ---------------- */
+.sidebar {
+  width: 248px;
+  flex: 0 0 248px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  background: var(--surface-alt);
+  display: flex;
+  flex-direction: column;
+  padding: 20px 14px 16px;
+  border-right: 1px solid var(--border-strong);
+}
+
+.sidebar::after {
+  content: '';
+  position: absolute;
+  top: 12px;
+  bottom: 12px;
+  right: 6px;
+  width: 2px;
+  background-image: repeating-linear-gradient(180deg, transparent 0 5px, var(--border-strong) 5px 11px);
+  opacity: .45;
+}
+
+.brand { display: flex; align-items: center; gap: 11px; padding: 4px 8px 18px; }
+
+.logo {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1px var(--border);
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+}
+.logo img { width: 28px; height: 28px; border-radius: 50%; display: block; }
+
+.brand-text { display: flex; flex-direction: column; line-height: 1.05; }
+.wordmark { font-family: var(--font-brand); font-weight: 400; font-size: 21px; letter-spacing: .3px; }
+.brand-sub { font-size: 11.5px; color: var(--text-muted); margin-top: 2px; }
+
+.nav { display: flex; flex-direction: column; gap: 2px; }
+
+.nav button {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+  padding: 9px 12px 10px;
+  border: none;
+  background: transparent;
+  border-radius: 10px;
+  font-family: var(--font-ui);
+  font-size: 13.5px;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+}
+.nav button svg { width: 18px; height: 18px; stroke: var(--border-strong); stroke-width: 1.7; fill: none; stroke-linecap: round; stroke-linejoin: round; flex: 0 0 auto; }
+.nav button:hover { background: rgba(0,0,0,.05); }
+.nav button.active {
+  background: var(--accent);
+  color: var(--surface);
+  font-weight: 600;
+}
+.nav button.active:hover { background: var(--accent-hover); }
+.nav button.active svg { stroke: var(--surface); }
+
+.side-foot {
+  margin-top: auto;
+  padding: 14px 10px 4px;
+  border-top: 1px dashed var(--border-strong);
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.side-foot .row { display: flex; align-items: center; gap: 8px; }
+.dot { width: 8px; height: 8px; border-radius: 50%; flex: 0 0 auto; }
+.dot.herb { background: var(--success); box-shadow: 0 0 0 3px var(--success-soft); }
+.dot.honey { background: var(--warning); box-shadow: 0 0 0 3px var(--warning-soft); }
+
+/* ---------------- Main ---------------- */
+.main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  height: 68px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 30px;
+}
+.topbar .titles { display: flex; flex-direction: column; line-height: 1.15; }
+.topbar h1 { margin: 0; font-family: var(--font-display); font-weight: 600; font-size: 22px; letter-spacing: .1px; }
+.topbar .sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+.topbar .right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+
+.kraft-chip {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  background: var(--surface-alt);
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  padding: 4px 9px;
+  color: var(--text);
+}
+
+.avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--text);
+  color: var(--bg);
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.content { padding: 30px; width: 100%; }
+
+/* ---------------- Stamps ---------------- */
+.stamp {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 10.5px;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  padding: 4px 7px;
+  border: 1.5px solid currentColor;
+  border-radius: 5px;
+  transform: rotate(-1.5deg);
+  color: var(--label);
+  white-space: nowrap;
+}
+.stamp.herb { color: var(--success); }
+.stamp.honey { color: var(--warning); }
+.stamp.jam { color: var(--accent); }
+.stamp.neutral { color: var(--label); }
+.stamp.big { font-size: 11.5px; padding: 5px 9px; }
+
+/* ---------------- Buttons ---------------- */
+.btn {
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 13px;
+  padding: 8px 14px;
+  border-radius: 9px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--surface-alt);
+  color: var(--text);
+}
+.btn svg { width: 15px; height: 15px; stroke: currentColor; stroke-width: 1.8; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: var(--accent-hover); }
+.btn-kraft { background: var(--surface-alt); border-color: var(--border-strong); }
+.btn-kraft:hover { background: var(--pink-button); }
+.btn-ghost { background: transparent; border-color: var(--border-strong); color: var(--label); }
+.btn-ghost:hover { background: rgba(138,90,43,.08); }
+.btn-danger { background: transparent; border-color: var(--accent); color: var(--accent); }
+.btn-danger:hover { background: var(--accent-soft); }
+.btn-sm { padding: 6px 10px; font-size: 12px; border-radius: 8px; }
+
+/* ---------------- Screen ---------------- */
+.screen { animation: fade .32s ease both; }
+@keyframes fade { from { opacity: 0; transform: translateY(6px); } }
+.screen[hidden] { display: none; }
+
+.screen-head { display: flex; align-items: flex-end; gap: 16px; margin-bottom: 22px; }
+.screen-head .lead { display: flex; flex-direction: column; }
+.screen-head h2 { margin: 0; font-family: var(--font-display); font-weight: 600; font-size: 28px; letter-spacing: .1px; }
+.screen-head .sub { color: var(--text-muted); font-size: 13px; margin-top: 3px; }
+.screen-head .actions { margin-left: auto; display: flex; gap: 9px; align-items: center; }
+
+/* ---------------- Ledger stat strip ---------------- */
+.ledger {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 2px solid var(--border-strong);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 30px;
+}
+.tile { padding: 16px 20px 18px; border-right: 1px dashed var(--border); min-width: 0; }
+.tile:last-child { border-right: none; }
+.tile .label { font-size: 12px; color: var(--label); margin-bottom: 6px; }
+.tile .value { font-family: var(--font-display); font-weight: 600; font-size: 34px; line-height: 1; font-variant-numeric: tabular-nums; display: flex; align-items: center; gap: 9px; }
+.tile .value small { font-size: 16px; font-weight: 400; color: var(--label); }
+.tile .foot { font-size: 12px; color: var(--text-muted); margin-top: 7px; }
+.tile .foot.mono { font-family: var(--font-mono); }
+
+/* ---------------- Columns ---------------- */
+.cols { display: grid; grid-template-columns: 1.45fr 1fr; gap: 30px; align-items: start; }
+
+.section-label {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 18px;
+  margin: 0 0 4px;
+}
+.section-rule { border: none; border-top: 1px dashed var(--border); margin: 0 0 12px; }
+
+/* Activity ruled list */
+.activity { display: flex; flex-direction: column; }
+.act {
+  display: flex;
+  align-items: baseline;
+  gap: 11px;
+  padding: 11px 2px;
+  border-bottom: 1px dashed var(--border);
+}
+.act .dot { margin-top: 1px; }
+.act .txt { min-width: 0; }
+.act .txt b { font-weight: 600; }
+.act .txt span { color: var(--text-muted); }
+.act .when { margin-left: auto; color: var(--text-muted); font-size: 12px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+/* Recipe card */
+.recipe {
+  background: var(--surface);
+  border: 1px solid var(--surface-alt);
+  border-radius: 12px;
+  padding: 16px 17px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 0 rgba(138,90,43,.12);
+}
+.recipe-head { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+.recipe-head h3 { margin: 0; font-family: var(--font-display); font-weight: 600; font-size: 19px; }
+.recipe-head .pin { margin-left: auto; font-size: 11px; color: var(--text-muted); }
+
+.bot-line { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px dashed var(--border); }
+.bot-line:last-child { border-bottom: none; padding-bottom: 0; }
+.bot-line .bname { font-weight: 600; font-family: var(--font-display); font-size: 15px; }
+.bot-line .bphone { font-family: var(--font-mono); font-size: 11.5px; color: var(--text-muted); }
+.bot-line .grow { min-width: 0; }
+.bot-line .stamp { margin-left: auto; }
+
+.quick { display: grid; gap: 9px; }
+.quick .btn { justify-content: center; }
+
+/* ---------------- Tables ---------------- */
+.panel { background: var(--surface); border: 1px solid var(--surface-alt); border-radius: 12px; overflow: hidden; box-shadow: 0 1px 0 rgba(138,90,43,.1); }
+.table { width: 100%; border-collapse: collapse; }
+.table thead th {
+  background: var(--surface-alt);
+  text-align: left;
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--label);
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--border-strong);
+  white-space: nowrap;
+}
+.table tbody td { padding: 12px 14px; border-bottom: 1px dashed var(--border); vertical-align: middle; }
+.table tbody tr:last-child td { border-bottom: none; }
+.table .acc { color: var(--text-muted); cursor: pointer; text-align: center; width: 40px; }
+.cell-acct { display: flex; flex-direction: column; }
+.cell-acct b { font-family: var(--font-display); font-weight: 600; font-size: 15px; }
+.cell-acct span { font-family: var(--font-mono); font-size: 11.5px; color: var(--text-muted); }
+.num { font-variant-numeric: tabular-nums; font-family: var(--font-mono); }
+
+.chips { display: flex; flex-wrap: wrap; gap: 5px; }
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--surface-alt);
+  border: 1px solid var(--border-strong);
+  border-radius: 7px;
+  padding: 3px 8px;
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 11.5px;
+  color: var(--text);
+  white-space: nowrap;
+}
+.chip .x { color: var(--label); cursor: pointer; font-weight: 700; }
+.chip.mono { font-family: var(--font-mono); font-weight: 400; }
+
+/* Switch */
+.switch {
+  width: 40px;
+  height: 23px;
+  border-radius: 6px;
+  border: 1px solid var(--border-strong);
+  background: var(--text-muted);
+  position: relative;
+  cursor: pointer;
+  padding: 0;
+  flex: 0 0 auto;
+  transition: background .15s;
+}
+.switch::after {
+  content: '';
+  position: absolute;
+  top: 1.5px;
+  left: 2px;
+  width: 17px;
+  height: 17px;
+  border-radius: 4px;
+  background: var(--surface);
+  box-shadow: 0 1px 1px rgba(0,0,0,.3);
+  transition: transform .15s;
+}
+.switch.on { background: var(--success); border-color: var(--success); }
+.switch.on::after { transform: translateX(17px); }
+
+/* ---------------- Detail drawer ---------------- */
+.with-drawer { display: grid; grid-template-columns: minmax(0,1fr) 340px; gap: 26px; align-items: start; }
+
+.drawer {
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  padding: 18px;
+  position: sticky;
+  top: 88px;
+  box-shadow: 3px 4px 0 rgba(138,90,43,.12);
+}
+.drawer-head { display: flex; align-items: center; gap: 9px; margin-bottom: 14px; }
+.drawer-head h3 { margin: 0; font-family: var(--font-display); font-weight: 600; font-size: 20px; }
+
+.qr-wrap {
+  background: var(--surface-alt);
+  border: 1px dashed var(--border-strong);
+  border-radius: 10px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 14px;
+}
+.qr {
+  width: 152px;
+  height: 152px;
+  display: grid;
+  grid-template-columns: repeat(21, 1fr);
+  gap: 1px;
+  background: #fff;
+  padding: 8px;
+  border-radius: 6px;
+  box-shadow: 0 2px 0 rgba(47,32,19,.25);
+}
+.qr i { display: block; border-radius: 1px; }
+.qr i.on { background: var(--text); }
+.qr-cap { font-size: 12px; color: var(--label); font-weight: 600; }
+
+.drawer-rows { display: flex; flex-direction: column; }
+.drow { display: flex; align-items: center; gap: 10px; padding: 11px 0; border-top: 1px dashed var(--border); }
+.drow .k { color: var(--label); font-size: 13px; }
+.drow .v { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.helper { font-size: 11.5px; color: var(--text-muted); margin-top: 4px; }
+
+.add-row { display: flex; gap: 7px; margin-top: 9px; }
+.add-row .input { flex: 1; }
+
+.drawer-foot { display: flex; gap: 8px; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border); flex-wrap: wrap; }
+
+/* ---------------- Inputs ---------------- */
+.input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  background: var(--surface);
+  font-family: var(--font-ui);
+  font-size: 13.5px;
+  color: var(--text);
+}
+.label { font-size: 12.5px; color: var(--label); display: block; margin-bottom: 5px; }
+.field { margin-bottom: 13px; }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.select { position: relative; }
+.select select {
+  appearance: none;
+  width: 100%;
+  padding: 8px 30px 8px 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  background: var(--surface);
+  font-family: var(--font-ui);
+  font-size: 13.5px;
+  color: var(--text);
+}
+.select::after {
+  content: '';
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  border-right: 1.7px solid var(--border-strong);
+  border-bottom: 1.7px solid var(--border-strong);
+  transform: translateY(-70%) rotate(45deg);
+  pointer-events: none;
+}
+
+.checks { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+.check { display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer; }
+.check input { accent-color: var(--accent); width: 16px; height: 16px; }
+
+.seg { display: inline-flex; border: 1px solid var(--border-strong); border-radius: 9px; overflow: hidden; }
+.seg button {
+  padding: 7px 15px;
+  background: transparent;
+  border: none;
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 12.5px;
+  color: var(--label);
+  cursor: pointer;
+}
+.seg button.active { background: var(--accent); color: #fff; }
+
+.note {
+  background: var(--warning-soft);
+  border: 1px solid var(--warning);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 12.5px;
+  color: var(--text);
+  display: flex;
+  gap: 9px;
+  align-items: flex-start;
+}
+.note svg { width: 16px; height: 16px; stroke: var(--warning); stroke-width: 1.8; fill: none; flex: 0 0 auto; margin-top: 1px; }
+
+/* ---------------- Toolbar ---------------- */
+.toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+.datechips { display: inline-flex; border: 1px solid var(--border-strong); border-radius: 9px; overflow: hidden; }
+.datechips button {
+  padding: 7px 14px;
+  background: transparent;
+  border: none;
+  border-right: 1px solid var(--border);
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 12.5px;
+  color: var(--label);
+  cursor: pointer;
+}
+.datechips button:last-child { border-right: none; }
+.datechips button.active { background: var(--accent); color: #fff; }
+.search { position: relative; margin-left: auto; width: 240px; }
+.search svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 15px; height: 15px; stroke: var(--text-muted); stroke-width: 1.8; fill: none; }
+.search .input { padding-left: 32px; }
+
+/* ---------------- Tickets ---------------- */
+.tickets { display: flex; flex-direction: column; gap: 17px; }
+.ticket {
+  position: relative;
+  background: var(--surface);
+  border-radius: 3px;
+  padding: 17px 20px 15px;
+  box-shadow: 0 1px 0 rgba(138,90,43,.16), 0 3px 8px rgba(80,55,25,.06);
+}
+.ticket::before, .ticket::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 9px;
+  background-image: radial-gradient(circle at 9px 4.5px, var(--bg) 5px, transparent 5.6px);
+  background-size: 18px 9px;
+  background-repeat: repeat-x;
+}
+.ticket::before { top: -1px; }
+.ticket::after { bottom: -1px; }
+.ticket.dim { opacity: .82; }
+.ticket.dim .t-head { opacity: .9; }
+
+.t-head { display: flex; align-items: center; gap: 11px; padding-bottom: 11px; border-bottom: 1px dashed var(--border); }
+.t-num { font-family: var(--font-mono); font-weight: 600; font-size: 15px; letter-spacing: .3px; }
+.t-client { font-family: var(--font-display); font-weight: 600; font-size: 19px; }
+.t-meal { color: var(--text-muted); font-size: 12px; }
+.t-head .spacer { flex: 1; }
+.t-time { color: var(--text-muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+.t-more { color: var(--text-muted); cursor: pointer; padding: 0 2px; letter-spacing: 1px; }
+.t-body { display: flex; align-items: center; gap: 14px; padding-top: 11px; }
+.t-line { font-family: var(--font-mono); font-size: 13px; color: var(--text); }
+.t-total { margin-left: auto; font-family: var(--font-display); font-weight: 600; font-size: 17px; font-variant-numeric: tabular-nums; }
+.ticket.cancel .t-client { text-decoration: line-through; color: var(--label); }
+
+/* ---------------- Clipboard / Lista ---------------- */
+.clip-wrap { position: relative; padding-top: 18px; }
+.clip {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 128px;
+  height: 26px;
+  background: var(--surface-alt);
+  border: 1px solid var(--border-strong);
+  border-radius: 6px 6px 3px 3px;
+  box-shadow: 0 2px 0 rgba(80,55,25,.18);
+  z-index: 2;
+}
+.clip::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 6px;
+  transform: translateX(-50%);
+  width: 44px;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--border-strong);
+  opacity: .5;
+}
+
+.clipboard {
+  background: var(--surface);
+  border: 1px solid var(--surface-alt);
+  border-radius: 8px;
+  padding: 34px 30px 26px;
+  box-shadow: 0 2px 0 rgba(138,90,43,.14);
+}
+.cat {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 19px;
+  margin: 24px 0 4px;
+  display: inline-block;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='6' viewBox='0 0 120 6'%3E%3Cpath d='M1 3 q 10 -3 20 0 t 20 0 t 20 0 t 20 0 t 19 0' fill='none' stroke='%23a55d26' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: left calc(100% - 4px);
+  background-size: 120px 6px;
+  padding-bottom: 7px;
+}
+.cat:first-child { margin-top: 0; }
+
+.prep { display: grid; grid-template-columns: 68px 1fr 110px 1fr; column-gap: 18px; }
+.prep .ph {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  padding: 8px 0 6px;
+  border-bottom: 1px solid var(--border);
+}
+.prep .ph.r { text-align: right; }
+.prep .row { display: contents; }
+.prep .row > div { padding: 9px 0; border-bottom: 1px dashed var(--border); font-size: 13.5px; }
+.prep .qty { font-family: var(--font-display); font-weight: 600; font-size: 18px; text-align: right; font-variant-numeric: tabular-nums; }
+.prep .prod { font-weight: 600; letter-spacing: .2px; }
+.prep .nota { color: var(--text-muted); font-style: italic; }
+.prep .medida { color: var(--label); font-family: var(--font-mono); font-size: 12.5px; }
+
+.warn-block {
+  margin-top: 26px;
+  background: var(--warning-soft);
+  border: 1px solid var(--warning);
+  border-radius: 9px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.warn-block .txt { min-width: 0; }
+.warn-block .txt b { display: block; font-size: 13.5px; }
+.warn-block .txt span { font-size: 12.5px; color: var(--warning); }
+.warn-block .link { margin-left: auto; color: var(--label); font-size: 12.5px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+
+/* ---------------- Ajustes blocks ---------------- */
+.stack { display: flex; flex-direction: column; gap: 24px; }
+.block-title { font-family: var(--font-display); font-weight: 600; font-size: 20px; margin: 0 0 12px; }
+
+.kraft-panel {
+  background: var(--surface-alt);
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  padding: 18px 20px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.4);
+}
+.kraft-panel .kv { display: flex; align-items: center; gap: 14px; padding: 10px 0; }
+.kraft-panel .kv .k { color: var(--label); font-size: 13px; }
+.kraft-panel .kv .v { margin-left: auto; font-family: var(--font-mono); font-size: 13px; }
+.kraft-panel .actions { display: flex; gap: 9px; margin-top: 14px; padding-top: 14px; border-top: 1px dashed var(--border-strong); }
+
+.ruled { background: var(--surface); border: 1px solid var(--surface-alt); border-radius: 12px; padding: 6px 18px; }
+.ruled .r { display: flex; align-items: center; gap: 14px; padding: 13px 0; border-bottom: 1px dashed var(--border); }
+.ruled .r:last-child { border-bottom: none; }
+.ruled .r .k { font-size: 13.5px; }
+.ruled .r .v { margin-left: auto; display: flex; align-items: center; gap: 10px; color: var(--text-muted); font-size: 13px; }
+.ruled .r .v.mono { font-family: var(--font-mono); }
+.ruled input[type=number] {
+  width: 90px;
+  padding: 6px 9px;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  background: var(--bg);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text);
+}
+
+.logs {
+  background: var(--text);
+  border-radius: 12px;
+  padding: 16px 18px;
+  border: 1px solid var(--text);
+  box-shadow: inset 0 0 0 1px rgba(246,239,221,.06);
+}
+.logs pre {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.85;
+  color: var(--bg);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.logs pre .t { color: var(--text-muted); }
+.logs pre .ok { color: var(--on-dark-ok); }
+.logs pre .wn { color: var(--on-dark-warn); }
+.logs .foot { display: flex; justify-content: flex-end; margin-top: 12px; }
+.logs .btn-kraft { background: var(--text-muted); color: var(--bg); border-color: var(--border-strong); }
+.logs .btn-kraft:hover { background: var(--accent-hover); }
+
+/* ---------------- Toast ---------------- */
+.toast {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s;
+  z-index: 10000;
+  background: var(--text);
+  color: var(--bg);
+  border-radius: 10px;
+  padding: 11px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  box-shadow: 0 6px 18px rgba(47,32,19,.35);
+}
+.toast svg { width: 16px; height: 16px; stroke: var(--success-soft); stroke-width: 2.2; fill: none; }
+
+/* ================= Responsive (mobile-first) ================= */
+/* Base: phone */
+.menu-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 40px; height: 40px; flex: 0 0 auto;
+  border: 1px solid var(--border-strong); border-radius: 9px;
+  background: var(--surface); color: var(--text); cursor: pointer;
+}
+.menu-btn svg { width: 22px; height: 22px; stroke: currentColor; stroke-width: 1.9; fill: none; stroke-linecap: round; }
+.sidebar {
+  position: fixed; top: 0; bottom: 0; left: 0;
+  width: 272px; max-width: 84vw; height: auto;
+  z-index: 60; transform: translateX(-100%); transition: transform .22s ease;
+  overflow-y: auto; box-shadow: 0 18px 40px rgba(58,36,16,.25);
+}
+.sidebar.open { transform: none; }
+.scrim { position: fixed; inset: 0; z-index: 55; background: rgba(58,36,16,.42); opacity: 0; pointer-events: none; transition: opacity .2s; }
+.scrim.on { opacity: 1; pointer-events: auto; }
+body { display: block; }
+.main { display: block; }
+.topbar { height: auto; min-height: 58px; padding: 8px 14px; flex-wrap: wrap; gap: 10px; }
+.topbar h1 { font-size: 18px; }
+.topbar .sub { display: none; }
+.topbar .right { gap: 8px; }
+.content { padding: 16px; }
+.screen-head { flex-wrap: wrap; align-items: flex-start; }
+.screen-head .actions { margin-left: 0; width: 100%; }
+.ledger { grid-template-columns: repeat(2, 1fr); margin-bottom: 22px; }
+.tile { padding: 14px 16px; }
+.tile .value { font-size: 28px; }
+.cols { grid-template-columns: 1fr; gap: 22px; }
+.with-drawer { grid-template-columns: 1fr; gap: 18px; }
+.drawer, .editor-side { position: static; top: auto; }
+.panel { border: 0; background: transparent; box-shadow: none; border-radius: 0; overflow: visible; }
+.warn-block { flex-wrap: wrap; }
+.toast { left: 12px; right: 12px; bottom: 12px; justify-content: center; }
+.prep { display: block; }
+.prep .ph { display: none; }
+.prep .row { display: grid; grid-template-columns: 34px 1fr; column-gap: 10px; row-gap: 1px; padding: 9px 0; border-bottom: 1px dashed var(--border); }
+.prep .row > div { padding: 0; border: 0; }
+.prep .qty { grid-column: 1; grid-row: 1; text-align: left; }
+.prep .prod { grid-column: 2; grid-row: 1; }
+.prep .medida { grid-column: 2; grid-row: 2; }
+.prep .nota { grid-column: 2; grid-row: 3; }
+.t-head { flex-wrap: wrap; row-gap: 6px; }
+.t-head .spacer { display: none; }
+.t-body { flex-wrap: wrap; row-gap: 6px; }
+.t-total { margin-left: 0; width: 100%; text-align: right; }
+
+@media (max-width: 430px) {
+  .topbar .kraft-chip { display: none; }
+}
+
+@media (max-width: 699px) {
+  .ledger .tile { border-bottom: 1px dashed var(--border); }
+  .ledger .tile:nth-child(2n) { border-right: none; }
+  .ledger .tile:nth-last-child(-n+2) { border-bottom: none; }
+  .table thead { display: none; }
+  .table, .table tbody, .table tr, .table td { display: block; }
+  .table tr { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; margin-bottom: 10px; }
+  .table td { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 6px 0; border: 0; }
+  .table td[data-label]::before { content: attr(data-label); color: var(--label); font-size: 12px; }
+  .table td.cell-acct { display: block; padding-bottom: 6px; border-bottom: 1px dashed var(--border); margin-bottom: 4px; }
+  .table td.cell-acct span { display: block; font-size: 12.5px; color: var(--text-muted); margin-top: 2px; }
+  .table td.cell-acct::before { display: none; }
+  .table td.acc { justify-content: flex-end; color: var(--label); }
+  .table td.acc::before { display: none; }
+  .toolbar .search { width: 100%; }
+}
+
+@media (min-width: 700px) {
+  .menu-btn { display: none; }
+  .scrim { display: none; }
+  body { display: flex; }
+  .sidebar { position: sticky; top: 0; height: 100vh; width: 248px; flex: 0 0 248px; transform: none; transition: none; box-shadow: none; }
+  .main { display: flex; flex-direction: column; }
+  .topbar { height: 68px; min-height: 68px; padding: 0 24px; flex-wrap: nowrap; }
+  .topbar h1 { font-size: 22px; }
+  .topbar .sub { display: block; }
+  .content { padding: 24px; }
+  .screen-head { flex-wrap: nowrap; align-items: flex-end; }
+  .screen-head .actions { margin-left: auto; width: auto; }
+  .ledger { grid-template-columns: repeat(4, 1fr); margin-bottom: 30px; }
+  .tile { padding: 16px 20px 18px; }
+  .tile .value { font-size: 34px; }
+  .panel { border: 1px solid var(--surface-alt); background: var(--surface); border-radius: 12px; overflow: hidden; box-shadow: 0 1px 0 rgba(138,90,43,.1); }
+  .toast { left: auto; right: 24px; bottom: 24px; }
+  .prep { display: grid; grid-template-columns: 68px 1fr 110px 1fr; column-gap: 18px; }
+  .prep .ph { display: block; }
+  .prep .row { display: contents; }
+  .prep .row > div { padding: 9px 0; border-bottom: 1px dashed var(--border); }
+  .prep .qty { grid-column: auto; grid-row: auto; text-align: right; }
+  .prep .prod, .prep .medida, .prep .nota { grid-column: auto; grid-row: auto; }
+  .t-head { flex-wrap: nowrap; row-gap: 0; }
+  .t-head .spacer { display: block; }
+  .t-body { flex-wrap: nowrap; row-gap: 0; }
+  .t-total { margin-left: auto; width: auto; }
+}
+
+@media (min-width: 1040px) {
+  .topbar { padding: 0 30px; }
+  .content { padding: 30px; }
+  .cols { grid-template-columns: 1.45fr 1fr; gap: 30px; }
+  .with-drawer { grid-template-columns: minmax(0,1fr) 340px; gap: 26px; }
+  .drawer, .editor-side { position: sticky; top: 88px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .screen { animation: none; }
+  .switch, .switch::after { transition: none; }
+}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="brand">
+    <div class="logo">
+      <img src="palorosa-logo.png" alt="Palorosa">
+    </div>
+    <div class="brand-text">
+      <span class="wordmark">Palorosa</span>
+      <span class="brand-sub">Cocina</span>
+    </div>
+  </div>
+
+  <nav class="nav" id="nav" aria-label="Secciones">
+    <button data-screen="resumen" data-title="Resumen" data-sub="La cocina de hoy, de un vistazo" class="active">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+      Resumen
+    </button>
+    <button data-screen="bots" data-title="Bots de WhatsApp" data-sub="Las cuentas que atienden la cocina">
+      <svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/><path d="M8.5 9.5h7M8.5 12.5h4"/></svg>
+      Bots
+    </button>
+    <button data-screen="destinos" data-title="Destinos y horarios" data-sub="A quién avisamos, con qué bot y a qué hora">
+      <svg viewBox="0 0 24 24"><path d="M21 3 3 10l7 3 3 7z"/><path d="M21 3 10 13"/></svg>
+      Destinos
+    </button>
+    <button data-screen="pedidos" data-title="Pedidos" data-sub="Lo que entró desde la tienda">
+      <svg viewBox="0 0 24 24"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg>
+      Pedidos
+    </button>
+    <button data-screen="lista" data-title="Lista de cocina" data-sub="Lo que hay que preparar hoy">
+      <svg viewBox="0 0 24 24"><path d="M4 6h.01M4 12h.01M4 18h.01M8.5 6h11M8.5 12h11M8.5 18h11"/></svg>
+      Lista
+    </button>
+    <button data-screen="ajustes" data-title="Ajustes" data-sub="Túnel, arranque y diagnóstico">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.1 5.1l2.1 2.1M16.8 16.8l2.1 2.1M18.9 5.1l-2.1 2.1M7.2 16.8l-2.1 2.1"/></svg>
+      Ajustes
+    </button>
+  </nav>
+
+  <div class="side-foot">
+    <div class="row"><span class="dot herb"></span> WhatsApp 2 de 2</div>
+    <div class="row"><span class="dot herb"></span> Túnel activo</div>
+  </div>
+</aside>
+
+<div class="scrim" id="scrim"></div>
+
+<div class="main">
+  <header class="topbar">
+    <button class="menu-btn" id="menu-btn" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="nav">
+      <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+    <div class="titles">
+      <h1 id="top-title">Resumen</h1>
+      <span class="sub" id="top-sub">La cocina de hoy, de un vistazo</span>
+    </div>
+    <div class="right">
+      <span class="stamp herb">2 de 2 bots</span>
+      <span class="kraft-chip">cocina.whitesu.dev</span>
+      <div class="avatar">P</div>
+    </div>
+  </header>
+
+  <main class="content">
+
+    <!-- ================= RESUMEN ================= -->
+    <section class="screen" id="screen-resumen">
+      <div class="ledger">
+        <div class="tile">
+          <div class="label">Bots conectados</div>
+          <div class="value">2 <small>de 2</small></div>
+          <div class="foot">Sin incidencias</div>
+        </div>
+        <div class="tile">
+          <div class="label">Túnel</div>
+          <div class="value">Activo</div>
+          <div class="foot mono">cocina.whitesu.dev</div>
+        </div>
+        <div class="tile">
+          <div class="label">Unidades de hoy</div>
+          <div class="value">177</div>
+          <div class="foot">Actualizada hace 4 min</div>
+        </div>
+        <div class="tile">
+          <div class="label">Próximo envío</div>
+          <div class="value">12:00</div>
+          <div class="foot">2 destinos</div>
+        </div>
+      </div>
+
+      <div class="cols">
+        <div>
+          <h3 class="section-label">Actividad reciente</h3>
+          <hr class="section-rule">
+          <div class="activity">
+            <div class="act">
+              <span class="dot" style="background:var(--accent)"></span>
+              <span class="txt"><b>Nuevo pedido #6476</b> <span>de Ana Gómez (mañana)</span></span>
+              <span class="when">4 min</span>
+            </div>
+            <div class="act">
+              <span class="dot" style="background:var(--warning)"></span>
+              <span class="txt"><b>Pedido #6471 actualizado</b> <span>: se agregó 1 unidad</span></span>
+              <span class="when">22 min</span>
+            </div>
+            <div class="act">
+              <span class="dot" style="background:var(--success)"></span>
+              <span class="txt"><b>Envío de 06:30 entregado</b> <span>a Doña Marta</span></span>
+              <span class="when">5 h</span>
+            </div>
+            <div class="act">
+              <span class="dot" style="background:var(--border-strong)"></span>
+              <span class="txt"><b>Bot Caja vinculado</b> <span>desde el panel</span></span>
+              <span class="when">1 d</span>
+            </div>
+            <div class="act">
+              <span class="dot" style="background:var(--text-muted)"></span>
+              <span class="txt"><b>Lista publicada para hoy</b> <span>: 177 unidades</span></span>
+              <span class="when">1 d</span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="recipe">
+            <div class="recipe-head">
+              <h3>Estado de bots</h3>
+              <span class="pin">2 cuentas</span>
+            </div>
+            <div class="bot-line">
+              <div class="grow">
+                <div class="bname">Cocina</div>
+                <div class="bphone">+57 323 802 2428</div>
+              </div>
+              <span class="stamp herb">Conectado</span>
+            </div>
+            <div class="bot-line">
+              <div class="grow">
+                <div class="bname">Caja</div>
+                <div class="bphone">+57 300 111 2233</div>
+              </div>
+              <span class="stamp honey">Sin vincular</span>
+            </div>
+          </div>
+
+          <h3 class="section-label">Acciones rápidas</h3>
+          <hr class="section-rule">
+          <div class="quick">
+            <button class="btn btn-primary">
+              <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+              Agregar bot
+            </button>
+            <button class="btn btn-kraft">
+              <svg viewBox="0 0 24 24"><path d="M4 12h16M4 12l5-5M4 12l5 5"/><path d="M14 6h6v12h-6"/></svg>
+              Publicar lista de hoy
+            </button>
+            <button class="btn btn-kraft">
+              <svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/><path d="M8.5 9.5h7"/></svg>
+              Enviar prueba
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= BOTS ================= -->
+    <section class="screen" id="screen-bots" hidden>
+      <div class="screen-head">
+        <div class="actions">
+          <button class="btn btn-primary">
+            <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+            Agregar bot
+          </button>
+        </div>
+      </div>
+
+      <div class="with-drawer">
+        <div class="panel">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Cuenta</th>
+                <th>Estado</th>
+                <th>Números autorizados</th>
+                <th>Modo loopback</th>
+                <th>Última actividad</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="cell-acct"><b>Cocina</b><span>+57 323 802 2428</span></td>
+                <td><span class="stamp herb">Conectado</span></td>
+                <td class="num">3</td>
+                <td><button class="switch on" role="switch" aria-checked="true" aria-label="Modo loopback Cocina"></button></td>
+                <td class="num">hace 4 min</td>
+                <td class="acc" aria-hidden="true">…</td>
+              </tr>
+              <tr>
+                <td class="cell-acct"><b>Caja</b><span>+57 300 111 2233</span></td>
+                <td><span class="stamp honey">Sin vincular</span></td>
+                <td class="num">1</td>
+                <td><button class="switch" role="switch" aria-checked="false" aria-label="Modo loopback Caja"></button></td>
+                <td class="num">-</td>
+                <td class="acc" aria-hidden="true">…</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <aside class="drawer">
+          <div class="drawer-head">
+            <h3>Cocina</h3>
+            <span class="stamp herb">Conectado</span>
+          </div>
+
+          <div class="qr-wrap">
+            <div class="qr" id="qr"></div>
+            <div class="qr-cap">Escanea con WhatsApp</div>
+            <button class="btn btn-ghost btn-sm">Reintentar</button>
+          </div>
+
+          <div class="drawer-rows">
+            <div class="drow">
+              <span class="k">Estado</span>
+              <span class="v"><span class="stamp herb">Conectado</span></span>
+            </div>
+            <div class="drow" style="align-items:flex-start">
+              <div style="flex:1">
+                <span class="k">Modo loopback</span>
+                <div class="helper">Responde a los mensajes que te envías a ti mismo</div>
+              </div>
+              <span class="v"><button class="switch on" role="switch" aria-checked="true" aria-label="Modo loopback"></button></span>
+            </div>
+            <div class="drow" style="flex-direction:column; align-items:stretch">
+              <span class="k" style="margin-bottom:9px">Números autorizados</span>
+              <div class="chips" style="margin-bottom:4px">
+                <span class="chip mono">+57 323 802 2428 <span class="x">✕</span></span>
+                <span class="chip mono">+57 300 111 2233 <span class="x">✕</span></span>
+              </div>
+              <div class="add-row">
+                <input class="input" placeholder="+57 3…" aria-label="Nuevo número">
+                <button class="btn btn-kraft">Agregar</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="drawer-foot">
+            <button class="btn btn-kraft btn-sm">Enviar prueba</button>
+            <button class="btn btn-ghost btn-sm">Cerrar sesión</button>
+            <button class="btn btn-danger btn-sm">Eliminar bot</button>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ================= DESTINOS ================= -->
+    <section class="screen" id="screen-destinos" hidden>
+      <div class="with-drawer">
+        <div class="panel">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Destino</th>
+                <th>Bot</th>
+                <th>Eventos</th>
+                <th>Horario</th>
+                <th>Activo</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="cell-acct"><b>Doña Marta</b><span>+57 323 802 2428</span></td>
+                <td>Cocina</td>
+                <td><div class="chips"><span class="chip">Nuevos</span><span class="chip">Cambios</span></div></td>
+                <td class="num">06:30 · 12:00</td>
+                <td><button class="switch on" role="switch" aria-checked="true" aria-label="Activo Doña Marta"></button></td>
+              </tr>
+              <tr>
+                <td class="cell-acct"><b>Yo (pruebas)</b><span>+57 323 802 2428</span></td>
+                <td>Cocina</td>
+                <td><div class="chips"><span class="chip">Nuevos</span></div></td>
+                <td><span class="stamp neutral">Inmediato</span></td>
+                <td><button class="switch on" role="switch" aria-checked="true" aria-label="Activo Yo"></button></td>
+              </tr>
+              <tr>
+                <td class="cell-acct"><b>Admin</b><span>+57 301 555 0199</span></td>
+                <td><div style="display:flex;align-items:center;gap:8px">Caja <span class="stamp honey">Sin vincular</span></div></td>
+                <td><div class="chips"><span class="chip">Hoy</span></div></td>
+                <td class="num">07:00</td>
+                <td><button class="switch" role="switch" aria-checked="false" aria-label="Activo Admin"></button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <aside class="recipe editor-side" style="margin:0">
+          <div class="recipe-head">
+            <h3>Editar destino</h3>
+          </div>
+
+          <div class="field">
+            <label class="label" for="d-etq">Etiqueta</label>
+            <input class="input" id="d-etq" value="Doña Marta">
+          </div>
+          <div class="field">
+            <label class="label" for="d-num">Número</label>
+            <input class="input" id="d-num" value="+57 323 802 2428">
+          </div>
+          <div class="field">
+            <label class="label" for="d-bot">Bot que envía</label>
+            <div class="select"><select id="d-bot"><option>Cocina</option><option>Caja</option></select></div>
+          </div>
+          <div class="field">
+            <span class="label">Eventos</span>
+            <div class="checks">
+              <label class="check"><input type="checkbox" checked> Nuevos</label>
+              <label class="check"><input type="checkbox" checked> Cambios</label>
+              <label class="check"><input type="checkbox" checked> Hoy</label>
+              <label class="check"><input type="checkbox" checked> Mañana</label>
+            </div>
+          </div>
+          <div class="field">
+            <span class="label">Horario</span>
+            <div class="seg">
+              <button type="button">Inmediato</button>
+              <button type="button" class="active">Por horas</button>
+            </div>
+          </div>
+          <div class="field">
+            <div class="chips">
+              <span class="chip">06:30 <span class="x">✕</span></span>
+              <span class="chip">12:00 <span class="x">✕</span></span>
+              <span class="chip" style="cursor:pointer">+ Agregar hora</span>
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Silencio</label>
+            <div class="field-row">
+              <input class="input" value="21:00">
+              <input class="input" value="06:00">
+            </div>
+          </div>
+
+          <div class="note">
+            <svg viewBox="0 0 24 24"><path d="M12 8v5M12 16h.01"/><circle cx="12" cy="12" r="9"/></svg>
+            <span>Si un número está en dos destinos, recibirá dos mensajes.</span>
+          </div>
+
+          <div class="drawer-foot">
+            <button class="btn btn-ghost btn-sm">Enviar prueba</button>
+            <button class="btn btn-primary btn-sm" id="save-dest">Guardar</button>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ================= PEDIDOS ================= -->
+    <section class="screen" id="screen-pedidos" hidden>
+      <div class="toolbar">
+        <div class="datechips">
+          <button class="active">Hoy, 1 oct</button>
+          <button>Mañana</button>
+          <button>Elegir fecha…</button>
+        </div>
+        <div class="search">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+          <input class="input" placeholder="Buscar por cliente o número…">
+        </div>
+      </div>
+
+      <div class="tickets">
+        <article class="ticket">
+          <div class="t-head">
+            <span class="t-num">#6476</span>
+            <span class="t-client">Ana Gómez</span>
+            <span class="stamp herb">En proceso</span>
+            <span class="spacer"></span>
+            <span class="t-meal">Mañana · 2 oct</span>
+            <span class="t-time">hace 4 min</span>
+            <span class="t-more">…</span>
+          </div>
+          <div class="t-body">
+            <span class="t-line">x2 Gold Basic · x1 Brunch Chill</span>
+            <span class="t-total">3 artículos</span>
+          </div>
+        </article>
+
+        <article class="ticket dim">
+          <div class="t-head">
+            <span class="t-num">#6471</span>
+            <span class="t-client">Carlos Ruiz</span>
+            <span class="stamp honey">Pendiente</span>
+            <span class="spacer"></span>
+            <span class="t-meal">Hoy, 1 oct</span>
+            <span class="t-time">hace 22 min</span>
+            <span class="t-more">…</span>
+          </div>
+          <div class="t-body">
+            <span class="t-line">x1 Rosas · x2 Jugo de naranja</span>
+            <span class="t-total">3 artículos</span>
+          </div>
+        </article>
+
+        <article class="ticket cancel">
+          <div class="t-head">
+            <span class="t-num">#6468</span>
+            <span class="t-client">Laura Pérez</span>
+            <span class="stamp jam">Cancelado</span>
+            <span class="spacer"></span>
+            <span class="t-meal">Hoy, 1 oct</span>
+            <span class="t-time">hace 1 h</span>
+            <span class="t-more">…</span>
+          </div>
+          <div class="t-body">
+            <span class="t-line">x1 Brunch Chill</span>
+            <span class="t-total">1 artículo</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ================= LISTA ================= -->
+    <section class="screen" id="screen-lista" hidden>
+      <div class="screen-head">
+        <div class="actions">
+          <button class="btn btn-kraft">
+            <svg viewBox="0 0 24 24"><path d="M6 9V4h12v5"/><rect x="4" y="9" width="16" height="8" rx="1.5"/><path d="M7 17v3h10v-3"/></svg>
+            Imprimir
+          </button>
+          <button class="btn btn-kraft">
+            <svg viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>
+            Copiar
+          </button>
+        </div>
+      </div>
+
+      <div class="clip-wrap">
+        <div class="clip" aria-hidden="true"></div>
+        <div class="clipboard">
+          <div class="prep">
+            <div class="ph r">Cantidad</div>
+            <div class="ph">Producto</div>
+            <div class="ph">Medida</div>
+            <div class="ph">Nota</div>
+          </div>
+
+          <div class="cat">Bebidas</div>
+          <div class="prep">
+            <div class="row"><div class="qty">12</div><div class="prod">ROSAS</div><div class="medida">-</div><div class="nota">-</div></div>
+            <div class="row"><div class="qty">4</div><div class="prod">JUGO DE NARANJA</div><div class="medida">250 ml</div><div class="nota">Sin azúcar</div></div>
+            <div class="row"><div class="qty">2</div><div class="prod">SANDWICH CROISSANT</div><div class="medida">-</div><div class="nota">Tostado aparte</div></div>
+          </div>
+
+          <div class="cat">Comidas</div>
+          <div class="prep">
+            <div class="row"><div class="qty">2</div><div class="prod">GOLD BASIC</div><div class="medida">-</div><div class="nota">-</div></div>
+            <div class="row"><div class="qty">1</div><div class="prod">BRUNCH CHILL</div><div class="medida">-</div><div class="nota">Sin tomate</div></div>
+          </div>
+
+          <div class="cat">Postres</div>
+          <div class="prep">
+            <div class="row"><div class="qty">1</div><div class="prod">MINI PANCAKES</div><div class="medida">-</div><div class="nota">Con miel</div></div>
+          </div>
+
+          <div class="warn-block">
+            <span class="stamp big">Sin resolver</span>
+            <div class="txt">
+              <b>Yogurt con granola, cantidad 1, opción no reconocida</b>
+              <span>Confirma el producto antes de preparar el pedido.</span>
+            </div>
+            <span class="link">Revisar</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= AJUSTES ================= -->
+    <section class="screen" id="screen-ajustes" hidden>
+      <div class="stack">
+        <div>
+          <h3 class="block-title">Túnel de Cloudflare</h3>
+          <div class="kraft-panel">
+            <div class="kv">
+              <span class="k">Hostname</span>
+              <span class="v">cocina.whitesu.dev</span>
+            </div>
+            <div class="kv">
+              <span class="k">Estado</span>
+              <span class="v"><span class="stamp herb big">Activo</span></span>
+            </div>
+            <div class="actions">
+              <button class="btn btn-kraft">Reiniciar</button>
+              <button class="btn btn-ghost">Copiar URL</button>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="block-title">Aplicación</h3>
+          <div class="ruled">
+            <div class="r">
+              <span class="k">Iniciar con el sistema</span>
+              <span class="v"><button class="switch on" role="switch" aria-checked="true" aria-label="Iniciar con el sistema"></button></span>
+            </div>
+            <div class="r">
+              <span class="k">Puerto del panel</span>
+              <span class="v"><input type="number" value="5211" aria-label="Puerto del panel"></span>
+            </div>
+            <div class="r">
+              <span class="k">Catálogo</span>
+              <span class="v mono">C:\Palorosa\catalogo.xlsx</span>
+            </div>
+            <div class="r">
+              <span class="k">Modo depuración</span>
+              <span class="v"><button class="switch" role="switch" aria-checked="false" aria-label="Modo depuración"></button></span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="block-title">Registros</h3>
+          <div class="logs">
+            <pre><span class="t">[06:30:02]</span> Enviando lista a 2 destinos…
+<span class="t">[06:30:03]</span> <span class="ok">Doña Marta: entregado</span>
+<span class="t">[06:30:03]</span> <span class="ok">Yo (pruebas): entregado</span>
+<span class="t">[07:00:14]</span> <span class="wn">Bot Caja sin vincular, se omite</span>
+<span class="t">[12:00:00]</span> Programado envío de mediodía
+<span class="t">[12:00:01]</span> Lista generada: 177 unidades</pre>
+            <div class="foot">
+              <button class="btn btn-kraft btn-sm">Ver carpeta</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<div class="toast" role="status">
+  <svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg>
+  Destino guardado
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ---- Navigation ---- */
+  var nav = document.getElementById('nav');
+  var screens = document.querySelectorAll('.screen');
+  var title = document.getElementById('top-title');
+  var sub = document.getElementById('top-sub');
+
+  function show(name, btn) {
+    screens.forEach(function (s) {
+      s.hidden = s.id !== 'screen-' + name;
+    });
+    nav.querySelectorAll('button').forEach(function (b) {
+      b.classList.toggle('active', b === btn);
+    });
+    if (btn) {
+      title.textContent = btn.getAttribute('data-title');
+      sub.textContent = btn.getAttribute('data-sub');
+    }
+  }
+
+  nav.addEventListener('click', function (e) {
+    var btn = e.target.closest('button[data-screen]');
+    if (btn) show(btn.getAttribute('data-screen'), btn);
+  });
+
+  /* ---- Switches ---- */
+  document.querySelectorAll('.switch').forEach(function (sw) {
+    sw.addEventListener('click', function () {
+      var on = sw.classList.toggle('on');
+      sw.setAttribute('aria-checked', on ? 'true' : 'false');
+    });
+  });
+
+  /* ---- Segmented control ---- */
+  document.querySelectorAll('.seg').forEach(function (seg) {
+    seg.addEventListener('click', function (e) {
+      var b = e.target.closest('button');
+      if (!b) return;
+      seg.querySelectorAll('button').forEach(function (x) { x.classList.remove('active'); });
+      b.classList.add('active');
+    });
+  });
+
+  /* ---- Date chips ---- */
+  document.querySelectorAll('.datechips').forEach(function (dc) {
+    dc.addEventListener('click', function (e) {
+      var b = e.target.closest('button');
+      if (!b) return;
+      dc.querySelectorAll('button').forEach(function (x) { x.classList.remove('active'); });
+      b.classList.add('active');
+    });
+  });
+
+  /* ---- Toast on save ---- */
+  var toast = document.querySelector('.toast');
+  var toastTimer = null;
+  function popToast() {
+    toast.style.transition = 'opacity .25s';
+    toast.style.opacity = '1';
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toast.style.opacity = '0'; }, 2200);
+  }
+  var save = document.getElementById('save-dest');
+  if (save) save.addEventListener('click', popToast);
+
+  /* ---- Responsive drawer ---- */
+  var menuBtn = document.getElementById('menu-btn');
+  var scrim = document.getElementById('scrim');
+  var sidebar = document.querySelector('.sidebar');
+  function closeDrawer() {
+    if (!sidebar) return;
+    sidebar.classList.remove('open');
+    if (scrim) scrim.classList.remove('on');
+    if (menuBtn) menuBtn.setAttribute('aria-expanded', 'false');
+  }
+  if (menuBtn && sidebar) {
+    menuBtn.addEventListener('click', function () {
+      var open = sidebar.classList.toggle('open');
+      if (scrim) scrim.classList.toggle('on', open);
+      menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+  }
+  if (scrim) scrim.addEventListener('click', closeDrawer);
+  nav.addEventListener('click', closeDrawer);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeDrawer(); });
+
+  /* ---- Table labels for the mobile card layout ---- */
+  document.querySelectorAll('.table').forEach(function (table) {
+    var heads = Array.prototype.map.call(table.querySelectorAll('thead th'), function (th) { return th.textContent.trim(); });
+    table.querySelectorAll('tbody tr').forEach(function (tr) {
+      Array.prototype.forEach.call(tr.children, function (td, i) {
+        if (heads[i]) td.setAttribute('data-label', heads[i]);
+      });
+    });
+  });
+
+  /* ---- QR (deterministic, plausible) ---- */
+  var qr = document.getElementById('qr');
+  if (qr) {
+    var n = 21;
+    var seed = 1337;
+    function rnd() {
+      seed = (seed * 1103515245 + 12345) & 0x7fffffff;
+      return seed / 0x7fffffff;
+    }
+    function finder(lr, lc) {
+      if (lr === 0 || lr === 6 || lc === 0 || lc === 6) return true;
+      return lr >= 2 && lr <= 4 && lc >= 2 && lc <= 4;
+    }
+    var boxes = [[0, 0], [0, n - 7], [n - 7, 0]];
+    function inFinder(r, c) {
+      for (var i = 0; i < boxes.length; i++) {
+        var br = boxes[i][0], bc = boxes[i][1];
+        if (r >= br && r < br + 7 && c >= bc && c < bc + 7) return finder(r - br, c - bc);
+      }
+      return null;
+    }
+    var html = '';
+    for (var r = 0; r < n; r++) {
+      for (var c = 0; c < n; c++) {
+        var f = inFinder(r, c);
+        var on = f === null ? rnd() > 0.52 : f;
+        html += '<i class="' + (on ? 'on' : '') + '"></i>';
+      }
+    }
+    qr.innerHTML = html;
+  }
+})();
+</script>
+
+</body>
+</html>

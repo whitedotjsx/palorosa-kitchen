@@ -15,6 +15,7 @@
 		"typescript": "^6.0.3"
 	},
 	"dependencies": {
-		"@palorosa-kitchen/core": "workspace:*"
+		"@palorosa-kitchen/core": "workspace:*",
+		"@palorosa-kitchen/orders-export": "workspace:*"
 	}
 }

@@ -1,0 +1,24 @@
+{
+	"name": "@palorosa-kitchen/orders-export",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
+	"description": "Pull one delivery day's orders from the store's WP All Export and turn them into the kitchen list. HTTP only.",
+	"exports": {
+		".": "./src/lib.ts"
+	},
+	"scripts": {
+		"orders": "tsx src/index.ts",
+		"check": "tsc --noEmit",
+		"test": "vitest run --passWithNoTests"
+	},
+	"dependencies": {
+		"@palorosa-kitchen/core": "workspace:*"
+	},
+	"devDependencies": {
+		"@types/node": "^26.6.3",
+		"tsx": "^4.23.15",
+		"typescript": "^6.0.3",
+		"vitest": "^5.0.2"
+	}
+}

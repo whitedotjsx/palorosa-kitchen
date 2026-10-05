@@ -6,9 +6,6 @@
 	"engines": {
 		"node": ">=22"
 	},
-	"pnpm": {
-		"onlyBuiltDependencies": ["esbuild"]
-	},
 	"scripts": {
 		"lint": "eslint .",
 		"lint:fix": "eslint . --fix",
@@ -16,10 +13,14 @@
 		"check": "pnpm -r --if-present run check",
 		"test": "pnpm -r --if-present run test",
 		"migrate": "pnpm --filter @palorosa-kitchen/migration run migrate",
-		"editor": "pnpm --filter @palorosa-kitchen/catalog-editor run dev",
+		"orders": "pnpm --filter @palorosa-kitchen/orders-export run orders",
+		"panel": "pnpm --filter @palorosa-kitchen/panel run dev",
 		"build:list": "pnpm --filter @palorosa-kitchen/standalone run build",
-		"server": "pnpm --filter @palorosa-kitchen/kitchen-server run dev",
+		"build:panel": "pnpm --filter @palorosa-kitchen/panel run build",
 		"bot": "pnpm --filter @palorosa-kitchen/whatsapp-bot run dev",
+		"desktop": "go -C apps/desktop run .",
+		"desktop:build": "pwsh -NoProfile -File scripts/build-desktop.ps1",
+		"dev:desktop": "pwsh -NoProfile -File scripts/dev-desktop.ps1",
 		"sync:source": "pnpm --filter @palorosa-kitchen/migration run sync:source",
 		"snapshot": "pnpm --filter @palorosa-kitchen/migration run snapshot",
 		"diff:wp": "pnpm --filter @palorosa-kitchen/migration run diff:wp",

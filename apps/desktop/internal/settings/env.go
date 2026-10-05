@@ -8,6 +8,7 @@ func FromEnv(getenv func(string) string) Values {
 	return Values{
 		Domain:         strings.TrimSpace(getenv("PALOROSA_DOMAIN")),
 		TunnelHostname: strings.TrimSpace(getenv("TUNNEL_HOSTNAME")),
+		TunnelToken:    strings.TrimSpace(getenv("TUNNEL_TOKEN")),
 		WP: WP{
 			AdminURL:       strings.TrimSpace(getenv("WP_ADMIN_URL")),
 			AdminUser:      strings.TrimSpace(getenv("WP_ADMIN_USER")),

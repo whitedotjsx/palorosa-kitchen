@@ -63,7 +63,7 @@ const (
 
 // version is the running release. The build injects it with
 // -ldflags "-X main.version=x.y.z" and the updater compares against it.
-var version = "0.1.0"
+var version = "0.2.0"
 
 // startedAt is the process start, for the diagnostics uptime.
 var startedAt = time.Now()
@@ -396,6 +396,7 @@ func startTunnel(cfg config.Config) {
 		Name:            cfg.TunnelName,
 		Hostname:        cfg.TunnelHostname,
 		Service:         cfg.TunnelService,
+		Token:           cfg.TunnelToken,
 		DataDir:         cfg.DataDir,
 		CloudflaredPath: cloudflaredPath(cfg),
 		OnStatus: func(status tunnel.Status, _ string) {
@@ -755,6 +756,7 @@ func startPanel(cfg config.Config, bot *botShell, targets *notify.Manager, store
 				Status:      status.Name(),
 				Detail:      detail,
 				CertPresent: manager.LoggedIn(),
+				Token:       manager.TokenMode(),
 			}
 		},
 		OnChange: func() {

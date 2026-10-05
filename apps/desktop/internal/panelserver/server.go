@@ -147,6 +147,9 @@ type TunnelInfo struct {
 	Status      string `json:"status"`
 	Detail      string `json:"detail"`
 	CertPresent bool   `json:"certPresent"`
+	// Token reports that the tunnel runs with a token instead of the account
+	// certificate, so the panel hides the cloudflared login guidance.
+	Token bool `json:"token,omitempty"`
 }
 
 // Server is the local panel HTTP server.
@@ -1240,6 +1243,7 @@ h1{font-size:18px;margin:0 0 8px}p{margin:0;color:#8a6a54}code{background:#f6d5c
 type settingsPatch struct {
 	Domain         *string      `json:"domain"`
 	TunnelHostname *string      `json:"tunnelHostname"`
+	TunnelToken    *string      `json:"tunnelToken"`
 	CatalogPath    *string      `json:"catalogPath"`
 	PanelPort      *int         `json:"panelPort"`
 	Debug          *bool        `json:"debug"`
@@ -1270,6 +1274,9 @@ func applyPatch(current settings.Values, patch settingsPatch) settings.Values {
 	}
 	if patch.TunnelHostname != nil {
 		out.TunnelHostname = *patch.TunnelHostname
+	}
+	if patch.TunnelToken != nil {
+		out.TunnelToken = *patch.TunnelToken
 	}
 	if patch.CatalogPath != nil {
 		out.CatalogPath = *patch.CatalogPath

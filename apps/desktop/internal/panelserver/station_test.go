@@ -15,6 +15,7 @@ func TestSettingsExportImportRoundTrip(t *testing.T) {
 	original := settings.Values{
 		Domain:         "palorosabreakfast.com",
 		TunnelHostname: "cocina.palorosabreakfast.com",
+		TunnelToken:    "token-123",
 		WP:             settings.WP{AdminUser: "op", AdminPassword: "pw", ExportCronKey: "ck"},
 		WebhookSecret:  "wh",
 	}
@@ -28,7 +29,7 @@ func TestSettingsExportImportRoundTrip(t *testing.T) {
 		t.Fatalf("export status = %d, body %s", recorder.Code, recorder.Body)
 	}
 	exported := recorder.Body.Bytes()
-	if !bytes.Contains(exported, []byte(`"pw"`)) || !strings.Contains(recorder.Header().Get("Content-Disposition"), "attachment") {
+	if !bytes.Contains(exported, []byte(`"pw"`)) || !bytes.Contains(exported, []byte(`"token-123"`)) || !strings.Contains(recorder.Header().Get("Content-Disposition"), "attachment") {
 		t.Fatalf("export should carry secrets as a download: %s", exported)
 	}
 
@@ -39,8 +40,24 @@ func TestSettingsExportImportRoundTrip(t *testing.T) {
 		t.Fatalf("import status = %d, body %s", recorder.Code, recorder.Body)
 	}
 	got := otherStore.Values()
-	if got.WP.AdminPassword != "pw" || got.WebhookSecret != "wh" || got.TunnelHostname != original.TunnelHostname {
+	if got.WP.AdminPassword != "pw" || got.WebhookSecret != "wh" || got.TunnelHostname != original.TunnelHostname || got.TunnelToken != "token-123" {
 		t.Fatalf("import lost values: %+v", got)
+	}
+}
+
+func TestSettingsPatchMasksTunnelToken(t *testing.T) {
+	server, store, _ := newTestServer(t)
+	recorder := httptest.NewRecorder()
+	body := strings.NewReader(`{"tunnelToken":"secret-token-1234"}`)
+	server.Handler().ServeHTTP(recorder, loopback(httptest.NewRequest(http.MethodPatch, "/api/panel/settings", body)))
+	if recorder.Code != http.StatusOK {
+		t.Fatalf("patch status = %d, body %s", recorder.Code, recorder.Body)
+	}
+	if store.Values().TunnelToken != "secret-token-1234" {
+		t.Fatalf("token not stored: %+v", store.Values())
+	}
+	if strings.Contains(recorder.Body.String(), "secret-token-1234") || !strings.Contains(recorder.Body.String(), "1234") {
+		t.Fatalf("response should mask the token: %s", recorder.Body)
 	}
 }
 

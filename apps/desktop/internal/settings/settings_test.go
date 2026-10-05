@@ -21,6 +21,7 @@ func TestRoundTrip(t *testing.T) {
 	want := Values{
 		Domain:         "palorosabreakfast.com",
 		TunnelHostname: "cocina.palorosabreakfast.com",
+		TunnelToken:    "token-123",
 		WP: WP{
 			AdminURL:       "https://palorosabreakfast.com",
 			AdminUser:      "operador",
@@ -59,6 +60,7 @@ func TestSecretsAreNotStoredInClear(t *testing.T) {
 			ExportCronKey:  "cron-secret",
 		},
 		WebhookSecret: "webhook-secret",
+		TunnelToken:   "tunnel-secret",
 	}
 	if err := store.Update(values); err != nil {
 		t.Fatal(err)
@@ -68,7 +70,7 @@ func TestSecretsAreNotStoredInClear(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, secret := range []string{"admin-password", "consumer-secret", "cron-secret", "webhook-secret"} {
+	for _, secret := range []string{"admin-password", "consumer-secret", "cron-secret", "webhook-secret", "tunnel-secret"} {
 		if bytes.Contains(raw, []byte(secret)) {
 			t.Fatalf("secret %q stored in clear:\n%s", secret, raw)
 		}
@@ -88,6 +90,7 @@ func TestFromEnv(t *testing.T) {
 		"WP_EXPORT_ID":               "1",
 		"WC_WEBHOOK_SECRET":          "wh",
 		"TUNNEL_HOSTNAME":            "cocina.palorosabreakfast.com",
+		"TUNNEL_TOKEN":               "tok",
 	}
 	getenv := func(key string) string { return env[key] }
 
@@ -95,7 +98,7 @@ func TestFromEnv(t *testing.T) {
 	if got.WP.ConsumerKey != "ck" || got.WP.ConsumerSecret != "cs" {
 		t.Fatalf("consumer credentials not migrated: %+v", got.WP)
 	}
-	if got.WebhookSecret != "wh" || got.TunnelHostname != "cocina.palorosabreakfast.com" {
+	if got.WebhookSecret != "wh" || got.TunnelHostname != "cocina.palorosabreakfast.com" || got.TunnelToken != "tok" {
 		t.Fatalf("webhook or tunnel not migrated: %+v", got)
 	}
 	if FromEnv(func(string) string { return "" }).Empty() != true {
@@ -120,10 +123,11 @@ func TestRedactedHidesSecrets(t *testing.T) {
 	values := Values{
 		WP:            WP{AdminPassword: "pw", ConsumerSecret: "cs", ExportCronKey: "ck"},
 		WebhookSecret: "wh",
+		TunnelToken:   "tok",
 	}
 	redacted := values.Redacted()
 	if redacted.WP.AdminPassword == "pw" || redacted.WP.ConsumerSecret == "cs" ||
-		redacted.WP.ExportCronKey == "ck" || redacted.WebhookSecret == "wh" {
+		redacted.WP.ExportCronKey == "ck" || redacted.WebhookSecret == "wh" || redacted.TunnelToken == "tok" {
 		t.Fatalf("Redacted leaked a secret: %+v", redacted)
 	}
 }

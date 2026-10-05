@@ -40,6 +40,7 @@ type Config struct {
 	WPExportCronKey  string
 	TunnelName       string
 	TunnelHostname   string
+	TunnelToken      string
 	TunnelService    string
 	CloudflaredPath  string
 	AccessEnabled    bool
@@ -104,6 +105,7 @@ func Load() Config {
 		WPExportCronKey:  pick(values.WP.ExportCronKey, env("WP_EXPORT_CRON_KEY", "")),
 		TunnelName:       env("TUNNEL_NAME", "palorosa-kitchen"),
 		TunnelHostname:   pick(values.TunnelHostname, env("TUNNEL_HOSTNAME", "")),
+		TunnelToken:      pick(values.TunnelToken, env("TUNNEL_TOKEN", "")),
 		TunnelService:    env("TUNNEL_SERVICE", "http://127.0.0.1:"+strconv.Itoa(panelPort)),
 		CloudflaredPath:  env("CLOUDFLARED_PATH", ""),
 		AccessEnabled:    values.Access.Enabled,

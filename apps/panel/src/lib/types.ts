@@ -18,6 +18,7 @@ export interface WpSettings {
 export interface Settings {
   domain: string
   tunnelHostname: string
+  tunnelToken?: string
   catalogPath: string
   panelPort: number
   debug: boolean
@@ -57,6 +58,7 @@ export interface TunnelInfo {
   status: string
   detail: string
   certPresent: boolean
+  token?: boolean
 }
 
 export interface Invite {

@@ -16,7 +16,10 @@ import (
 type Values struct {
 	Domain         string `json:"domain,omitempty"`
 	TunnelHostname string `json:"tunnelHostname,omitempty"`
-	CatalogPath    string `json:"catalogPath,omitempty"`
+	// TunnelToken runs the named tunnel without the account certificate, so a
+	// new computer only needs the token in the imported configuration.
+	TunnelToken string `json:"tunnelToken,omitempty"`
+	CatalogPath string `json:"catalogPath,omitempty"`
 	PanelPort      int    `json:"panelPort,omitempty"`
 	Debug          bool   `json:"debug,omitempty"`
 	WP             WP     `json:"wp,omitempty"`
@@ -109,6 +112,7 @@ func (s *Store) Update(values Values) error {
 func (v Values) Empty() bool {
 	return v.Domain == "" &&
 		v.TunnelHostname == "" &&
+		v.TunnelToken == "" &&
 		v.WebhookSecret == "" &&
 		v.WP == WP{}
 }
@@ -120,6 +124,7 @@ func (v Values) Redacted() Values {
 	out.WP.ConsumerSecret = Mask(out.WP.ConsumerSecret)
 	out.WP.ExportCronKey = Mask(out.WP.ExportCronKey)
 	out.WebhookSecret = Mask(out.WebhookSecret)
+	out.TunnelToken = Mask(out.TunnelToken)
 	return out
 }
 
@@ -164,6 +169,9 @@ func sealValues(v Values) (Values, error) {
 	if v.WebhookSecret, err = seal(v.WebhookSecret); err != nil {
 		return Values{}, err
 	}
+	if v.TunnelToken, err = seal(v.TunnelToken); err != nil {
+		return Values{}, err
+	}
 	return v, nil
 }
 
@@ -179,6 +187,9 @@ func openValues(v Values) (Values, error) {
 		return Values{}, err
 	}
 	if v.WebhookSecret, err = open(v.WebhookSecret); err != nil {
+		return Values{}, err
+	}
+	if v.TunnelToken, err = open(v.TunnelToken); err != nil {
 		return Values{}, err
 	}
 	return v, nil

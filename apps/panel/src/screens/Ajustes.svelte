@@ -62,6 +62,7 @@
     consumerSecret: '',
     exportCronKey: '',
     webhookSecret: '',
+    tunnelToken: '',
   })
 
   async function loadSettings () {
@@ -312,7 +313,7 @@
     configBusy = true
     try {
       settings = await api<Settings>('/api/panel/settings/import', { method: 'POST', body: await file.text() })
-      secrets = { adminPassword: '', consumerSecret: '', exportCronKey: '', webhookSecret: '' }
+      secrets = { adminPassword: '', consumerSecret: '', exportCronKey: '', webhookSecret: '', tunnelToken: '' }
       notify(labels.ajustes.configImported)
     } catch (error) {
       notify((error as Error).message, true)
@@ -362,8 +363,9 @@
         wp,
       }
       if (secrets.webhookSecret) body.webhookSecret = secrets.webhookSecret
+      if (secrets.tunnelToken) body.tunnelToken = secrets.tunnelToken
       settings = await api<Settings>('/api/panel/settings', { method: 'PATCH', body: JSON.stringify(body) })
-      secrets = { adminPassword: '', consumerSecret: '', exportCronKey: '', webhookSecret: '' }
+      secrets = { adminPassword: '', consumerSecret: '', exportCronKey: '', webhookSecret: '', tunnelToken: '' }
       notify(labels.ajustes.saved)
       return true
     } catch (error) {
@@ -523,11 +525,11 @@
         <span class="v"><span class="stamp {statusClass} big">{statusText}</span></span>
       </div>
       <div class="kv">
-        <span class="k">{labels.ajustes.tunnelCert}</span>
-        <span class="v">{tunnel?.certPresent ? labels.ajustes.tunnelPresent : labels.ajustes.tunnelMissing}</span>
+        <span class="k">{labels.ajustes.tunnelAuth}</span>
+        <span class="v">{tunnel?.token ? labels.ajustes.tunnelTokenSet : (tunnel?.certPresent ? labels.ajustes.tunnelPresent : labels.ajustes.tunnelMissing)}</span>
       </div>
       <div class="actions">
-        {#if !tunnel?.certPresent}
+        {#if !tunnel?.certPresent && !tunnel?.token}
           <button class="btn btn-kraft" onclick={loginTunnel}>{labels.ajustes.tunnelLogin}</button>
         {/if}
         <button class="btn btn-ghost" onclick={copyUrl} disabled={!tunnel?.url}>{labels.ajustes.tunnelCopy}</button>
@@ -589,6 +591,11 @@
             <label class="label" for="webhook-secret">{labels.ajustes.webhookSecret}</label>
             <input class="input" id="webhook-secret" type="password" bind:value={secrets.webhookSecret} placeholder={settings.webhookSecret || labels.ajustes.keepHint} autocomplete="new-password" />
           </div>
+        </div>
+        <div class="field">
+          <label class="label" for="tunnel-token">{labels.ajustes.tunnelToken}</label>
+          <input class="input" id="tunnel-token" type="password" bind:value={secrets.tunnelToken} placeholder={settings.tunnelToken || labels.ajustes.keepHint} autocomplete="new-password" />
+          <p class="helper">{labels.ajustes.tunnelTokenHint}</p>
         </div>
         <p class="helper">{labels.ajustes.keepHint}</p>
         <div class="actions">

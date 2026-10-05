@@ -56,9 +56,12 @@ func (s Status) Name() string {
 
 // Config configures the tunnel manager.
 type Config struct {
-	Name            string
-	Hostname        string
-	Service         string
+	Name     string
+	Hostname string
+	Service  string
+	// Token runs the tunnel without the account certificate. It is the only
+	// credential a new computer needs (exported with the rest of the settings).
+	Token           string
 	DataDir         string
 	CloudflaredPath string
 	OnStatus        func(Status, string)
@@ -112,12 +115,17 @@ func (m *Manager) Service() string { return m.cfg.Service }
 // CertificatePath is where cloudflared keeps the account certificate.
 func (m *Manager) CertificatePath() string { return certificatePath(m.home) }
 
-// LoggedIn reports whether the account certificate exists, which is what
-// allows the manager to create tunnels and route DNS.
-func (m *Manager) LoggedIn() bool { return loggedIn(m.home) }
+// TokenMode reports whether the tunnel authenticates with a token instead of
+// the account certificate.
+func (m *Manager) TokenMode() bool { return m.cfg.Token != "" }
+
+// LoggedIn reports whether the tunnel can run: a configured token, or the
+// account certificate that also allows creating tunnels and routing DNS.
+func (m *Manager) LoggedIn() bool { return m.TokenMode() || loggedIn(m.home) }
 
 // Login runs `cloudflared tunnel login` once, so the operator authorizes the
-// zone in the browser. It is a no-op when the certificate already exists.
+// zone in the browser. It is a no-op when a token is configured or the
+// certificate already exists.
 func (m *Manager) Login(ctx context.Context) error {
 	if m.LoggedIn() {
 		return nil
@@ -137,6 +145,13 @@ func (m *Manager) Status() (Status, string) {
 // config and credentials, so a transient Cloudflare API failure to list does
 // not stop the sidecar from running.
 func (m *Manager) Ensure(ctx context.Context) error {
+	// Token mode: the tunnel already exists in Cloudflare and the token only
+	// allows running it, so there is nothing to create or route. The ingress
+	// stays local.
+	if m.TokenMode() {
+		return m.writeTokenConfig()
+	}
+
 	// Already provisioned: rewrite the config anyway (no network needed), so a
 	// changed hostname or local port reaches cloudflared. Before, the file was
 	// left as first written and the tunnel kept pointing at an old port (502).
@@ -184,6 +199,23 @@ func (m *Manager) writeConfig(id string) error {
 		m.cfg.Hostname,
 		m.cfg.Service,
 	)
+	return m.writeConfigFile(config)
+}
+
+// writeTokenConfig writes the ingress-only config used in token mode: the
+// tunnel and its credentials come from --token, so the file only routes the
+// public hostname to the local service.
+func (m *Manager) writeTokenConfig() error {
+	config := fmt.Sprintf(
+		"# Managed by palorosa-kitchen. Do not edit by hand.\ningress:\n  - hostname: %s\n    service: %s\n  - service: http_status:404\n",
+		m.cfg.Hostname,
+		m.cfg.Service,
+	)
+	return m.writeConfigFile(config)
+}
+
+// writeConfigFile writes the config only when the content changes.
+func (m *Manager) writeConfigFile(config string) error {
 	if current, err := os.ReadFile(m.configYML); err == nil && string(current) == config {
 		return nil
 	}
@@ -216,11 +248,21 @@ func (m *Manager) provisioned() (string, bool) {
 	return id, id != "" && credentials
 }
 
+// runArgs builds the cloudflared arguments for the sidecar: the token in
+// token mode, the tunnel name when running from the account certificate.
+func (m *Manager) runArgs() []string {
+	args := []string{"--config", m.configYML, "--no-autoupdate", "tunnel", "run"}
+	if m.TokenMode() {
+		return append(args, "--token", m.cfg.Token)
+	}
+	return append(args, m.cfg.Name)
+}
+
 // Run starts the sidecar and blocks until the context is cancelled or the
 // process exits. Ensure must run first.
 func (m *Manager) Run(ctx context.Context) error {
 	m.setStatus(Starting, "conectando")
-	command := hideWindow(exec.CommandContext(ctx, m.binary, "--config", m.configYML, "--no-autoupdate", "tunnel", "run", m.cfg.Name))
+	command := hideWindow(exec.CommandContext(ctx, m.binary, m.runArgs()...))
 	stderr, err := command.StderrPipe()
 	if err != nil {
 		m.setStatus(Errored, err.Error())

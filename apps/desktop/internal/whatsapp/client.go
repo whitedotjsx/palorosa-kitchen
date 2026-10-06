@@ -132,11 +132,11 @@ func New(cfg Config) (*Client, error) {
 	if cfg.Debug {
 		level = "DEBUG"
 	}
-	waLogger := waLog.Stdout("WhatsApp", level, true)
 	logger := cfg.Logger
 	if logger == nil {
 		logger = log.Default()
 	}
+	waLogger := newPanelLogger(waLog.Stdout("WhatsApp", level, true), logger, "WhatsApp")
 
 	dbPath := filepath.ToSlash(filepath.Join(cfg.DataDir, "whatsapp.db"))
 	dsn := "file:" + dbPath + "?_foreign_keys=on&_busy_timeout=5000"
@@ -379,7 +379,36 @@ func (c *Client) handleEvent(raw any) {
 		c.logger.Printf("whatsapp: temporarily banned: %s", event.String())
 	case *events.Message:
 		go c.handleMessage(event)
+	case *events.Receipt:
+		c.logReceipt(event)
+	case *events.UndecryptableMessage:
+		c.logger.Printf("whatsapp: could not decrypt a message from %s (id %s, unavailable=%v)",
+			phoneNumber(event.Info.Sender, event.Info.SenderAlt, event.Info.Chat), event.Info.ID, event.IsUnavailable)
 	}
+}
+
+// logReceipt reports what happened to the messages this account sent: a
+// delivered receipt proves the other phone got it, and a retry receipt means it
+// could not decrypt it. Receipts for anything else are ignored.
+func (c *Client) logReceipt(event *events.Receipt) {
+	var ours []string
+	for _, id := range event.MessageIDs {
+		if c.wasSentByUs(id) {
+			ours = append(ours, string(id))
+		}
+	}
+	if len(ours) == 0 {
+		return
+	}
+	kind := string(event.Type)
+	switch event.Type {
+	case types.ReceiptTypeDelivered:
+		kind = "delivered"
+	case types.ReceiptTypeRetry:
+		kind = "retry (the phone could not decrypt it)"
+	}
+	c.logger.Printf("whatsapp: receipt %s from %s for %s", kind,
+		phoneNumber(event.Sender, event.Chat), strings.Join(ours, ", "))
 }
 
 // Reconnect forces a fresh connection after a permanent disconnect, for
@@ -417,11 +446,12 @@ func (c *Client) handleMessage(event *events.Message) {
 	if isSelfChat(event.Info) && c.cli.Store.ID != nil {
 		target = c.cli.Store.ID.ToNonAD()
 	}
-	if _, err := c.send(context.Background(), target, reply); err != nil {
+	resp, err := c.send(context.Background(), target, reply)
+	if err != nil {
 		c.logger.Printf("whatsapp: reply to %s failed: %v", number, err)
 		return
 	}
-	c.logger.Printf("whatsapp: replied to %s: %s", number, brief(reply))
+	c.logger.Printf("whatsapp: replied to %s via %s (id %s): %s", number, target, resp.ID, brief(reply))
 }
 
 // ignoreReason explains why a message was not handled, mirroring accepted().

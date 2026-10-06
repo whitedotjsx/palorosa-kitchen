@@ -100,6 +100,22 @@ func TestSelfChatAcrossLID(t *testing.T) {
 	}
 }
 
+func TestIncomingDirectMessageIsNotSelfChat(t *testing.T) {
+	// A DM from someone else arrives with Chat == Sender (the chat is named
+	// after the peer). Treating it as a self-chat sent the reply to the bot's
+	// own number instead of the person who wrote.
+	peer := types.NewJID("573238022428", types.DefaultUserServer)
+	info := types.MessageInfo{
+		MessageSource: types.MessageSource{Chat: peer, Sender: peer},
+	}
+	if isSelfChat(info) {
+		t.Fatal("an incoming DM must not be treated as a self-chat")
+	}
+	if got := replyTarget(info); got != peer {
+		t.Fatalf("reply target = %s, want %s", got, peer)
+	}
+}
+
 func TestOwnSentMessagesAreNotCommands(t *testing.T) {
 	client := &Client{cfg: Config{Loopback: true}, sent: map[types.MessageID]time.Time{}}
 	info := selfInfo()

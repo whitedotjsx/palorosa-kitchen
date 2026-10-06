@@ -534,10 +534,11 @@ func (c *Client) wasSentByUs(id types.MessageID) bool {
 	return ok
 }
 
-// isSelfChat reports whether the sender and the chat are the same user, which
-// is how WhatsApp represents "message yourself" (also across LID addressing).
+// isSelfChat reports whether this account wrote to itself ("message yourself").
+// A direct message from someone else also arrives with Chat == Sender (the chat
+// is named after the peer), so the IsFromMe check is what tells them apart.
 func isSelfChat(info types.MessageInfo) bool {
-	return info.Chat.User != "" && info.Chat.User == info.Sender.User
+	return info.IsFromMe && info.Chat.User != "" && info.Chat.User == info.Sender.User
 }
 
 // phoneNumber returns the phone-number form of the first JID that carries one.

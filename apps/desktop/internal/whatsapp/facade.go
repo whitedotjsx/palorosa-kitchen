@@ -2,6 +2,7 @@ package whatsapp
 
 import (
 	"context"
+	"log"
 	"net/http"
 
 	waLog "go.mau.fi/whatsmeow/util/log"
@@ -31,6 +32,7 @@ func NewPanelClient(kitchen *Kitchen, dispatcher func(text, kind, date string) i
 	return &Client{
 		cfg:     Config{Dispatcher: dispatcher, OnOrder: onOrder},
 		log:     waLog.Stdout("Panel", "WARN", true),
+		logger:  log.Default(),
 		kitchen: kitchen,
 	}
 }

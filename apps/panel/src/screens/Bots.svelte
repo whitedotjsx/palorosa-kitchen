@@ -137,6 +137,16 @@
     }
   }
 
+  async function reconnect () {
+    if (!selectedBot) return
+    try {
+      await api(`/api/panel/bots/${selectedBot.id}/reconnect`, { method: 'POST' })
+      await load()
+    } catch (error) {
+      notify?.((error as Error).message, true)
+    }
+  }
+
   async function logout () {
     if (!selectedBot || !window.confirm(labels.bots.logoutConfirm)) return
     try {
@@ -253,6 +263,9 @@
         <div class="drawer-foot">
           {#if selectedBot.status === 'unlinked' || selectedBot.status === 'connecting'}
             <button class="btn btn-kraft btn-sm" onclick={retry}>{labels.bots.retry}</button>
+          {:else if selectedBot.status === 'disconnected'}
+            <button class="btn btn-kraft btn-sm" onclick={reconnect}>{labels.bots.reconnect}</button>
+            <button class="btn btn-ghost btn-sm" onclick={logout}>{labels.bots.logout}</button>
           {:else}
             <button class="btn btn-ghost btn-sm" onclick={logout}>{labels.bots.logout}</button>
           {/if}

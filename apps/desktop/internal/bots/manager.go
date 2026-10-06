@@ -245,6 +245,16 @@ func (m *Manager) RetryPairing(id string) error {
 	return nil
 }
 
+// Reconnect forces a fresh connection for a linked account whose socket died
+// permanently (for example a session replaced by another copy of the app).
+func (m *Manager) Reconnect(id string) error {
+	client := m.Client(id)
+	if client == nil {
+		return fmt.Errorf("bots: %q is not running", id)
+	}
+	return client.Reconnect()
+}
+
 // Logout unlinks an account's WhatsApp session.
 func (m *Manager) Logout(id string) error {
 	client := m.Client(id)
@@ -374,6 +384,7 @@ func (m *Manager) startLocked(bot Bot) *whatsapp.Client {
 		HookToken:     m.common.HookToken,
 		WebhookSecret: m.common.WebhookSecret,
 		Debug:         m.common.Debug,
+		Logger:        m.log,
 		Kitchen:       m.kitchen,
 		OnOrder:       m.common.OnOrder,
 		Dispatcher:    m.common.Dispatcher,

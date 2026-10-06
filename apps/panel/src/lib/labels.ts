@@ -202,6 +202,7 @@ export const labels = {
     save: 'Guardar',
     saved: 'Cuenta guardada.',
     retry: 'Reintentar vinculación',
+    reconnect: 'Reconectar',
     logout: 'Cerrar sesión de WhatsApp',
     logoutConfirm: '¿Cerrar la sesión de WhatsApp de esta cuenta? Tendrás que vincularla otra vez.',
     scan: 'Escanea este código con WhatsApp',

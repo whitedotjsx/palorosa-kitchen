@@ -267,6 +267,7 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("DELETE /api/panel/bots/{id}", s.hostOnly(s.handleBotDelete))
 	mux.HandleFunc("GET /api/panel/bots/{id}/qr.png", s.hostOnly(s.handleBotQR))
 	mux.HandleFunc("POST /api/panel/bots/{id}/pairing/retry", s.hostOnly(s.handleBotRetry))
+	mux.HandleFunc("POST /api/panel/bots/{id}/reconnect", s.hostOnly(s.handleBotReconnect))
 	mux.HandleFunc("POST /api/panel/bots/{id}/logout", s.hostOnly(s.handleBotLogout))
 	mux.HandleFunc("GET /api/panel/events", s.authenticated(s.handleEvents))
 
@@ -1007,6 +1008,21 @@ func (s *Server) handleBotRetry(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if err := s.cfg.Bots.RetryPairing(r.PathValue("id")); err != nil {
+		writeJSON(w, http.StatusConflict, map[string]any{"ok": false, "error": err.Error()})
+		return
+	}
+	s.Publish("whatsapp")
+	writeJSON(w, http.StatusOK, map[string]any{"ok": true})
+}
+
+// handleBotReconnect forces a fresh connection for a linked account whose
+// socket was permanently closed (for example a replaced session).
+func (s *Server) handleBotReconnect(w http.ResponseWriter, r *http.Request) {
+	if s.cfg.Bots == nil {
+		writeJSON(w, http.StatusServiceUnavailable, map[string]any{"ok": false, "error": "Sin gestor de bots"})
+		return
+	}
+	if err := s.cfg.Bots.Reconnect(r.PathValue("id")); err != nil {
 		writeJSON(w, http.StatusConflict, map[string]any{"ok": false, "error": err.Error()})
 		return
 	}

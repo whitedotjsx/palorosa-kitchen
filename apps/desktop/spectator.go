@@ -37,25 +37,43 @@ func machineID() string {
 
 // remoteHost reports whether another computer is already serving the tunnel
 // hostname. Only one host may run the tunnel, the bots and the webhooks; a
-// second app that finds a live host becomes a spectator.
+// second host shares the WhatsApp session and both get kicked off, so the
+// check is retried before this machine decides to become the host.
 func remoteHost(cfg config.Config) bool {
 	if cfg.TunnelHostname == "" {
 		return false
 	}
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	for attempt := 0; attempt < 3; attempt++ {
+		if attempt > 0 {
+			time.Sleep(3 * time.Second)
+		}
+		remote, reached := checkRemoteHost(cfg)
+		if !reached {
+			continue
+		}
+		return remote
+	}
+	return false
+}
+
+// checkRemoteHost asks the tunnel's health endpoint who is serving it. reached
+// is false when the endpoint could not be contacted at all (a timeout is not
+// proof that the other host is off).
+func checkRemoteHost(cfg config.Config) (remote, reached bool) {
+	ctx, cancel := context.WithTimeout(context.Background(), 8*time.Second)
 	defer cancel()
 	request, err := http.NewRequestWithContext(ctx, http.MethodGet, "https://"+cfg.TunnelHostname+"/health", nil)
 	if err != nil {
-		return false
+		return false, false
 	}
 	response, err := http.DefaultClient.Do(request)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "host check:", err)
-		return false
+		return false, false
 	}
 	defer response.Body.Close()
 	if response.StatusCode != http.StatusOK {
-		return false
+		return false, true
 	}
 	var health struct {
 		Panel    bool   `json:"panel"`
@@ -63,13 +81,13 @@ func remoteHost(cfg config.Config) bool {
 		Machine  string `json:"machine"`
 	}
 	if err := json.NewDecoder(response.Body).Decode(&health); err != nil || !health.Panel {
-		return false
+		return false, true
 	}
 	// Same computer (a leftover cloudflared of a previous run): stay host.
 	if health.Machine != "" && health.Machine == machineID() {
-		return false
+		return false, true
 	}
-	return health.Instance != instanceID
+	return health.Instance != instanceID, true
 }
 
 // spectatorURL is where the spectator window goes: the host's panel, signed in

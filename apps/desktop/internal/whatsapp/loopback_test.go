@@ -1,6 +1,7 @@
 package whatsapp
 
 import (
+	"strings"
 	"testing"
 	"time"
 
@@ -111,5 +112,49 @@ func TestOwnSentMessagesAreNotCommands(t *testing.T) {
 	info.ID = "COMMAND-1"
 	if !client.accepted(info) {
 		t.Fatal("a fresh self-chat command must be accepted")
+	}
+}
+
+func TestIgnoreReason(t *testing.T) {
+	client := &Client{cfg: Config{}, sent: map[types.MessageID]time.Time{}}
+
+	group := otherInfo("573001112233")
+	group.IsGroup = true
+	if got := client.ignoreReason(group); got != "group message" {
+		t.Fatalf("group reason = %q", got)
+	}
+
+	echo := selfInfo()
+	echo.ID = "ECHO-1"
+	client.rememberSent(echo.ID)
+	if got := client.ignoreReason(echo); got != "echo of a message this account sent" {
+		t.Fatalf("echo reason = %q", got)
+	}
+
+	if got := client.ignoreReason(selfInfo()); got != "self-chat with Modo loopback off" {
+		t.Fatalf("self-chat reason = %q", got)
+	}
+
+	toOther := selfInfo()
+	toOther.Chat = types.NewJID("573999999999", types.DefaultUserServer)
+	if got := client.ignoreReason(toOther); got != "sent by this account to someone else" {
+		t.Fatalf("to-other reason = %q", got)
+	}
+
+	if got := client.ignoreReason(otherInfo("573999999999")); got != "number not in this account's allowlist" {
+		t.Fatalf("allowlist reason = %q", got)
+	}
+}
+
+func TestBrief(t *testing.T) {
+	if got := brief("hola\n\nmundo"); got != "hola mundo" {
+		t.Fatalf("brief = %q", got)
+	}
+	if got := brief("   "); got != "(empty)" {
+		t.Fatalf("empty brief = %q", got)
+	}
+	got := brief(strings.Repeat("á", 200))
+	if runes := []rune(got); len(runes) != 121 || runes[120] != '…' {
+		t.Fatalf("long brief = %d runes", len(runes))
 	}
 }

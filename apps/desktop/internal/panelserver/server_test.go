@@ -731,8 +731,9 @@ func TestBotUpdateAndPairingRoutes(t *testing.T) {
 		t.Fatalf("bot not updated: %+v", list[0])
 	}
 
-	// Retry and logout need a running account; none is started in the test.
-	for _, action := range []string{"pairing/retry", "logout"} {
+	// Retry, reconnect and logout need a running account; none is started in
+	// the test.
+	for _, action := range []string{"pairing/retry", "reconnect", "logout"} {
 		recorder = httptest.NewRecorder()
 		server.Handler().ServeHTTP(recorder, loopback(httptest.NewRequest(http.MethodPost, "/api/panel/bots/default/"+action, nil)))
 		if recorder.Code != http.StatusConflict {

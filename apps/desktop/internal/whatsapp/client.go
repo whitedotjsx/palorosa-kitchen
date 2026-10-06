@@ -6,6 +6,7 @@ package whatsapp
 import (
 	"context"
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -78,6 +79,11 @@ type Config struct {
 	WebhookSecret string
 	Debug         bool
 
+	// Logger receives the operator-facing bot events (messages received,
+	// ignored and replied). Nil uses the standard logger. It is independent
+	// from Debug so they always reach Ajustes → Registros.
+	Logger *log.Logger
+
 	OnStatus func(Status)
 	OnQR     func(page string)
 	OnLinked func()
@@ -96,6 +102,7 @@ type Config struct {
 type Client struct {
 	cfg     Config
 	log     waLog.Logger
+	logger  *log.Logger
 	cli     *whatsmeow.Client
 	kitchen *Kitchen
 
@@ -125,11 +132,15 @@ func New(cfg Config) (*Client, error) {
 	if cfg.Debug {
 		level = "DEBUG"
 	}
-	log := waLog.Stdout("WhatsApp", level, true)
+	waLogger := waLog.Stdout("WhatsApp", level, true)
+	logger := cfg.Logger
+	if logger == nil {
+		logger = log.Default()
+	}
 
 	dbPath := filepath.ToSlash(filepath.Join(cfg.DataDir, "whatsapp.db"))
 	dsn := "file:" + dbPath + "?_foreign_keys=on&_busy_timeout=5000"
-	container, err := sqlstore.New(context.Background(), "sqlite3", dsn, log)
+	container, err := sqlstore.New(context.Background(), "sqlite3", dsn, waLogger)
 	if err != nil {
 		return nil, err
 	}
@@ -140,12 +151,13 @@ func New(cfg Config) (*Client, error) {
 
 	kitchen := cfg.Kitchen
 	if kitchen == nil {
-		kitchen = NewKitchen(cfg.DataDir, cfg.CatalogPath, log)
+		kitchen = NewKitchen(cfg.DataDir, cfg.CatalogPath, waLogger)
 	}
 	client := &Client{
 		cfg:     cfg,
-		log:     log,
-		cli:     whatsmeow.NewClient(device, log),
+		log:     waLogger,
+		logger:  logger,
+		cli:     whatsmeow.NewClient(device, waLogger),
 		status:  StatusUnlinked,
 		kitchen: kitchen,
 		sent:    map[types.MessageID]time.Time{},
@@ -344,26 +356,59 @@ func (c *Client) handleEvent(raw any) {
 	switch event := raw.(type) {
 	case *events.Connected:
 		c.setStatus(StatusConnected)
+		c.logger.Printf("whatsapp: connected")
 		if c.cfg.OnLinked != nil {
 			c.cfg.OnLinked()
 		}
 	case *events.Disconnected:
 		c.setStatus(StatusDisconnected)
+		// whatsmeow reconnects by itself; the log line tells the operator why
+		// the bot went quiet if it does not come back.
+		c.logger.Printf("whatsapp: disconnected (waiting for the automatic reconnect)")
+	case *events.StreamReplaced:
+		// Permanent: another program connected with the same session (usually a
+		// second copy of the app on another PC). whatsmeow does not reconnect.
+		c.setStatus(StatusDisconnected)
+		c.logger.Printf("whatsapp: session replaced by another copy of the app; close it and press Reconnect")
 	case *events.LoggedOut:
 		c.setStatus(StatusUnlinked)
+		c.logger.Printf("whatsapp: logged out (reason=%s onConnect=%v): link the account again", event.Reason.String(), event.OnConnect)
+	case *events.ConnectFailure:
+		c.logger.Printf("whatsapp: connect failure: %s (%s)", event.Reason.String(), event.Message)
+	case *events.TemporaryBan:
+		c.logger.Printf("whatsapp: temporarily banned: %s", event.String())
 	case *events.Message:
 		go c.handleMessage(event)
 	}
 }
 
+// Reconnect forces a fresh connection after a permanent disconnect, for
+// example a stream replaced by another copy of the app. The admin panel shows
+// it as the Reconnect button.
+func (c *Client) Reconnect() error {
+	if c.cli.Store.ID == nil {
+		return fmt.Errorf("la cuenta no está vinculada")
+	}
+	c.cli.Disconnect()
+	c.setStatus(StatusConnecting)
+	if err := c.cli.Connect(); err != nil {
+		c.setStatus(StatusDisconnected)
+		return err
+	}
+	return nil
+}
+
 func (c *Client) handleMessage(event *events.Message) {
+	number := phoneNumber(event.Info.Sender, event.Info.SenderAlt, event.Info.Chat)
 	if !c.accepted(event.Info) {
-		c.log.Infof("Ignored message from %s (sender %s)", phoneNumber(event.Info.Sender, event.Info.SenderAlt, event.Info.Chat), event.Info.Sender)
+		c.logger.Printf("whatsapp: ignored message from %s: %s", senderLabel(event.Info, number), c.ignoreReason(event.Info))
 		return
 	}
-	c.log.Infof("Command from %s: %q", event.Info.Sender, messageText(event.Message))
-	reply := c.reply(context.Background(), messageText(event.Message))
+	text := messageText(event.Message)
+	c.logger.Printf("whatsapp: message from %s: %s", number, brief(text))
+	reply := c.reply(context.Background(), text)
 	if reply == "" {
+		c.logger.Printf("whatsapp: no reply to %s (the message has no text)", number)
 		return
 	}
 	target := replyTarget(event.Info)
@@ -373,8 +418,50 @@ func (c *Client) handleMessage(event *events.Message) {
 		target = c.cli.Store.ID.ToNonAD()
 	}
 	if _, err := c.send(context.Background(), target, reply); err != nil {
-		c.log.Errorf("Reply failed: %v", err)
+		c.logger.Printf("whatsapp: reply to %s failed: %v", number, err)
+		return
 	}
+	c.logger.Printf("whatsapp: replied to %s: %s", number, brief(reply))
+}
+
+// ignoreReason explains why a message was not handled, mirroring accepted().
+func (c *Client) ignoreReason(info types.MessageInfo) string {
+	switch {
+	case info.IsGroup:
+		return "group message"
+	case c.wasSentByUs(info.ID):
+		return "echo of a message this account sent"
+	case info.IsFromMe && isSelfChat(info):
+		return "self-chat with Modo loopback off"
+	case info.IsFromMe:
+		return "sent by this account to someone else"
+	default:
+		return "number not in this account's allowlist"
+	}
+}
+
+// senderLabel names the sender for a log line, preferring the phone number.
+func senderLabel(info types.MessageInfo, number string) string {
+	if number != "" {
+		return number
+	}
+	if !info.Sender.IsEmpty() {
+		return info.Sender.String()
+	}
+	return "unknown"
+}
+
+// brief collapses a text into a one-line snippet for the log.
+func brief(text string) string {
+	clean := strings.Join(strings.Fields(text), " ")
+	runes := []rune(clean)
+	if len(runes) > 120 {
+		return string(runes[:120]) + "…"
+	}
+	if clean == "" {
+		return "(empty)"
+	}
+	return clean
 }
 
 // accepted reports whether a message is handled: messages from an allowlisted

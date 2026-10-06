@@ -41,6 +41,18 @@ contra el edge de Cloudflare (`argotunnel`) de forma nativa: binario release
    el método es HEAD se manda la cabecera y se cierra sin leer body (caso
    legítimo, no error).
 
+3. **`src/proxy.rs` — decodifica las respuestas `Transfer-Encoding: chunked`.**
+   El edge re-enmarca el body para el cliente (igual que `cloudflared`, que
+   reenvía el body ya decodificado por `net/http`), así que reenviar el
+   framing del origen incrustaba las líneas de tamaño de chunk en el cuerpo
+   (`77a7b\r\n<!doctype html>…`) y, con un origen keep-alive, el fin de la
+   respuesta nunca se señalaba (la conexión quedaba colgada). Ahora
+   `run_pooled` y `run_bidi` decodifican el chunked antes de escribir al
+   edge y se elimina la cabecera hop-by-hop `Transfer-Encoding` de la
+   metadata. Síntoma que arregla: el panel del host servido por Go (>2 KB
+   por respuesta, sin `Content-Length`) llegaba ilegible al espectador y la
+   ventana abría en blanco.
+
 ## Dieta de tamaño (2026-10-05)
 
 De 4.41 MB a 3.59 MB (−18.7%), sin perder funciones ni tests (44/44 verdes).

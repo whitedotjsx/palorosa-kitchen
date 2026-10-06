@@ -12,9 +12,18 @@
 //!   socket connect cost. Only plain (non-TLS) origins are pooled.
 //!
 //! - **Bidi-pump fallback** — WebSocket Upgrades (101 Switching
-//!   Protocols), Transfer-Encoding: chunked, close-bound responses,
-//!   and all TLS origins run two concurrent byte pumps until either
-//!   half closes. The socket is dropped at the end; no pooling.
+//!   Protocols), close-bound responses, and all TLS origins run two
+//!   concurrent byte pumps until either half closes. The socket is
+//!   dropped at the end; no pooling.
+//!
+//! `Transfer-Encoding: chunked` responses are **decoded** before they
+//! reach the edge. The edge frames the response for the client itself
+//! (exactly as `cloudflared` does with Go's already-decoded body), so
+//! forwarding the origin's chunk framing would embed the chunk-size
+//! lines in the body and, when the origin keeps the connection alive,
+//! never signal the end of the stream. The hop-by-hop
+//! `Transfer-Encoding` header is dropped from the response metadata
+//! for the same reason.
 //!
 //! The origin is chosen by [`crate::router::Router`] from the request
 //! host: quick tunnels always resolve to one fixed port; named
@@ -51,6 +60,10 @@ pub const LOCAL_CONNECT_TIMEOUT: Duration = Duration::from_secs(5);
 
 /// Hard cap on the response header section.
 const MAX_HEADER_BYTES: usize = 32 * 1024;
+
+/// Sanity bound on a single chunk-size line (they are a few bytes; a
+/// runaway value means the origin is not speaking HTTP/1.1).
+const MAX_CHUNK_SIZE_LINE: usize = 1024;
 
 /// Connect options resolved from the router for one request.
 #[derive(Debug, Clone)]
@@ -187,6 +200,22 @@ fn analyse_response(status: u16, headers: &[(String, String)]) -> ResponseShape 
         }
     }
     shape
+}
+
+/// Response metadata for the edge: `HttpStatus` plus every response
+/// header, minus the hop-by-hop `Transfer-Encoding`. Chunked bodies
+/// are decoded before they are forwarded, so the edge must frame the
+/// response itself; forwarding the header would double-frame it.
+fn response_metadata(status: u16, headers: &[(String, String)]) -> Vec<(String, String)> {
+    let mut meta: Vec<(String, String)> = Vec::with_capacity(headers.len() + 1);
+    meta.push((HTTP_STATUS_KEY.into(), status.to_string()));
+    for (name, value) in headers {
+        if name.eq_ignore_ascii_case("transfer-encoding") {
+            continue;
+        }
+        meta.push((format!("{HTTP_HEADER_KEY}:{name}"), value.clone()));
+    }
+    meta
 }
 
 // ── HTTP path ────────────────────────────────────────────────────────────────
@@ -359,12 +388,9 @@ where
     debug!(status, header_count = headers.len(), "origin response");
     let resp_shape = analyse_response(status, &headers);
 
-    // 3. Echo status + headers back to edge.
-    let mut meta: Vec<(String, String)> = Vec::with_capacity(headers.len() + 1);
-    meta.push((HTTP_STATUS_KEY.into(), status.to_string()));
-    for (name, value) in &headers {
-        meta.push((format!("{HTTP_HEADER_KEY}:{name}"), value.clone()));
-    }
+    // 3. Echo status + headers back to edge (Transfer-Encoding is
+    //    dropped: the body is decoded below, so the edge frames it).
+    let meta = response_metadata(status, &headers);
     let meta_refs: Vec<(&str, &str)> = meta.iter().map(|(k, v)| (k.as_str(), v.as_str())).collect();
     stream::write_connect_response(&mut to_edge, "", &meta_refs).await?;
 
@@ -381,7 +407,20 @@ where
         return Ok(());
     }
 
-    // 4. Flush any header-over-read bytes (start of body) first.
+    // 4. A chunked response is decoded here. The edge re-frames the body
+    //    for the client, so forwarding the origin's framing would leak the
+    //    chunk-size lines; and the terminal chunk is what marks the end of
+    //    the response, which a keep-alive origin never signals by closing.
+    if resp_shape.is_chunked {
+        pump_chunked_body(&mut tcp_read, leftover, &mut to_edge, &out_counter).await?;
+        to_edge
+            .close()
+            .await
+            .map_err(|e| TunnelError::Internal(format!("close to_edge: {e}")))?;
+        return Ok(());
+    }
+
+    // 5. Flush any header-over-read bytes (start of body) first.
     if !leftover.is_empty() {
         to_edge
             .write_all(&leftover)
@@ -410,9 +449,9 @@ where
         }
         Ok(())
     } else {
-        // 5b. Response wasn't poolable after all (no Content-Length,
-        //     or Upgrade, or chunked, or Connection: close). Fall
-        //     through to drain-until-EOF + drop the socket.
+        // 6. Response wasn't poolable after all (no Content-Length,
+        //    Upgrade, or Connection: close). Drain until EOF and drop
+        //    the socket.
         pump_tokio_to_futures_counted(&mut tcp_read, &mut to_edge, &out_counter)
             .await
             .ok();
@@ -466,14 +505,14 @@ where
             header_count = headers.len(),
             "origin response (bidi)"
         );
-        let mut meta: Vec<(String, String)> = Vec::with_capacity(headers.len() + 1);
-        meta.push((HTTP_STATUS_KEY.into(), status.to_string()));
-        for (name, value) in &headers {
-            meta.push((format!("{HTTP_HEADER_KEY}:{name}"), value.clone()));
-        }
+        let resp_shape = analyse_response(status, &headers);
+        let meta = response_metadata(status, &headers);
         let meta_refs: Vec<(&str, &str)> =
             meta.iter().map(|(k, v)| (k.as_str(), v.as_str())).collect();
         stream::write_connect_response(&mut to_edge, "", &meta_refs).await?;
+        if resp_shape.is_chunked {
+            return pump_chunked_body(&mut origin_read, leftover, &mut to_edge, &out_counter).await;
+        }
         if !leftover.is_empty() {
             to_edge
                 .write_all(&leftover)
@@ -719,6 +758,113 @@ where
     Ok(())
 }
 
+/// Decode an HTTP/1.1 `Transfer-Encoding: chunked` body from the
+/// origin and forward the payload bytes to the edge. `pending` is
+/// whatever was already read together with the response head.
+///
+/// Returns when the terminal chunk arrives, or when the origin closes
+/// early: a closed stream is treated as complete (the socket is
+/// dropped either way). Chunk extensions are ignored.
+async fn pump_chunked_body<R, W>(
+    origin: &mut R,
+    mut pending: Vec<u8>,
+    to_edge: &mut W,
+    counter: &AtomicU64,
+) -> Result<(), TunnelError>
+where
+    R: tokio::io::AsyncRead + Unpin,
+    W: futures::io::AsyncWrite + Unpin,
+{
+    let mut tmp = [0u8; 16 * 1024];
+    let mut pos = 0usize;
+
+    loop {
+        // 1. Chunk-size line (hex, optional ";extensions").
+        let line_end = loop {
+            if let Some(p) = find_crlf(&pending[pos..]) {
+                break pos + p;
+            }
+            if pending.len() - pos > MAX_CHUNK_SIZE_LINE {
+                return Err(TunnelError::Internal("chunk size line too long".into()));
+            }
+            if !refill(origin, &mut pending, &mut pos, &mut tmp).await? {
+                return Ok(());
+            }
+        };
+        let size = parse_chunk_size(&pending[pos..line_end])?;
+        pos = line_end + 2;
+        if size == 0 {
+            return Ok(());
+        }
+
+        // 2. Chunk payload.
+        let mut left = size;
+        while left > 0 {
+            if pos == pending.len() && !refill(origin, &mut pending, &mut pos, &mut tmp).await? {
+                return Ok(());
+            }
+            let take = left.min(pending.len() - pos);
+            to_edge
+                .write_all(&pending[pos..pos + take])
+                .await
+                .map_err(|e| TunnelError::Internal(format!("chunked write: {e}")))?;
+            counter.fetch_add(take as u64, Ordering::Relaxed);
+            pos += take;
+            left -= take;
+        }
+
+        // 3. Trailing CRLF that closes the chunk.
+        let mut crlf = 2usize;
+        while crlf > 0 {
+            if pos == pending.len() && !refill(origin, &mut pending, &mut pos, &mut tmp).await? {
+                return Ok(());
+            }
+            let take = crlf.min(pending.len() - pos);
+            pos += take;
+            crlf -= take;
+        }
+    }
+}
+
+/// Compact the already-consumed prefix, then read one more block into
+/// `pending`. `Ok(false)` means the origin closed the stream.
+async fn refill<R>(
+    origin: &mut R,
+    pending: &mut Vec<u8>,
+    pos: &mut usize,
+    tmp: &mut [u8],
+) -> Result<bool, TunnelError>
+where
+    R: tokio::io::AsyncRead + Unpin,
+{
+    if *pos > 0 {
+        pending.drain(..*pos);
+        *pos = 0;
+    }
+    let n = origin
+        .read(tmp)
+        .await
+        .map_err(|e| TunnelError::Internal(format!("chunked read: {e}")))?;
+    if n == 0 {
+        return Ok(false);
+    }
+    pending.extend_from_slice(&tmp[..n]);
+    Ok(true)
+}
+
+fn find_crlf(data: &[u8]) -> Option<usize> {
+    data.windows(2).position(|w| w == b"\r\n")
+}
+
+fn parse_chunk_size(line: &[u8]) -> Result<usize, TunnelError> {
+    let size_str = line.split(|b| *b == b';').next().unwrap_or(b"");
+    let size_str = std::str::from_utf8(size_str)
+        .map_err(|_| TunnelError::Internal("chunk size not utf-8".into()))?
+        .trim();
+    usize::from_str_radix(size_str, 16)
+        .map_err(|_| TunnelError::Internal(format!("bad chunk size: {size_str:?}")))
+}
+
 /// Forward exactly `n` bytes from futures-io source to tokio-io
 /// dest. Fails if the source EOFs early.
 async fn pump_n_futures_to_tokio<R, W>(
@@ -910,5 +1056,197 @@ mod tests {
         let r2 = Router::from_map(m, None);
         assert!(r2.resolve("a.example.com").is_some());
         assert!(r2.resolve("b.example.com").is_none());
+    }
+
+    // ── Chunked response decoding ────────────────────────────────────────────
+
+    use std::pin::Pin;
+    use std::task::{Context, Poll};
+
+    use tokio::io::AsyncReadExt as _;
+
+    /// futures-io sink that accumulates everything it is handed.
+    struct VecWriter(Vec<u8>);
+
+    impl futures::io::AsyncWrite for VecWriter {
+        fn poll_write(
+            mut self: Pin<&mut Self>,
+            _cx: &mut Context<'_>,
+            buf: &[u8],
+        ) -> Poll<std::io::Result<usize>> {
+            self.0.extend_from_slice(buf);
+            Poll::Ready(Ok(buf.len()))
+        }
+
+        fn poll_flush(self: Pin<&mut Self>, _cx: &mut Context<'_>) -> Poll<std::io::Result<()>> {
+            Poll::Ready(Ok(()))
+        }
+
+        fn poll_close(self: Pin<&mut Self>, _cx: &mut Context<'_>) -> Poll<std::io::Result<()>> {
+            Poll::Ready(Ok(()))
+        }
+    }
+
+    /// tokio reader that hands out at most `max` bytes per read, so a
+    /// chunk header or its trailing CRLF straddles several reads.
+    struct DripReader<'a> {
+        data: &'a [u8],
+        pos: usize,
+        max: usize,
+    }
+
+    impl tokio::io::AsyncRead for DripReader<'_> {
+        fn poll_read(
+            mut self: Pin<&mut Self>,
+            _cx: &mut Context<'_>,
+            buf: &mut tokio::io::ReadBuf<'_>,
+        ) -> Poll<std::io::Result<()>> {
+            let remaining = self.data.len() - self.pos;
+            let n = remaining.min(buf.remaining()).min(self.max);
+            let start = self.pos;
+            buf.put_slice(&self.data[start..start + n]);
+            self.pos += n;
+            Poll::Ready(Ok(()))
+        }
+    }
+
+    #[test]
+    fn response_metadata_drops_transfer_encoding() {
+        let headers = vec![
+            ("Transfer-Encoding".to_string(), "chunked".to_string()),
+            ("Content-Type".to_string(), "text/html".to_string()),
+        ];
+        let meta = response_metadata(200, &headers);
+        assert_eq!(meta[0], (HTTP_STATUS_KEY.to_string(), "200".to_string()));
+        assert!(meta
+            .iter()
+            .all(|(k, _)| !k.eq_ignore_ascii_case("HttpHeader:Transfer-Encoding")));
+        assert!(meta
+            .iter()
+            .any(|(k, v)| k == "HttpHeader:Content-Type" && v == "text/html"));
+    }
+
+    #[tokio::test]
+    async fn decodes_chunked_body_across_reads() {
+        let wire = b"4\r\nWiki\r\n5\r\npedia\r\n0\r\n\r\n";
+        let (leftover, rest) = wire.split_at(3);
+        let mut origin = DripReader {
+            data: rest,
+            pos: 0,
+            max: 2,
+        };
+        let mut to_edge = VecWriter(Vec::new());
+        let counter = AtomicU64::new(0);
+
+        pump_chunked_body(&mut origin, leftover.to_vec(), &mut to_edge, &counter)
+            .await
+            .unwrap();
+
+        assert_eq!(to_edge.0, b"Wikipedia");
+        assert_eq!(counter.load(Ordering::Relaxed), 9);
+    }
+
+    #[tokio::test]
+    async fn decodes_large_chunks_and_ignores_extensions() {
+        let payload = vec![b'x'; 100_000];
+        let mut wire = Vec::new();
+        wire.extend_from_slice(b"5;foo=bar\r\nhello\r\n");
+        wire.extend_from_slice(format!("{:x}\r\n", payload.len()).as_bytes());
+        wire.extend_from_slice(&payload);
+        wire.extend_from_slice(b"\r\n0\r\n\r\n");
+
+        let mut origin = DripReader {
+            data: &wire,
+            pos: 0,
+            max: 7,
+        };
+        let mut to_edge = VecWriter(Vec::new());
+        let counter = AtomicU64::new(0);
+        pump_chunked_body(&mut origin, Vec::new(), &mut to_edge, &counter)
+            .await
+            .unwrap();
+
+        let mut expected = b"hello".to_vec();
+        expected.extend_from_slice(&payload);
+        assert_eq!(to_edge.0, expected);
+        assert_eq!(counter.load(Ordering::Relaxed), expected.len() as u64);
+    }
+
+    #[tokio::test]
+    async fn rejects_bad_chunk_size() {
+        let mut origin: &[u8] = b"zz\r\nnope\r\n";
+        let mut to_edge = VecWriter(Vec::new());
+        let counter = AtomicU64::new(0);
+        let err = pump_chunked_body(&mut origin, Vec::new(), &mut to_edge, &counter)
+            .await
+            .unwrap_err();
+        assert!(matches!(err, TunnelError::Internal(s) if s.contains("chunk size")));
+    }
+
+    /// End-to-end through `proxy_http` against a real TCP origin that
+    /// answers chunked and keeps the connection alive — the exact shape
+    /// of Go's `net/http` for a body over 2 KB, which is what the panel
+    /// server returns. Before the fix the raw chunk framing leaked into
+    /// the body and the response never terminated.
+    #[tokio::test]
+    async fn proxy_http_decodes_chunked_origin_response() {
+        let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let port = listener.local_addr().unwrap().port();
+        let payload = vec![b'y'; 8192];
+        let origin_body = payload.clone();
+
+        tokio::spawn(async move {
+            let (mut sock, _) = listener.accept().await.unwrap();
+            let mut buf = [0u8; 1024];
+            let _ = sock.read(&mut buf).await;
+            let mut out = Vec::new();
+            out.extend_from_slice(
+                b"HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=utf-8\r\nTransfer-Encoding: chunked\r\n\r\n",
+            );
+            out.extend_from_slice(format!("{:x}\r\n", origin_body.len()).as_bytes());
+            out.extend_from_slice(&origin_body);
+            out.extend_from_slice(b"\r\n0\r\n\r\n");
+            sock.write_all(&out).await.unwrap();
+            // Keep-alive: a raw pump would wait for an EOF that never comes.
+            tokio::time::sleep(std::time::Duration::from_secs(5)).await;
+        });
+
+        let router = Router::fixed(port);
+        let request = ConnectRequest {
+            dest: format!("http://127.0.0.1:{port}/"),
+            conn_type: ConnectionType::Http,
+            metadata: vec![
+                (HTTP_METHOD_KEY.into(), "GET".into()),
+                (HTTP_HOST_KEY.into(), "127.0.0.1".into()),
+            ],
+        };
+        let mut to_edge = VecWriter(Vec::new());
+
+        proxy_http(
+            &router,
+            request,
+            futures::io::empty(),
+            &mut to_edge,
+            StreamCounters::default(),
+            Arc::new(Pool::new()),
+        )
+        .await
+        .unwrap();
+
+        let out = to_edge.0;
+        assert!(
+            out.windows(payload.len()).any(|w| w == payload.as_slice()),
+            "decoded body was not forwarded verbatim"
+        );
+        let text = String::from_utf8_lossy(&out);
+        assert!(
+            !text.contains("Transfer-Encoding"),
+            "Transfer-Encoding header leaked to the edge"
+        );
+        let leaked = format!("{:x}\r\n", payload.len());
+        assert!(
+            !text.contains(&leaked),
+            "raw chunk-size line leaked to the edge"
+        );
     }
 }

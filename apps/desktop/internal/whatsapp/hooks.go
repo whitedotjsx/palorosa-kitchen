@@ -93,6 +93,10 @@ func (c *Client) handleDebugSend(w http.ResponseWriter, r *http.Request) {
 		writeJSON(w, http.StatusBadRequest, map[string]any{"ok": false, "error": "Expected to and text"})
 		return
 	}
+	if c.cli == nil {
+		writeJSON(w, http.StatusServiceUnavailable, map[string]any{"ok": false, "error": "WhatsApp no conectado"})
+		return
+	}
 	if !c.allowed(payload.To) {
 		writeJSON(w, http.StatusForbidden, map[string]any{"ok": false, "error": "Number not in allowlist"})
 		return
@@ -125,7 +129,7 @@ func (c *Client) handleHealth(w http.ResponseWriter, _ *http.Request) {
 	writeJSON(w, http.StatusOK, map[string]any{
 		"ok": true,
 		"whatsapp": map[string]any{
-			"ready":     c.cli.IsConnected(),
+			"ready":     c.cli != nil && c.cli.IsConnected(),
 			"lastError": "",
 		},
 		"dates": dates,

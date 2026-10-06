@@ -807,6 +807,19 @@ func TestListPublishRequiresBot(t *testing.T) {
 	}
 }
 
+func TestListPublishUsesCallback(t *testing.T) {
+	published := ""
+	server := New(Config{Port: 5211, PublishList: func(date string) error {
+		published = date
+		return nil
+	}})
+	recorder := httptest.NewRecorder()
+	server.Handler().ServeHTTP(recorder, loopback(httptest.NewRequest(http.MethodPost, "/api/panel/list/publish?date=2026-10-04", nil)))
+	if recorder.Code != http.StatusOK || published != "2026-10-04" {
+		t.Fatalf("publish: status=%d date=%q", recorder.Code, published)
+	}
+}
+
 func TestPwaAssets(t *testing.T) {
 	server := New(Config{Port: 5211, PanelIcon: []byte("pngbytes")})
 

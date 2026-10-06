@@ -274,6 +274,7 @@ func startSpectator(cfg config.Config) {
 type botShell struct {
 	client        *whatsapp.Client
 	manager       *bots.Manager
+	panel         whatsapp.PanelOps
 	homeURL       string
 	mu            sync.Mutex
 	pairingOnView bool
@@ -282,6 +283,9 @@ type botShell struct {
 func startBot(cfg config.Config, homeURL string) *botShell {
 	shell := &botShell{homeURL: homeURL}
 	if !cfg.WhatsAppEnabled {
+		// No WhatsApp at all: the shared kitchen still feeds the panel, so the
+		// list and the store sync keep working.
+		shell.panel = whatsapp.NewPanelClient(whatsapp.NewKitchen(cfg.DataDir, cfg.CatalogPath, nil), dispatchNotify, func() { publishPanel("orders") })
 		tray.SetStatus(labels.WhatsApp.Disabled)
 		return shell
 	}
@@ -293,14 +297,15 @@ func startBot(cfg config.Config, homeURL string) *botShell {
 		HookToken:     cfg.HookToken,
 		WebhookSecret: cfg.WebhookSecret,
 		Debug:         cfg.Debug,
-		OnOrder: func() { publishPanel("orders") },
+		Allowlist:     cfg.Allowlist,
+		OnOrder:       func() { publishPanel("orders") },
 		OnQR: func(_, page string) {
 			shell.refreshPairing(page)
 			// The panel's Bots drawer shows the live QR; each rotation must
 			// refresh the image even when the pairing page is not on view.
 			publishPanel("whatsapp")
 		},
-		OnLinked:      func(string) { shell.onLinked() },
+		OnLinked: func(string) { shell.onLinked() },
 		OnStatus: func(_ string, status whatsapp.Status) {
 			tray.SetStatus(status.Label())
 			publishPanel("whatsapp")
@@ -309,25 +314,42 @@ func startBot(cfg config.Config, homeURL string) *botShell {
 	}, log.Default())
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "bots:", err)
+		shell.panel = whatsapp.NewPanelClient(whatsapp.NewKitchen(cfg.DataDir, cfg.CatalogPath, nil), dispatchNotify, func() { publishPanel("orders") })
 		tray.SetStatus(labels.WhatsApp.Disabled)
 		return shell
 	}
 	shell.manager = manager
+	shell.panel = manager
 	manager.Start(context.Background())
 	shell.client = manager.Primary()
 	if shell.client == nil {
+		// No enabled account: the panel keeps reading the shared kitchen from
+		// the manager instead of going blank.
 		fmt.Fprintln(os.Stderr, "bots: no enabled account")
 		tray.SetStatus(labels.WhatsApp.Disabled)
-		return shell
-	}
-
-	if len(cfg.Allowlist) == 0 {
-		fmt.Fprintln(os.Stderr, "whatsapp: WHATSAPP_ALLOWLIST is empty, commands are ignored")
+	} else {
+		logAllowlists(manager.Bots())
 	}
 
 	// No linked session: the app still opens on the list. Pairing is started on
 	// demand from the tray ("Vincular WhatsApp") or the panel's Bots screen.
 	return shell
+}
+
+// logAllowlists reports what can command each enabled account. The numbers live
+// in the account registry (panel → Cuentas), not in WHATSAPP_ALLOWLIST, which
+// only seeds the first account on a fresh install.
+func logAllowlists(list []bots.Bot) {
+	for _, bot := range list {
+		if !bot.Enabled {
+			continue
+		}
+		if len(bot.Allowlist) == 0 {
+			fmt.Fprintf(os.Stderr, "whatsapp: %s has no authorized numbers: commands are ignored (add them in Cuentas)\n", bot.Name)
+			continue
+		}
+		fmt.Fprintf(os.Stderr, "whatsapp: %s allowlist: %s\n", bot.Name, strings.Join(bot.Allowlist, ", "))
+	}
 }
 
 // retryPairing is bound to the Retry button on the pairing page.
@@ -548,8 +570,10 @@ func startPanel(cfg config.Config, bot *botShell, targets *notify.Manager, store
 		}
 	}
 	var hooks http.Handler
-	if bot != nil && bot.client != nil {
-		hooks = bot.client.Handler()
+	if bot != nil && bot.panel != nil {
+		// The hooks ingest orders into the shared kitchen, so they stay up
+		// even when no account is running.
+		hooks = bot.panel.Handler()
 	}
 	var sessions *auth.Manager
 	openedAuth, authErr := auth.New(filepath.Join(cfg.DataDir, "sessions.json"))
@@ -650,10 +674,16 @@ func startPanel(cfg config.Config, bot *botShell, targets *notify.Manager, store
 		Targets:           targets,
 		Push:              pusher,
 		Bots:              bot.manager,
-		Autostart:         autostart.Enabled,
-		SetAutostart:      setAutostart,
-		SelfTest:          selftest.New(selfDeps),
-		Update:            updater,
+		PublishList: func(date string) error {
+			if bot == nil || bot.panel == nil {
+				return errors.New("cocina no disponible")
+			}
+			return bot.panel.PublishList(date)
+		},
+		Autostart:    autostart.Enabled,
+		SetAutostart: setAutostart,
+		SelfTest:     selftest.New(selfDeps),
+		Update:       updater,
 		Diagnostics: func() panelserver.Diagnostics {
 			return panelserver.Diagnostics{
 				Version:   version,
@@ -679,14 +709,14 @@ func startPanel(cfg config.Config, bot *botShell, targets *notify.Manager, store
 		// The station key spectators present derives from this secret.
 		StationSecret: cfg.WebhookSecret,
 		Snapshot: func() panelmodel.Snapshot {
-			if bot == nil || bot.client == nil {
+			if bot == nil || bot.panel == nil {
 				return panelmodel.Snapshot{}
 			}
-			return bot.client.PanelSnapshot()
+			return bot.panel.PanelSnapshot()
 		},
 		SyncOrders: func(ctx context.Context, dates []string) (any, error) {
-			if bot == nil || bot.client == nil {
-				return nil, errors.New("bot deshabilitado")
+			if bot == nil || bot.panel == nil {
+				return nil, errors.New("cocina no disponible")
 			}
 			// Read the live settings so credentials saved in Ajustes apply now.
 			var values settings.Values
@@ -705,7 +735,7 @@ func startPanel(cfg config.Config, bot *botShell, targets *notify.Manager, store
 			if err != nil {
 				return nil, err
 			}
-			return bot.client.SyncFromExport(ctx, exporter.Rows, dates)
+			return bot.panel.SyncFromExport(ctx, exporter.Rows, dates)
 		},
 		SyncInterval: func() int {
 			if store != nil {
@@ -716,23 +746,23 @@ func startPanel(cfg config.Config, bot *botShell, targets *notify.Manager, store
 			return panelserver.DefaultSyncMinutes
 		},
 		RemoveOrder: func(date, number string) error {
-			if bot == nil || bot.client == nil {
-				return errors.New("bot deshabilitado")
+			if bot == nil || bot.panel == nil {
+				return errors.New("cocina no disponible")
 			}
-			return bot.client.RemoveOrder(date, number)
+			return bot.panel.RemoveOrder(date, number)
 		},
 		OrderDetail: func(date, number string) (panelmodel.OrderDetail, error) {
-			if bot == nil || bot.client == nil {
-				return panelmodel.OrderDetail{}, errors.New("bot deshabilitado")
+			if bot == nil || bot.panel == nil {
+				return panelmodel.OrderDetail{}, errors.New("cocina no disponible")
 			}
-			return bot.client.OrderDetail(date, number)
+			return bot.panel.OrderDetail(date, number)
 		},
 		Restart: restartApp,
 		SetNotifications: func(notifications panelmodel.Notifications) error {
-			if bot == nil || bot.client == nil {
-				return errors.New("bot deshabilitado")
+			if bot == nil || bot.panel == nil {
+				return errors.New("cocina no disponible")
 			}
-			bot.client.SetNotifications(notifications)
+			bot.panel.SetNotifications(notifications)
 			return nil
 		},
 		TunnelLogin: func() error {

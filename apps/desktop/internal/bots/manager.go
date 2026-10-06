@@ -10,11 +10,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"path/filepath"
 	"sync"
 
 	"github.com/wsuites/palorosa-kitchen/apps/desktop/internal/engine"
+	"github.com/wsuites/palorosa-kitchen/apps/desktop/internal/panelmodel"
 	"github.com/wsuites/palorosa-kitchen/apps/desktop/internal/whatsapp"
 )
 
@@ -36,11 +38,14 @@ type Common struct {
 	HookToken     string
 	WebhookSecret string
 	Debug         bool
-	OnOrder       func()
-	OnQR          func(id, page string)
-	OnLinked      func(id string)
-	OnStatus      func(id string, status whatsapp.Status)
-	Dispatcher    func(text, kind, date string) int
+	// Allowlist seeds the first default account when bots.json does not exist
+	// yet (the legacy WHATSAPP_ALLOWLIST environment variable).
+	Allowlist  []string
+	OnOrder    func()
+	OnQR       func(id, page string)
+	OnLinked   func(id string)
+	OnStatus   func(id string, status whatsapp.Status)
+	Dispatcher func(text, kind, date string) int
 }
 
 // Manager owns the registry and the running accounts.
@@ -48,6 +53,9 @@ type Manager struct {
 	common  Common
 	log     *log.Logger
 	kitchen *whatsapp.Kitchen
+	// panel serves the panel from the shared kitchen when no account is
+	// running, so orders and lists stay visible while WhatsApp is off.
+	panel whatsapp.PanelOps
 
 	mu      sync.Mutex
 	bots    []Bot
@@ -60,10 +68,12 @@ func New(common Common, logger *log.Logger) (*Manager, error) {
 	if logger == nil {
 		logger = log.Default()
 	}
+	kitchen := whatsapp.NewKitchen(common.BaseDir, common.CatalogPath, nil)
 	manager := &Manager{
 		common:  common,
 		log:     logger,
-		kitchen: whatsapp.NewKitchen(common.BaseDir, common.CatalogPath, nil),
+		kitchen: kitchen,
+		panel:   whatsapp.NewPanelClient(kitchen, common.Dispatcher, common.OnOrder),
 		clients: map[string]*whatsapp.Client{},
 	}
 	path := filepath.Join(common.BaseDir, "bots.json")
@@ -75,7 +85,7 @@ func New(common Common, logger *log.Logger) (*Manager, error) {
 		return nil, err
 	}
 	migrateLegacy(common.BaseDir, logger)
-	manager.bots = []Bot{{ID: "default", Name: "Cocina", Enabled: true}}
+	manager.bots = []Bot{{ID: "default", Name: "Cocina", Enabled: true, Allowlist: append([]string{}, common.Allowlist...)}}
 	return manager, manager.save()
 }
 
@@ -249,14 +259,62 @@ func (m *Manager) SetCatalog(catalog *engine.Catalog) {
 	m.kitchen.SetCatalog(catalog)
 }
 
-// PublishList recomputes and stores the kitchen list for a date through the
-// primary account's shared kitchen.
+// PublishList recomputes and stores the kitchen list for a date. It only
+// touches the shared kitchen, so publishing works without a live account.
 func (m *Manager) PublishList(date string) error {
-	client := m.Primary()
-	if client == nil {
-		return fmt.Errorf("bots: no enabled account")
+	return m.panel.PublishList(date)
+}
+
+// PanelSnapshot is the read model the panel serves. It reads the shared
+// kitchen directly (orders and lists stay visible while the bot is off,
+// unlinked or disconnected) and reports the first running account's WhatsApp
+// state when there is one.
+func (m *Manager) PanelSnapshot() panelmodel.Snapshot {
+	snapshot := m.panel.PanelSnapshot()
+	if client := m.running(); client != nil {
+		snapshot.WhatsApp = client.WhatsAppState()
 	}
-	return client.PublishList(date)
+	return snapshot
+}
+
+// OrderDetail resolves one order for the panel's lazy ticket view.
+func (m *Manager) OrderDetail(date, number string) (panelmodel.OrderDetail, error) {
+	return m.panel.OrderDetail(date, number)
+}
+
+// RemoveOrder drops an order from a day, as a cancelled webhook would.
+func (m *Manager) RemoveOrder(date, number string) error {
+	return m.panel.RemoveOrder(date, number)
+}
+
+// SetNotifications applies the global notification control from the panel.
+func (m *Manager) SetNotifications(notifications panelmodel.Notifications) {
+	m.panel.SetNotifications(notifications)
+}
+
+// Handler mounts the order hooks over the shared kitchen, so webhooks keep
+// ingesting orders without a live WhatsApp account.
+func (m *Manager) Handler() http.Handler {
+	return m.panel.Handler()
+}
+
+// SyncFromExport runs the store's WP All Export and makes the synced days
+// match it. It never needs a WhatsApp connection.
+func (m *Manager) SyncFromExport(ctx context.Context, fetch whatsapp.ExportRows, dates []string) (whatsapp.SyncResult, error) {
+	return m.panel.SyncFromExport(ctx, fetch, dates)
+}
+
+// running returns the first account with a live client, if any, without
+// starting one.
+func (m *Manager) running() *whatsapp.Client {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	for _, bot := range m.bots {
+		if client, ok := m.clients[bot.ID]; ok {
+			return client
+		}
+	}
+	return nil
 }
 
 // Remove stops and drops an account.

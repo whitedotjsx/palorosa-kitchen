@@ -289,12 +289,12 @@ func (c *Client) Status() Status {
 
 // Linked reports whether a paired session is stored.
 func (c *Client) Linked() bool {
-	return c.cli.Store.ID != nil
+	return c.cli != nil && c.cli.Store.ID != nil
 }
 
 // Phone returns the linked account's own number, or "" when it is not linked.
 func (c *Client) Phone() string {
-	if c.cli.Store.ID == nil {
+	if c.cli == nil || c.cli.Store.ID == nil {
 		return ""
 	}
 	return c.cli.Store.ID.User
@@ -812,7 +812,7 @@ func (c *Client) send(ctx context.Context, to types.JID, text string) (whatsmeow
 // reach a target through this account. The number is normalized to its digits,
 // so a target typed as "+57 300 123 4567" still resolves to a JID.
 func (c *Client) SendTo(phone, text string) error {
-	if !c.cli.IsConnected() {
+	if c.cli == nil || !c.cli.IsConnected() {
 		return fmt.Errorf("whatsapp no conectado")
 	}
 	number := digitsOnly(phone)
@@ -842,7 +842,7 @@ func (c *Client) sendNotification(text, kind, date string) int {
 	if c.cfg.Dispatcher != nil {
 		return c.cfg.Dispatcher(text, kind, date)
 	}
-	if !c.cli.IsConnected() {
+	if c.cli == nil || !c.cli.IsConnected() {
 		c.log.Warnf("WhatsApp is not connected, notification skipped")
 		return 0
 	}

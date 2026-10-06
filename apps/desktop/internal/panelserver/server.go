@@ -91,6 +91,9 @@ type Config struct {
 	Push *push.Manager
 	// Bots manages the WhatsApp accounts. Nil disables the bots routes.
 	Bots *bots.Manager
+	// PublishList recomputes and stores the kitchen list for a date. Nil falls
+	// back to the bots manager, so the panel can publish without one.
+	PublishList func(date string) error
 	// Autostart reports whether the app opens at login. Nil hides it.
 	Autostart func() bool
 	// SetAutostart enables or disables opening at login.
@@ -855,12 +858,16 @@ func (s *Server) handleTargetTestAll(w http.ResponseWriter, _ *http.Request) {
 
 // handleListPublish recomputes and stores the kitchen list for a date.
 func (s *Server) handleListPublish(w http.ResponseWriter, r *http.Request) {
-	if s.cfg.Bots == nil {
-		writeJSON(w, http.StatusServiceUnavailable, map[string]any{"ok": false, "error": "Sin bot"})
+	publish := s.cfg.PublishList
+	if publish == nil && s.cfg.Bots != nil {
+		publish = s.cfg.Bots.PublishList
+	}
+	if publish == nil {
+		writeJSON(w, http.StatusServiceUnavailable, map[string]any{"ok": false, "error": "Cocina no disponible"})
 		return
 	}
 	date := dateParam(r)
-	if err := s.cfg.Bots.PublishList(date); err != nil {
+	if err := publish(date); err != nil {
 		writeJSON(w, http.StatusConflict, map[string]any{"ok": false, "error": err.Error()})
 		return
 	}

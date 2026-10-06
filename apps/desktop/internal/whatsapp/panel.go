@@ -25,22 +25,34 @@ func (s Status) Name() string {
 	}
 }
 
+// WhatsAppState is the live WhatsApp block of the panel snapshot.
+func (c *Client) WhatsAppState() panelmodel.WhatsApp {
+	status := c.Status()
+	return panelmodel.WhatsApp{
+		Status:    status.Name(),
+		Label:     status.Label(),
+		Linked:    c.Linked(),
+		Phone:     c.Phone(),
+		Allowlist: c.Allowlist(),
+	}
+}
+
+// Allowlist returns the account's authorized numbers.
+func (c *Client) Allowlist() []string {
+	return append([]string{}, c.cfg.Allowlist...)
+}
+
 // PanelSnapshot builds the read model the panel server serves.
 func (c *Client) PanelSnapshot() panelmodel.Snapshot {
-	status := c.Status()
-	linked := c.Linked()
+	// Read the live WhatsApp state before taking the kitchen lock, so the two
+	// locks are never held at the same time.
+	whatsapp := c.WhatsAppState()
 
 	c.kitchen.mu.Lock()
 	defer c.kitchen.mu.Unlock()
 
 	snapshot := panelmodel.Snapshot{
-		WhatsApp: panelmodel.WhatsApp{
-			Status:    status.Name(),
-			Label:     status.Label(),
-			Linked:    linked,
-			Phone:     c.Phone(),
-			Allowlist: append([]string{}, c.cfg.Allowlist...),
-		},
+		WhatsApp:      whatsapp,
 		Notifications: notificationsSnapshot(c.kitchen.state.Notifications),
 	}
 

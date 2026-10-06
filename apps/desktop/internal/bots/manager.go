@@ -308,10 +308,10 @@ func (m *Manager) Handler() http.Handler {
 	return m.panel.Handler()
 }
 
-// SyncFromExport runs the store's WP All Export and makes the synced days
-// match it. It never needs a WhatsApp connection.
-func (m *Manager) SyncFromExport(ctx context.Context, fetch whatsapp.ExportRows, dates []string) (whatsapp.SyncResult, error) {
-	return m.panel.SyncFromExport(ctx, fetch, dates)
+// SyncStore brings the store days up to date. It never needs a WhatsApp
+// connection.
+func (m *Manager) SyncStore(ctx context.Context, req whatsapp.SyncRequest) (whatsapp.SyncResult, error) {
+	return m.panel.SyncStore(ctx, req)
 }
 
 // running returns the first account with a live client, if any, without

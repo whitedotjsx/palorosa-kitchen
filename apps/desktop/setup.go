@@ -84,6 +84,7 @@ func mergeImported(base, imported settings.Values) settings.Values {
 	set(&out.TunnelToken, imported.TunnelToken)
 	set(&out.CatalogPath, imported.CatalogPath)
 	set(&out.WebhookSecret, imported.WebhookSecret)
+	set(&out.StationSecret, imported.StationSecret)
 	set(&out.WP.AdminURL, imported.WP.AdminURL)
 	set(&out.WP.AdminUser, imported.WP.AdminUser)
 	set(&out.WP.AdminPassword, imported.WP.AdminPassword)
@@ -99,6 +100,15 @@ func mergeImported(base, imported settings.Values) settings.Values {
 	}
 	if imported.SyncMinutes != nil {
 		out.SyncMinutes = imported.SyncMinutes
+	}
+	if imported.SyncCreatedDays > 0 {
+		out.SyncCreatedDays = imported.SyncCreatedDays
+	}
+	if imported.AutoUpdate != nil {
+		out.AutoUpdate = imported.AutoUpdate
+	}
+	if imported.Autostart != nil {
+		out.Autostart = imported.Autostart
 	}
 	if imported.Access.Enabled {
 		out.Access.Enabled = true

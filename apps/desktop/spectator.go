@@ -90,12 +90,28 @@ func checkRemoteHost(cfg config.Config) (remote, reached bool) {
 	return health.Instance != instanceID, true
 }
 
+// waitForNewHost blocks until the tunnel answers as another machine, so an old
+// host that just stepped down can point its window at the new one.
+func waitForNewHost(cfg config.Config, timeout time.Duration) {
+	deadline := time.Now().Add(timeout)
+	for time.Now().Before(deadline) {
+		if remoteHost(cfg) {
+			return
+		}
+		time.Sleep(2 * time.Second)
+	}
+}
+
 // spectatorURL is where the spectator window goes: the host's panel, signed in
 // with the station key when both apps share the webhook secret (imported
 // configuration), or the invite screen otherwise.
 func spectatorURL(cfg config.Config) string {
 	base := "https://" + cfg.TunnelHostname + "/"
-	key := panelserver.StationKey(cfg.WebhookSecret)
+	secret := cfg.StationSecret
+	if secret == "" {
+		secret = cfg.WebhookSecret
+	}
+	key := panelserver.StationKey(secret)
 	if key == "" {
 		return base
 	}

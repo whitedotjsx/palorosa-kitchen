@@ -102,8 +102,13 @@ func (s *Server) handleStation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	secret := s.cfg.StationSecret
-	if s.cfg.Settings != nil && s.cfg.Settings.Values().WebhookSecret != "" {
-		secret = s.cfg.Settings.Values().WebhookSecret
+	if s.cfg.Settings != nil {
+		values := s.cfg.Settings.Values()
+		if values.StationSecret != "" {
+			secret = values.StationSecret
+		} else if values.WebhookSecret != "" {
+			secret = values.WebhookSecret
+		}
 	}
 	expected := StationKey(secret)
 	given := r.URL.Query().Get("key")

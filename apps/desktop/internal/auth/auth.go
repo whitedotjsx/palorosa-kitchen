@@ -212,6 +212,20 @@ func (m *Manager) RevokeSession(id string) error {
 	return ErrUnknownID
 }
 
+// RevokeAllSessions drops every spectator session and reports how many were
+// signed out. The host is not a session, so a local panel stays signed in.
+func (m *Manager) RevokeAllSessions() int {
+	count := len(m.state.Sessions)
+	if count == 0 {
+		return 0
+	}
+	m.state.Sessions = nil
+	if err := m.save(); err != nil {
+		return 0
+	}
+	return count
+}
+
 const sessionTTL = 365 * 24 * time.Hour
 
 // inviteIndex returns the index of a valid, unused invite for a token, or -1.

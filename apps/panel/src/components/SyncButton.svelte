@@ -7,10 +7,13 @@
     revision?: number
     /** Day on screen; synced together with today and tomorrow. */
     date?: string | undefined
+    /** Explicit days to sync (the several-days range). Wins over `date`. */
+    dates?: string[] | undefined
     notify?: ((message: string, error?: boolean) => void) | undefined
     onsynced?: (() => void) | undefined
   }
-  let { revision = 0, date, notify, onsynced }: Props = $props()
+  let { revision = 0, date, dates, notify, onsynced }: Props = $props()
+  const rangeMode = $derived(!!dates && dates.length > 0)
 
   interface SyncStatus {
     enabled: boolean
@@ -33,13 +36,23 @@
     }
   }
 
-  async function sync () {
+  async function sync (full = false) {
     if (busy) return
     busy = true
     try {
-      status = await api<SyncStatus>('/api/panel/sync', { method: 'POST', body: JSON.stringify({ date }) })
-      const count = date ? status.result?.perDate?.[date] : undefined
-      notify?.(labels.sync.done.replace('{n}', String(count ?? status.result?.kept ?? 0)))
+      // The range syncs every day it covers; the single day goes with today
+      // and tomorrow. The server runs the full export once per day and the
+      // fast lookup afterwards; full forces the export again.
+      const body = rangeMode ? { dates, full } : { date, full }
+      status = await api<SyncStatus>('/api/panel/sync', { method: 'POST', body: JSON.stringify(body) })
+      if (full) {
+        notify?.(labels.sync.doneFull.replace('{n}', String(status.result?.kept ?? 0)))
+      } else if (rangeMode) {
+        notify?.(labels.sync.doneRange.replace('{n}', String(status.result?.kept ?? 0)))
+      } else {
+        const count = date ? status.result?.perDate?.[date] : undefined
+        notify?.(labels.sync.done.replace('{n}', String(count ?? status.result?.kept ?? 0)))
+      }
     } catch (error) {
       notify?.((error as Error).message, true)
       await loadStatus()
@@ -70,9 +83,12 @@
 
 {#if status?.enabled}
   <div class="sync">
-    <button class="btn btn-kraft btn-sm" onclick={sync} disabled={busy || status.running} title={labels.sync.hint}>
+    <button class="btn btn-kraft btn-sm" onclick={() => sync()} disabled={busy || status.running} title={rangeMode ? labels.sync.hintRange : labels.sync.hint}>
       <svg class:spin={busy || status.running} viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.6-4.5M4 4v4h4" /><path d="M4 13a8 8 0 0 0 14.6 4.5M20 20v-4h-4" /></svg>
       {busy || status.running ? labels.sync.running : labels.sync.button}
+    </button>
+    <button class="btn btn-ghost btn-sm" onclick={() => sync(true)} disabled={busy || status.running} title={labels.sync.fullHint}>
+      {labels.sync.full}
     </button>
     <span class="sync-meta" class:err={!!status.error} title={status.error ?? ''}>
       {status.error ? labels.sync.failed : `${labels.sync.last} ${ago(status.at)}`}

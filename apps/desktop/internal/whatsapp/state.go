@@ -27,6 +27,9 @@ type botState struct {
 	Checkpoint *checkpointState `json:"checkpoint,omitempty"`
 	// Notified marks the orders an immediate notice already went out for.
 	Notified map[string]map[string]bool `json:"notified,omitempty"`
+	// Exported marks the days a full WP All Export already reconciled. After
+	// that, the store sync uses the fast creation-range lookup for the day.
+	Exported map[string]time.Time `json:"exported,omitempty"`
 	// Events is the recent activity feed, oldest first.
 	Events []activityEvent `json:"events,omitempty"`
 }
@@ -111,6 +114,7 @@ func newBotState() *botState {
 		Observations: map[string]map[string]string{},
 		Annotations:  map[string]map[string]engine.OrderAnnotation{},
 		Notified:     map[string]map[string]bool{},
+		Exported:     map[string]time.Time{},
 	}
 }
 
@@ -137,6 +141,9 @@ func loadBotState(path string) *botState {
 	}
 	if state.Notified == nil {
 		state.Notified = map[string]map[string]bool{}
+	}
+	if state.Exported == nil {
+		state.Exported = map[string]time.Time{}
 	}
 	return state
 }

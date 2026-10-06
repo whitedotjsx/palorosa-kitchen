@@ -19,7 +19,18 @@ func FromEnv(getenv func(string) string) Values {
 			ExportCronKey:  getenv("WP_EXPORT_CRON_KEY"),
 		},
 		WebhookSecret: getenv("WC_WEBHOOK_SECRET"),
+		AutoUpdate:    autoUpdateFromEnv(getenv),
 	}
+}
+
+// autoUpdateFromEnv migrates KITCHEN_AUTO_UPDATE=off into the setting, so an
+// existing .env keeps turning the automatic path off after the first run.
+func autoUpdateFromEnv(getenv func(string) string) *bool {
+	if strings.EqualFold(strings.TrimSpace(getenv("KITCHEN_AUTO_UPDATE")), "off") {
+		off := false
+		return &off
+	}
+	return nil
 }
 
 // firstEnv returns the first non-empty value among the keys, so the historical

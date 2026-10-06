@@ -54,8 +54,12 @@ function Stop-App {
 
 function Start-App {
   if (-not (Test-Path $exe)) { Write-Warn "Executable not found: $exe"; return }
+  # A dev build is newer than any published release by definition; keep the
+  # auto-updater from replacing it with the GitHub release at launch, which
+  # would silently swap the local code (and the panel/server pair) for the tag.
+  $env:KITCHEN_AUTO_UPDATE = 'off'
   Start-Process -FilePath $exe | Out-Null
-  Write-Host "==> Launched $exe" -ForegroundColor Green
+  Write-Host "==> Launched $exe (auto-update off in dev)" -ForegroundColor Green
 }
 
 function Restart-App {

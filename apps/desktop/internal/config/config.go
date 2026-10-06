@@ -21,16 +21,19 @@ const defaultDomain = "palorosabreakfast.com"
 
 // Config is the desktop app runtime configuration.
 type Config struct {
-	DataDir          string
-	SettingsPath     string
-	Domain           string
-	CatalogPath      string
-	Allowlist        []string
-	PairingPhone     string
-	HookPort         int
-	PanelPort        int
-	HookToken        string
-	WebhookSecret    string
+	DataDir       string
+	SettingsPath  string
+	Domain        string
+	CatalogPath   string
+	Allowlist     []string
+	PairingPhone  string
+	HookPort      int
+	PanelPort     int
+	HookToken     string
+	WebhookSecret string
+	// StationSecret is the dedicated spectator key, when one was configured.
+	// Empty falls back to the webhook secret (the historical derivation).
+	StationSecret    string
 	WPAdminURL       string
 	WPAdminUser      string
 	WPAdminPassword  string
@@ -96,6 +99,7 @@ func Load() Config {
 		PanelPort:        panelPort,
 		HookToken:        env("BOT_HOOK_TOKEN", ""),
 		WebhookSecret:    pick(values.WebhookSecret, env("WC_WEBHOOK_SECRET", "")),
+		StationSecret:    values.StationSecret,
 		WPAdminURL:       SiteURL(pick(values.WP.AdminURL, env("WP_ADMIN_URL", "")), domain),
 		WPAdminUser:      pick(values.WP.AdminUser, env("WP_ADMIN_USER", "")),
 		WPAdminPassword:  pick(values.WP.AdminPassword, env("WP_ADMIN_PASSWORD", "")),

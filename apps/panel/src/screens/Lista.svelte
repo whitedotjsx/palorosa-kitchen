@@ -3,7 +3,8 @@
   import { api } from '../lib/api'
   import type { PanelEntry, PanelEntrySource, PanelList } from '../lib/types'
   import { loadTemplate, printSheet, sheetHtml } from '../lib/print'
-  import { day, longDate } from '../lib/day.svelte'
+  import { day, longDate, rangeDates, rangeLabel, shortDate } from '../lib/day.svelte'
+  import { mergeDayLists } from '../lib/multi-day'
   import DayPicker from '../components/DayPicker.svelte'
   import SyncButton from '../components/SyncButton.svelte'
 
@@ -34,7 +35,7 @@
   }
 
   function sourceKey (source: PanelEntrySource) {
-    return `${source.productText}|${source.orderNumber ?? ''}|${source.source ?? ''}`
+    return `${source.date ?? ''}|${source.productText}|${source.orderNumber ?? ''}|${source.source ?? ''}`
   }
 
   function sourceToggleText (entry: PanelEntry) {
@@ -49,7 +50,7 @@
     printing = true
     try {
       const { template } = await loadTemplate()
-      printSheet(sheetHtml(list, template, longDate(day.date)))
+      printSheet(sheetHtml(list, template, day.range ? rangeText : longDate(day.date)))
     } catch (error) {
       notify?.((error as Error).message, true)
     } finally {
@@ -73,8 +74,12 @@
       : labels.lista.unresolvedMany.replace('{n}', String(list?.unresolved ?? 0)),
   )
 
+  const rangeText = $derived(day.range ? rangeLabel(day.from, day.to) : '')
+  const rangeCount = $derived(day.range ? rangeDates(day.from, day.to).length : 0)
+
   function buildText () {
-    const lines = [labels.lista.title, '']
+    const title = day.range ? labels.lista.rangeTitle.replace('{range}', rangeText) : labels.lista.title
+    const lines = [title, '']
     for (const group of groups) {
       lines.push((labels.categories[group.category] ?? group.category).toUpperCase())
       for (const entry of group.entries) {
@@ -99,18 +104,39 @@
   }
 
   async function load () {
+    const mode = day.range
     const date = day.date
+    const from = day.from
+    const to = day.to
     try {
-      const result = await api<{ list: PanelList }>(`/api/panel/list?date=${date}`)
-      if (date === day.date) list = result.list
+      if (mode) {
+        const dates = rangeDates(from, to)
+        const results = await Promise.all(dates.map(async (value) => ({
+          date: value,
+          list: (await api<{ list: PanelList }>(`/api/panel/list?date=${value}`)).list,
+        })))
+        if (!day.range || day.from !== from || day.to !== to) return
+        list = mergeDayLists(results)
+      } else {
+        const result = await api<{ list: PanelList }>(`/api/panel/list?date=${date}`)
+        if (day.range || date !== day.date) return
+        list = result.list
+      }
     } catch {
-      if (date === day.date) list = null
+      if (mode) {
+        if (day.range && day.from === from && day.to === to) list = null
+      } else if (!day.range && date === day.date) {
+        list = null
+      }
     }
   }
 
   $effect(() => {
     void revision
     void day.date
+    void day.range
+    void day.from
+    void day.to
     void load()
   })
 
@@ -130,8 +156,14 @@
 <section class="screen">
   <div class="screen-head">
     <div class="day-bar">
-      <DayPicker />
-      <SyncButton {revision} date={day.date} {notify} onsynced={load} />
+      <DayPicker range />
+      <SyncButton
+        {revision}
+        date={day.range ? day.from : day.date}
+        dates={day.range ? rangeDates(day.from, day.to) : undefined}
+        {notify}
+        onsynced={load}
+      />
     </div>
     <div class="actions">
       <button class="btn btn-kraft" onclick={printList} disabled={printing || !list || (list.entries?.length ?? 0) === 0}>
@@ -145,11 +177,20 @@
     </div>
   </div>
 
+  {#if day.range}
+    <div class="range-summary">
+      <span class="range-dates">{rangeText}</span>
+      <span class="range-meta">
+        {labels.lista.rangeDays.replace('{n}', String(rangeCount))} · {labels.lista.rangeUnits.replace('{n}', String(list?.total ?? 0))}
+      </span>
+    </div>
+  {/if}
+
   {#if !list || (list.entries?.length ?? 0) === 0}
     <div class="clip-wrap">
       <div class="clip" aria-hidden="true"></div>
       <div class="clipboard">
-        <p class="muted">{labels.lista.empty}</p>
+        <p class="muted">{day.range ? labels.lista.rangeEmpty : labels.lista.empty}</p>
       </div>
     </div>
   {:else}
@@ -172,6 +213,7 @@
                     <div class="from" title={labels.lista.origin}>
                       {#each visibleSources(entry) as source (sourceKey(source))}
                         <span class="from-item">
+                          {#if source.date}<span class="from-date">{shortDate(source.date)}</span>{/if}
                           <b>{source.quantity}×</b>
                           <span class="from-name">{source.productText}</span>
                           {#if source.orderNumber}<span class="from-ref mono">#{source.orderNumber}</span>{/if}

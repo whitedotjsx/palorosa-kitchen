@@ -1026,7 +1026,7 @@
       "aliases": [
         "Mini torta personal"
       ],
-      "isKitchen": true,
+      "isKitchen": false,
       "active": true
     },
     {

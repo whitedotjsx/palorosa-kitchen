@@ -85,6 +85,30 @@ func TestRevoke(t *testing.T) {
 	}
 }
 
+func TestRevokeAllSessions(t *testing.T) {
+	manager := newManager(t)
+	_, firstInvite, _ := manager.CreateInvite("uno", time.Hour)
+	_, firstToken, _ := manager.Redeem(firstInvite, "")
+	_, secondInvite, _ := manager.CreateInvite("dos", time.Hour)
+	_, secondToken, _ := manager.Redeem(secondInvite, "")
+
+	if revoked := manager.RevokeAllSessions(); revoked != 2 {
+		t.Fatalf("revoked = %d, want 2", revoked)
+	}
+	if _, ok := manager.Authenticate(firstToken); ok {
+		t.Fatal("first session still valid")
+	}
+	if _, ok := manager.Authenticate(secondToken); ok {
+		t.Fatal("second session still valid")
+	}
+	if len(manager.ListSessions()) != 0 {
+		t.Fatal("sessions were not cleared")
+	}
+	if revoked := manager.RevokeAllSessions(); revoked != 0 {
+		t.Fatalf("second revoke = %d, want 0", revoked)
+	}
+}
+
 func TestInviteRevoke(t *testing.T) {
 	manager := newManager(t)
 	invite, token, _ := manager.CreateInvite("x", time.Hour)

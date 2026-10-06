@@ -8,8 +8,10 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"sync"
 	"time"
 
+	"github.com/wsuites/palorosa-kitchen/apps/desktop/internal/settings"
 	"github.com/wsuites/palorosa-kitchen/apps/desktop/internal/toast"
 	"github.com/wsuites/palorosa-kitchen/apps/desktop/internal/update"
 )
@@ -108,18 +110,54 @@ func currentExecutable() string {
 	return exe
 }
 
+// autoUpdateState tracks the running automatic loop so the Ajustes switch
+// applies without restarting the app.
+var autoUpdate struct {
+	mu      sync.Mutex
+	applied *bool
+	cancel  context.CancelFunc
+}
+
+// autoUpdateEnabled resolves the automatic update switch: settings.json wins
+// over KITCHEN_AUTO_UPDATE=off, and on is the default.
+func autoUpdateEnabled(store *settings.Store) bool {
+	if store != nil {
+		if value := store.Values().AutoUpdate; value != nil {
+			return *value
+		}
+	}
+	return !strings.EqualFold(strings.TrimSpace(os.Getenv("KITCHEN_AUTO_UPDATE")), "off")
+}
+
 // startAutoUpdate checks at launch and then every interval, restarting the app
-// when a newer release is installed. KITCHEN_AUTO_UPDATE=off keeps only the
+// when a newer release is installed. When the setting is off it keeps only the
 // manual check from the tray or the panel.
-func startAutoUpdate() {
-	if updater == nil {
+func startAutoUpdate(store *settings.Store) {
+	syncAutoUpdate(autoUpdateEnabled(store))
+}
+
+// syncAutoUpdate starts or stops the automatic loop to match `enabled`. A
+// call with the value already applied does nothing, so saving unrelated
+// settings does not reset the six-hour timer.
+func syncAutoUpdate(enabled bool) {
+	autoUpdate.mu.Lock()
+	defer autoUpdate.mu.Unlock()
+	if autoUpdate.applied != nil && *autoUpdate.applied == enabled {
 		return
 	}
-	if strings.EqualFold(os.Getenv("KITCHEN_AUTO_UPDATE"), "off") {
-		fmt.Fprintln(os.Stderr, "update: automático apagado (KITCHEN_AUTO_UPDATE=off)")
+	value := enabled
+	autoUpdate.applied = &value
+	if autoUpdate.cancel != nil {
+		autoUpdate.cancel()
+		autoUpdate.cancel = nil
+	}
+	if !enabled || updater == nil {
+		fmt.Fprintln(os.Stderr, "update: automático apagado")
 		return
 	}
-	go updater.Run(context.Background(), autoUpdateInterval)
+	ctx, cancel := context.WithCancel(context.Background())
+	autoUpdate.cancel = cancel
+	go updater.Run(ctx, autoUpdateInterval)
 }
 
 // checkUpdatesManually backs the tray item and reports the outcome as a toast.

@@ -4,7 +4,6 @@
 package autostart
 
 import (
-	"fmt"
 	"os"
 
 	"golang.org/x/sys/windows/registry"
@@ -15,18 +14,55 @@ const (
 	valueName = "PalorosaKitchen"
 )
 
+// Command is the Run value written for an executable. Windows parses it as a
+// command line, so the path must be quoted by hand: a Go-escaped string
+// (%q / strconv.Quote) doubles the backslashes, which Windows does not expect
+// in the value even though it usually tolerates them.
+func Command(exe string) string {
+	return `"` + exe + `"`
+}
+
+// Current returns the command stored in the Run entry, or "" when the entry
+// does not exist.
+func Current() string {
+	key, err := registry.OpenKey(registry.CURRENT_USER, runKey, registry.QUERY_VALUE)
+	if err != nil {
+		return ""
+	}
+	defer key.Close()
+	value, _, err := key.GetStringValue(valueName)
+	if err != nil {
+		return ""
+	}
+	return value
+}
+
+func write(command string) error {
+	key, _, err := registry.CreateKey(registry.CURRENT_USER, runKey, registry.SET_VALUE)
+	if err != nil {
+		return err
+	}
+	defer key.Close()
+	return key.SetStringValue(valueName, command)
+}
+
 // Enable registers the current executable under HKCU Run.
 func Enable() error {
 	exe, err := os.Executable()
 	if err != nil {
 		return err
 	}
-	key, _, err := registry.CreateKey(registry.CURRENT_USER, runKey, registry.SET_VALUE)
-	if err != nil {
-		return err
+	return write(Command(exe))
+}
+
+// Ensure registers exe, repairing an entry that points somewhere else. It is
+// what makes autostart survive a moved or rebuilt executable: on every start
+// the stored command is compared against the running exe.
+func Ensure(exe string) error {
+	if Current() == Command(exe) {
+		return nil
 	}
-	defer key.Close()
-	return key.SetStringValue(valueName, fmt.Sprintf("%q", exe))
+	return write(Command(exe))
 }
 
 // Disable removes the Run entry. Missing entry is not an error.
@@ -44,11 +80,5 @@ func Disable() error {
 
 // Enabled reports whether the Run entry is present.
 func Enabled() bool {
-	key, err := registry.OpenKey(registry.CURRENT_USER, runKey, registry.QUERY_VALUE)
-	if err != nil {
-		return false
-	}
-	defer key.Close()
-	_, _, err = key.GetStringValue(valueName)
-	return err == nil
+	return Current() != ""
 }

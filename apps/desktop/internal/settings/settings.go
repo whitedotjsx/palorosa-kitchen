@@ -18,16 +18,32 @@ type Values struct {
 	TunnelHostname string `json:"tunnelHostname,omitempty"`
 	// TunnelToken runs the named tunnel without the account certificate, so a
 	// new computer only needs the token in the imported configuration.
-	TunnelToken string `json:"tunnelToken,omitempty"`
-	CatalogPath string `json:"catalogPath,omitempty"`
-	PanelPort      int    `json:"panelPort,omitempty"`
-	Debug          bool   `json:"debug,omitempty"`
-	WP             WP     `json:"wp,omitempty"`
-	WebhookSecret  string `json:"webhookSecret,omitempty"`
-	Access         Access `json:"access,omitempty"`
+	TunnelToken   string `json:"tunnelToken,omitempty"`
+	CatalogPath   string `json:"catalogPath,omitempty"`
+	PanelPort     int    `json:"panelPort,omitempty"`
+	Debug         bool   `json:"debug,omitempty"`
+	WP            WP     `json:"wp,omitempty"`
+	WebhookSecret string `json:"webhookSecret,omitempty"`
+	Access        Access `json:"access,omitempty"`
 	// SyncMinutes is the automatic WooCommerce order sync interval. Nil means
 	// the default; 0 turns the automatic sync off.
 	SyncMinutes *int `json:"syncMinutes,omitempty"`
+	// SyncCreatedDays is the creation window of the fast store lookup: how far
+	// back an order can have been booked and still be seen by the periodic
+	// refresh. Zero means the default (45 days).
+	SyncCreatedDays int `json:"syncCreatedDays,omitempty"`
+	// AutoUpdate keeps the app installing GitHub Releases by itself. Nil means
+	// the default (on); false turns the automatic path off and leaves the
+	// manual check.
+	AutoUpdate *bool `json:"autoUpdate,omitempty"`
+	// Autostart opens the app at Windows login. Nil means the registry is the
+	// only source (an install from before this setting); true/false mirror the
+	// Ajustes switch and repair the registry on every start.
+	Autostart *bool `json:"autostart,omitempty"`
+	// StationSecret is the dedicated key spectators sign in with. Empty falls
+	// back to WebhookSecret (the historical derivation); rotating it cuts
+	// every station key without touching the WooCommerce webhook.
+	StationSecret string `json:"stationSecret,omitempty"`
 }
 
 // WP holds the WordPress and WooCommerce credentials. AdminUser/AdminPassword
@@ -125,6 +141,7 @@ func (v Values) Redacted() Values {
 	out.WP.ExportCronKey = Mask(out.WP.ExportCronKey)
 	out.WebhookSecret = Mask(out.WebhookSecret)
 	out.TunnelToken = Mask(out.TunnelToken)
+	out.StationSecret = Mask(out.StationSecret)
 	return out
 }
 
@@ -172,6 +189,9 @@ func sealValues(v Values) (Values, error) {
 	if v.TunnelToken, err = seal(v.TunnelToken); err != nil {
 		return Values{}, err
 	}
+	if v.StationSecret, err = seal(v.StationSecret); err != nil {
+		return Values{}, err
+	}
 	return v, nil
 }
 
@@ -190,6 +210,9 @@ func openValues(v Values) (Values, error) {
 		return Values{}, err
 	}
 	if v.TunnelToken, err = open(v.TunnelToken); err != nil {
+		return Values{}, err
+	}
+	if v.StationSecret, err = open(v.StationSecret); err != nil {
 		return Values{}, err
 	}
 	return v, nil

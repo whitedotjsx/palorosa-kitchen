@@ -91,6 +91,7 @@ func TestFromEnv(t *testing.T) {
 		"WC_WEBHOOK_SECRET":          "wh",
 		"TUNNEL_HOSTNAME":            "cocina.palorosabreakfast.com",
 		"TUNNEL_TOKEN":               "tok",
+		"KITCHEN_AUTO_UPDATE":        "off",
 	}
 	getenv := func(key string) string { return env[key] }
 
@@ -101,8 +102,48 @@ func TestFromEnv(t *testing.T) {
 	if got.WebhookSecret != "wh" || got.TunnelHostname != "cocina.palorosabreakfast.com" || got.TunnelToken != "tok" {
 		t.Fatalf("webhook or tunnel not migrated: %+v", got)
 	}
+	if got.AutoUpdate == nil || *got.AutoUpdate {
+		t.Fatalf("KITCHEN_AUTO_UPDATE=off not migrated: %+v", got.AutoUpdate)
+	}
 	if FromEnv(func(string) string { return "" }).Empty() != true {
 		t.Fatal("an empty environment should produce empty values")
+	}
+}
+
+// TestNewSettingsFieldsRoundTrip covers the fields added after v1: they must
+// survive the encrypted round trip like the rest of the store.
+func TestNewSettingsFieldsRoundTrip(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "settings.json")
+	store, err := Open(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	autoUpdate, autostart := false, true
+	want := Values{
+		AutoUpdate:    &autoUpdate,
+		Autostart:     &autostart,
+		StationSecret: "station-1",
+	}
+	if err := store.Update(want); err != nil {
+		t.Fatal(err)
+	}
+	reopened, err := Open(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	got := reopened.Values()
+	if got.StationSecret != "station-1" {
+		t.Fatalf("station secret lost: %q", got.StationSecret)
+	}
+	if got.AutoUpdate == nil || *got.AutoUpdate || got.Autostart == nil || !*got.Autostart {
+		t.Fatalf("switches lost: %+v %+v", got.AutoUpdate, got.Autostart)
+	}
+	raw, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if bytes.Contains(raw, []byte("station-1")) {
+		t.Fatalf("station secret stored in clear:\n%s", raw)
 	}
 }
 

@@ -23,6 +23,8 @@ export interface Settings {
   panelPort: number
   debug: boolean
   syncMinutes?: number | null
+  syncCreatedDays?: number | null
+  autoUpdate?: boolean | null
   wp: WpSettings
   webhookSecret: string
   access: { enabled: boolean }
@@ -83,6 +85,8 @@ export interface PanelEntrySource {
   productText: string
   source?: string
   quantity: number
+  /** Delivery day, set only by the combined several-days list. */
+  date?: string
 }
 
 export interface PanelEntry {

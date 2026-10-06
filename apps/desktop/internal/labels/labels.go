@@ -16,6 +16,8 @@ type TrayLabels struct {
 	AutostartHint string
 	Update        string
 	UpdateHint    string
+	Handoff       string
+	HandoffHint   string
 	Quit          string
 	QuitHint      string
 	Tunnel        string
@@ -36,6 +38,8 @@ var Tray = TrayLabels{
 	AutostartHint: "Abrir la ventana al iniciar sesión",
 	Update:        "Buscar actualización",
 	UpdateHint:    "Descargar e instalar la última versión y reiniciar",
+	Handoff:       "Tomar el control…",
+	HandoffHint:   "Pasar la cocina a este equipo con el código del anfitrión",
 	Quit:          "Salir",
 	QuitHint:      "Cerrar la aplicación",
 	Tunnel:        "Túnel: {status}",

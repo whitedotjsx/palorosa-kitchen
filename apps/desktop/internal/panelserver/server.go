@@ -105,9 +105,21 @@ type Config struct {
 	// Update runs the GitHub Releases self-update shown in Ajustes. Nil
 	// hides the update routes.
 	Update *update.Manager
-	// SyncOrders runs the store's WP All Export for the given delivery dates
-	// (YYYY-MM-DD) and makes those days match it. Nil disables the sync.
-	SyncOrders func(context.Context, []string) (any, error)
+	// SyncOrders brings the given delivery dates (YYYY-MM-DD) up to date from
+	// the store: the WP All Export runs once per day, later refreshes use the
+	// WooCommerce lookup, and full forces the export again. Nil disables the
+	// sync.
+	SyncOrders func(context.Context, []string, bool) (any, error)
+	// HandoffBundle returns the state a machine that claims a one-time code
+	// downloads to take over as host (settings, catalog, print template,
+	// targets and bots; never the WhatsApp sessions). Nil disables the
+	// handoff routes.
+	HandoffBundle func() (HandoffBundle, error)
+	// OnHandoff runs after the new host confirms the transfer, so this host
+	// stops hosting and leaves the window as a spectator.
+	OnHandoff func()
+	// Version is the running app version reported in the handoff bundle.
+	Version string
 	// SyncInterval returns the automatic sync interval in minutes (0 = off).
 	SyncInterval func() int
 	// CatalogPath returns the catalog seed the kitchen uses. Nil or empty
@@ -165,6 +177,8 @@ type Server struct {
 	next int
 
 	syncer *orderSyncer
+	// handoff keeps the current one-time code and grant of the host transfer.
+	handoff handoffState
 }
 
 // New builds the panel server. It does not listen until Run is called.
@@ -251,7 +265,8 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("GET /api/panel/order-details", s.authenticated(s.handleOrderDetails))
 	mux.HandleFunc("POST /api/panel/orders/{date}/{number}/remove", s.hostOnly(s.handleRemoveOrder))
 	mux.HandleFunc("PATCH /api/panel/notifications", s.hostOnly(s.handleNotifications))
-	mux.HandleFunc("GET /api/panel/targets", s.authenticated(s.handleTargets))
+	// Targets carry the destination phone numbers; only the host reads them.
+	mux.HandleFunc("GET /api/panel/targets", s.hostOnly(s.handleTargets))
 	mux.HandleFunc("POST /api/panel/targets", s.hostOnly(s.handleTargetCreate))
 	mux.HandleFunc("PATCH /api/panel/targets/{id}", s.hostOnly(s.handleTargetUpdate))
 	mux.HandleFunc("DELETE /api/panel/targets/{id}", s.hostOnly(s.handleTargetDelete))
@@ -270,6 +285,13 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("POST /api/panel/bots/{id}/reconnect", s.hostOnly(s.handleBotReconnect))
 	mux.HandleFunc("POST /api/panel/bots/{id}/logout", s.hostOnly(s.handleBotLogout))
 	mux.HandleFunc("GET /api/panel/events", s.authenticated(s.handleEvents))
+
+	mux.HandleFunc("POST /api/panel/handoff/code", s.hostOnly(s.handleHandoffCode))
+	mux.HandleFunc("POST /api/panel/handoff/claim", s.authenticated(s.handleHandoffClaim))
+	mux.HandleFunc("GET /api/panel/handoff/bundle", s.authenticated(s.handleHandoffBundle))
+	mux.HandleFunc("POST /api/panel/handoff/complete", s.authenticated(s.handleHandoffComplete))
+	mux.HandleFunc("POST /api/panel/station/rotate", s.hostOnly(s.handleStationRotate))
+	mux.HandleFunc("POST /api/panel/sessions/revoke-all", s.hostOnly(s.handleSessionsRevokeAll))
 
 	mux.HandleFunc("GET /api/panel/invites", s.hostOnly(s.handleInviteList))
 	mux.HandleFunc("POST /api/panel/invites", s.hostOnly(s.handleInviteCreate))
@@ -1279,16 +1301,18 @@ h1{font-size:18px;margin:0 0 8px}p{margin:0;color:#8a6a54}code{background:#f6d5c
 // JSON are applied, so a missing key keeps the stored value and an explicit
 // empty string clears it.
 type settingsPatch struct {
-	Domain         *string      `json:"domain"`
-	TunnelHostname *string      `json:"tunnelHostname"`
-	TunnelToken    *string      `json:"tunnelToken"`
-	CatalogPath    *string      `json:"catalogPath"`
-	PanelPort      *int         `json:"panelPort"`
-	Debug          *bool        `json:"debug"`
-	WP             *wpPatch     `json:"wp"`
-	WebhookSecret  *string      `json:"webhookSecret"`
-	Access         *accessPatch `json:"access"`
-	SyncMinutes    *int         `json:"syncMinutes"`
+	Domain          *string      `json:"domain"`
+	TunnelHostname  *string      `json:"tunnelHostname"`
+	TunnelToken     *string      `json:"tunnelToken"`
+	CatalogPath     *string      `json:"catalogPath"`
+	PanelPort       *int         `json:"panelPort"`
+	Debug           *bool        `json:"debug"`
+	WP              *wpPatch     `json:"wp"`
+	WebhookSecret   *string      `json:"webhookSecret"`
+	Access          *accessPatch `json:"access"`
+	SyncMinutes     *int         `json:"syncMinutes"`
+	SyncCreatedDays *int         `json:"syncCreatedDays"`
+	AutoUpdate      *bool        `json:"autoUpdate"`
 }
 
 type wpPatch struct {
@@ -1331,6 +1355,13 @@ func applyPatch(current settings.Values, patch settingsPatch) settings.Values {
 	if patch.SyncMinutes != nil && *patch.SyncMinutes >= 0 && *patch.SyncMinutes <= 1440 {
 		minutes := *patch.SyncMinutes
 		out.SyncMinutes = &minutes
+	}
+	if patch.SyncCreatedDays != nil && *patch.SyncCreatedDays >= 1 && *patch.SyncCreatedDays <= 365 {
+		days := *patch.SyncCreatedDays
+		out.SyncCreatedDays = days
+	}
+	if patch.AutoUpdate != nil {
+		out.AutoUpdate = patch.AutoUpdate
 	}
 	if patch.Access != nil && patch.Access.Enabled != nil {
 		out.Access.Enabled = *patch.Access.Enabled

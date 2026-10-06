@@ -9,6 +9,7 @@ import (
 	"context"
 	_ "embed"
 	"encoding/base64"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
@@ -72,6 +73,11 @@ var startedAt = time.Now()
 // no-op keeps the tray and the restart route safe before that.
 var shutdownApp = func() {}
 
+// yieldHosting stops hosting and leaves this machine as a spectator. The panel
+// server calls it when a new host confirms the transfer; startHost installs
+// the real one.
+var yieldHosting = func() {}
+
 func main() {
 	// Console-only modes (release checks and the update end-to-end proof) run
 	// before the window, the tray and the single-instance mutex.
@@ -112,6 +118,11 @@ func main() {
 	store, storeErr := settings.Open(cfg.SettingsPath)
 	if storeErr != nil {
 		fmt.Fprintln(os.Stderr, "settings:", storeErr)
+	} else {
+		hostStore = store
+		// Apply the saved autostart preference now: Windows (or the user) may
+		// have dropped the Run entry, and the app may run from a new path.
+		reconcileAutostart(store)
 	}
 	// First run without any configuration: ask for the tunnel (and the store
 	// credentials) before deciding host or spectator, so no manual restart is
@@ -120,6 +131,30 @@ func main() {
 	// Resolve the catalog, but do not persist it during setup: writing
 	// settings.json would hide the first-run page.
 	applyCatalogFallback(&cfg, store, !setupMode)
+
+	// Without the WebView2 runtime the embedded window cannot exist; the
+	// engine hands back a null handle that would crash on the first call.
+	// Offer the official silent install, and fall back to the download page
+	// when it cannot run.
+	if !window.Available() {
+		fmt.Fprintln(os.Stderr, "webview: falta el runtime de Microsoft Edge WebView2")
+		if window.AskInstallWebView() {
+			fmt.Fprintln(os.Stderr, "webview: instalando el runtime de WebView2…")
+			if err := window.InstallWebView(); err != nil {
+				fmt.Fprintln(os.Stderr, "webview:", err)
+				if window.AskOpenWebViewPage() {
+					openURL(window.WebViewDownloadURL)
+				}
+				return
+			}
+			fmt.Fprintln(os.Stderr, "webview: runtime instalado")
+		} else {
+			if window.AskOpenWebViewPage() {
+				openURL(window.WebViewDownloadURL)
+			}
+			return
+		}
+	}
 
 	options := window.Options{
 		Title:  labels.Tray.Title,
@@ -144,6 +179,9 @@ func main() {
 		bindSetup(store, func() {
 			next := config.Load()
 			applyCatalogFallback(&next, store, true)
+			// First-run setups kept no updater; start it now that the
+			// configuration is complete.
+			startAutoUpdate(store)
 			if remoteHost(next) {
 				fmt.Fprintln(os.Stderr, "host: otro equipo ya es el host de", next.TunnelHostname, "- modo espectador")
 				startSpectator(next)
@@ -176,7 +214,7 @@ func main() {
 	} else {
 		startHost(cfg, store)
 	}
-	startAutoUpdate()
+	startAutoUpdate(store)
 
 	window.Run()
 	window.Destroy()
@@ -221,6 +259,23 @@ func startHost(cfg config.Config, store *settings.Store) {
 		window.Quit()
 		systray.Quit()
 	}
+	yieldHosting = func() {
+		fmt.Fprintln(os.Stderr, "handoff: leaving the host role")
+		stopTunnel()
+		bot.close()
+		stopNotify()
+		stopPanel()
+		shutdownApp = func() {
+			window.Quit()
+			systray.Quit()
+		}
+		// The new host opens the tunnel a moment later; move the window only
+		// once it answers.
+		waitForNewHost(cfg, 90*time.Second)
+		tray.SetTunnel(labels.Tunnel.Spectator)
+		window.Navigate(spectatorURL(cfg))
+		window.Show()
+	}
 
 	startTunnel(cfg)
 	startPanel(cfg, bot, notifyManager, store)
@@ -249,6 +304,9 @@ func restartApp() {
 
 // startSpectator shows the host's panel in the window, with a reduced tray.
 func startSpectator(cfg config.Config) {
+	// The local "take over" page talks to Go through this binding; it is
+	// guarded by a per-show nonce so remote content cannot drive it.
+	bindHandoff()
 	window.Navigate(spectatorURL(cfg))
 	tray.SetTunnel(labels.Tunnel.Spectator)
 	// The updater restarts the app through this, so a spectator installs a
@@ -264,6 +322,7 @@ func startSpectator(cfg config.Config) {
 		AutostartEnabled:  autostart.Enabled(),
 		OnToggleAutostart: toggleAutostart,
 		OnUpdate:          checkUpdatesManually,
+		OnHandoff:         showHandoff,
 		OnQuit:            shutdownApp,
 	})
 	window.Show()
@@ -684,6 +743,30 @@ func startPanel(cfg config.Config, bot *botShell, targets *notify.Manager, store
 		SetAutostart: setAutostart,
 		SelfTest:     selftest.New(selfDeps),
 		Update:       updater,
+		Version:      version,
+		HandoffBundle: func() (panelserver.HandoffBundle, error) {
+			var values settings.Values
+			if store != nil {
+				values = store.Values()
+			}
+			bundle := panelserver.HandoffBundle{Settings: values}
+			read := func(path string) json.RawMessage {
+				if path == "" {
+					return nil
+				}
+				raw, err := os.ReadFile(path)
+				if err != nil || len(raw) == 0 || !json.Valid(raw) {
+					return nil
+				}
+				return json.RawMessage(raw)
+			}
+			bundle.Catalog = read(cfg.CatalogPath)
+			bundle.PrintTemplate = read(filepath.Join(cfg.DataDir, "print-template.json"))
+			bundle.Targets = read(filepath.Join(cfg.DataDir, "targets.json"))
+			bundle.Bots = read(filepath.Join(cfg.DataDir, "bots.json"))
+			return bundle, nil
+		},
+		OnHandoff: yieldHosting,
 		Diagnostics: func() panelserver.Diagnostics {
 			return panelserver.Diagnostics{
 				Version:   version,
@@ -714,7 +797,7 @@ func startPanel(cfg config.Config, bot *botShell, targets *notify.Manager, store
 			}
 			return bot.panel.PanelSnapshot()
 		},
-		SyncOrders: func(ctx context.Context, dates []string) (any, error) {
+		SyncOrders: func(ctx context.Context, dates []string, full bool) (any, error) {
 			if bot == nil || bot.panel == nil {
 				return nil, errors.New("cocina no disponible")
 			}
@@ -724,6 +807,14 @@ func startPanel(cfg config.Config, bot *botShell, targets *notify.Manager, store
 				values = store.Values()
 			}
 			wp := config.ResolveWP(values)
+			request := whatsapp.SyncRequest{
+				Dates:       dates,
+				APIBase:     wp.AdminURL,
+				APIKey:      wp.ConsumerKey,
+				APISecret:   wp.ConsumerSecret,
+				CreatedDays: values.SyncCreatedDays,
+				Full:        full,
+			}
 			exporter, err := wpexport.New(wpexport.Config{
 				Base:     wp.AdminURL,
 				User:     wp.AdminUser,
@@ -733,9 +824,15 @@ func startPanel(cfg config.Config, bot *botShell, targets *notify.Manager, store
 				Token:    wp.ExportToken,
 			})
 			if err != nil {
-				return nil, err
+				// Without the export the lookup still refreshes the days, as
+				// long as the consumer keys are configured.
+				if request.APIKey == "" || request.APISecret == "" {
+					return nil, err
+				}
+			} else {
+				request.ExportRows = exporter.Rows
 			}
-			return bot.panel.SyncFromExport(ctx, exporter.Rows, dates)
+			return bot.panel.SyncStore(ctx, request)
 		},
 		SyncInterval: func() int {
 			if store != nil {
@@ -817,6 +914,8 @@ func startPanel(cfg config.Config, bot *botShell, targets *notify.Manager, store
 			// D27: reconnect the bot session or the tunnel when a secret a live
 			// session depends on changes.
 			fmt.Fprintln(os.Stderr, "settings: updated, reconnect pending")
+			// The automatic update switch applies live.
+			syncAutoUpdate(autoUpdateEnabled(store))
 		},
 	})
 	panelMu.Lock()
@@ -848,12 +947,71 @@ func toggleAutostart(enabled bool) {
 	}
 }
 
-// setAutostart registers or removes the login item, for the tray and Ajustes.
+// hostStore is the opened settings.json, shared by the tray, the panel and the
+// autostart preference. Set once in main.
+var hostStore *settings.Store
+
+// setAutostart registers or removes the login item, for the tray and Ajustes,
+// and saves the preference so the next start can repair the registry.
 func setAutostart(enabled bool) error {
 	if enabled {
-		return autostart.Enable()
+		if err := autostart.Enable(); err != nil {
+			return err
+		}
+	} else if err := autostart.Disable(); err != nil {
+		return err
 	}
-	return autostart.Disable()
+	persistAutostart(enabled)
+	return nil
+}
+
+// persistAutostart mirrors the switch into settings.json.
+func persistAutostart(enabled bool) {
+	if hostStore == nil {
+		return
+	}
+	values := hostStore.Values()
+	value := enabled
+	values.Autostart = &value
+	if err := hostStore.Update(values); err != nil {
+		fmt.Fprintln(os.Stderr, "autostart:", err)
+	}
+}
+
+// openURL opens a link in the default browser. rundll32 is used because it
+// never flashes a console, unlike "cmd /c start".
+func openURL(target string) {
+	if err := exec.Command("rundll32", "url.dll,FileProtocolHandler", target).Start(); err != nil {
+		fmt.Fprintln(os.Stderr, "abrir navegador:", err)
+	}
+}
+
+// reconcileAutostart applies the saved preference to the registry on every
+// start. An entry that Windows dropped, or that points at a moved or rebuilt
+// executable, is written again from the running exe.
+func reconcileAutostart(store *settings.Store) {
+	if store == nil {
+		return
+	}
+	value := store.Values().Autostart
+	if value == nil {
+		// An install from before this setting: the registry is the only state.
+		return
+	}
+	if !*value {
+		if err := autostart.Disable(); err != nil {
+			fmt.Fprintln(os.Stderr, "autostart:", err)
+		}
+		return
+	}
+	exe, err := os.Executable()
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "autostart:", err)
+		return
+	}
+	if err := autostart.Ensure(exe); err != nil {
+		fmt.Fprintln(os.Stderr, "autostart:", err)
+	}
 }
 
 // navigateWhenReady waits for the panel server to answer, then points the

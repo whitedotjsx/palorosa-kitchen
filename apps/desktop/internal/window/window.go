@@ -273,6 +273,16 @@ func Navigate(url string) {
 	}
 }
 
+// SetHtml loads an inline page into the webview. Safe from any goroutine.
+func SetHtml(html string) {
+	mu.Lock()
+	w := instance
+	mu.Unlock()
+	if w != nil {
+		w.Dispatch(func() { w.SetHtml(html) })
+	}
+}
+
 // Quit stops the message loop. Safe from any goroutine.
 func Quit() {
 	mu.Lock()

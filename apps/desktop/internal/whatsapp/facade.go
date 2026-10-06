@@ -20,7 +20,7 @@ type PanelOps interface {
 	RemoveOrder(date, number string) error
 	SetNotifications(notifications panelmodel.Notifications)
 	PublishList(date string) error
-	SyncFromExport(ctx context.Context, fetch ExportRows, dates []string) (SyncResult, error)
+	SyncStore(ctx context.Context, req SyncRequest) (SyncResult, error)
 	Handler() http.Handler
 }
 

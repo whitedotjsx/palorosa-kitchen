@@ -20,6 +20,7 @@ type Handlers struct {
 	OnToggleAutostart func(enabled bool)
 	AutostartEnabled  bool
 	OnUpdate          func()
+	OnHandoff         func()
 	OnQuit            func()
 }
 
@@ -50,6 +51,10 @@ func Register(icon []byte, text labels.TrayLabels, handlers Handlers) {
 		update := systray.AddMenuItem(text.Update, text.UpdateHint)
 		if handlers.OnUpdate == nil {
 			update.Hide()
+		}
+		handoff := systray.AddMenuItem(text.Handoff, text.HandoffHint)
+		if handlers.OnHandoff == nil {
+			handoff.Hide()
 		}
 		systray.AddSeparator()
 		quit := systray.AddMenuItem(text.Quit, text.QuitHint)
@@ -86,6 +91,8 @@ func Register(icon []byte, text labels.TrayLabels, handlers Handlers) {
 					}
 				case <-update.ClickedCh:
 					call(handlers.OnUpdate)
+				case <-handoff.ClickedCh:
+					call(handlers.OnHandoff)
 				case <-quit.ClickedCh:
 					call(handlers.OnQuit)
 					return

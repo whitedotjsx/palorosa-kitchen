@@ -23,6 +23,11 @@
   let diagnostics = $state<Diagnostics | null>(null)
   let update = $state<UpdateState | null>(null)
   let updateBusy = $state(false)
+  let autoUpdate = $state(true)
+  let autoUpdateBusy = $state(false)
+  let handoffCode = $state('')
+  let handoffBusy = $state(false)
+  let accessBusy = $state(false)
   const updateStatusText = $derived.by(() => {
     if (!update) return labels.ajustes.updateIdle
     switch (update.status) {
@@ -35,7 +40,7 @@
       default: return labels.ajustes.updateUpToDate(update.current)
     }
   })
-  let advanced = $state({ catalogPath: '', panelPort: 5211, debug: false, syncMinutes: 10 })
+  let advanced = $state({ catalogPath: '', panelPort: 5211, debug: false, syncMinutes: 10, syncCreatedDays: 45 })
   let notifBusy = $state(false)
   let advancedBusy = $state(false)
   let checks = $state<CheckResult[]>([])
@@ -72,8 +77,10 @@
         catalogPath: settings.catalogPath ?? '',
         panelPort: settings.panelPort || 5211,
         syncMinutes: settings.syncMinutes ?? 10,
+        syncCreatedDays: settings.syncCreatedDays ?? 45,
         debug: !!settings.debug,
       }
+      autoUpdate = settings.autoUpdate ?? true
     } catch (error) {
       notify((error as Error).message, true)
     }
@@ -229,12 +236,77 @@
     }
   }
 
+  // The automatic update switch applies live; no restart needed.
+  async function toggleAutoUpdate () {
+    const next = !autoUpdate
+    autoUpdateBusy = true
+    try {
+      const updated = await api<Settings>('/api/panel/settings', { method: 'PATCH', body: JSON.stringify({ autoUpdate: next }) })
+      settings = updated
+      // The panel can be newer than the exe (KITCHEN_PANEL_HTML, a dev build):
+      // when the server does not echo the change, it does not know the setting.
+      if (updated.autoUpdate !== next) {
+        autoUpdate = updated.autoUpdate ?? true
+        notify(labels.ajustes.autoUpdateFailed, true)
+        return
+      }
+      autoUpdate = updated.autoUpdate
+      notify(next ? labels.ajustes.autoUpdateOn : labels.ajustes.autoUpdateOff)
+    } catch (error) {
+      notify((error as Error).message, true)
+    } finally {
+      autoUpdateBusy = false
+    }
+  }
+
+  // Mints the one-time code another machine types to take over as host.
+  async function generateHandoff () {
+    handoffBusy = true
+    try {
+      const result = await api<{ code: string }>('/api/panel/handoff/code', { method: 'POST' })
+      handoffCode = result.code
+      notify(labels.ajustes.handoffCreated)
+    } catch (error) {
+      notify((error as Error).message, true)
+    } finally {
+      handoffBusy = false
+    }
+  }
+
+  async function revokeAllSessions () {
+    if (!confirm(labels.ajustes.revokeAllConfirm)) return
+    accessBusy = true
+    try {
+      const result = await api<{ revoked: number }>('/api/panel/sessions/revoke-all', { method: 'POST' })
+      notify(labels.ajustes.sessionsRevoked.replace('{n}', String(result.revoked)))
+      await loadAuth()
+    } catch (error) {
+      notify((error as Error).message, true)
+    } finally {
+      accessBusy = false
+    }
+  }
+
+  async function rotateStation () {
+    if (!confirm(labels.ajustes.rotateStationConfirm)) return
+    accessBusy = true
+    try {
+      const result = await api<{ revoked: number }>('/api/panel/station/rotate', { method: 'POST' })
+      notify(labels.ajustes.stationRotated.replace('{n}', String(result.revoked)))
+      await loadAuth()
+    } catch (error) {
+      notify((error as Error).message, true)
+    } finally {
+      accessBusy = false
+    }
+  }
+
   async function saveAdvanced () {
     advancedBusy = true
     try {
       settings = await api<Settings>('/api/panel/settings', {
         method: 'PATCH',
-        body: JSON.stringify({ catalogPath: advanced.catalogPath, panelPort: Number(advanced.panelPort) || 5211, debug: advanced.debug, syncMinutes: Math.max(0, Math.min(1440, Math.round(Number(advanced.syncMinutes) || 0))) }),
+        body: JSON.stringify({ catalogPath: advanced.catalogPath, panelPort: Number(advanced.panelPort) || 5211, debug: advanced.debug, syncMinutes: Math.max(0, Math.min(1440, Math.round(Number(advanced.syncMinutes) || 0))), syncCreatedDays: Math.max(1, Math.min(365, Math.round(Number(advanced.syncCreatedDays) || 45))) }),
       })
       notify(labels.ajustes.savedAdvanced)
       await loadDiagnostics()
@@ -624,6 +696,25 @@
         </div>
       </div>
     </div>
+
+    <div>
+      <h3 class="block-title">{labels.ajustes.handoff}</h3>
+      <div class="kraft-panel">
+        <p class="helper">{labels.ajustes.handoffHelp}</p>
+        {#if handoffCode}
+          <div class="note" style="margin-bottom:12px">
+            <svg viewBox="0 0 24 24"><path d="M12 8v5M12 16h.01" /><circle cx="12" cy="12" r="9" /></svg>
+            <div>
+              <span><b>{labels.ajustes.handoffCode}:</b> <span class="handoff-code mono">{handoffCode}</span></span>
+              <div class="muted small">{labels.ajustes.handoffExpires.replace('{n}', '10')}</div>
+            </div>
+          </div>
+        {/if}
+        <div class="actions">
+          <button class="btn btn-kraft" onclick={generateHandoff} disabled={handoffBusy}>{labels.ajustes.handoffGenerate}</button>
+        </div>
+      </div>
+    </div>
   {/if}
 
   {#if notifications}
@@ -666,6 +757,11 @@
         <label class="label" for="sync-minutes">{labels.ajustes.syncMinutes}</label>
         <input class="input" id="sync-minutes" type="number" min="0" max="1440" bind:value={advanced.syncMinutes} style="max-width:140px" />
         <p class="helper">{labels.ajustes.syncMinutesHint}</p>
+      </div>
+      <div class="field">
+        <label class="label" for="sync-created-days">{labels.ajustes.syncCreatedDays}</label>
+        <input class="input" id="sync-created-days" type="number" min="1" max="365" bind:value={advanced.syncCreatedDays} style="max-width:140px" />
+        <p class="helper">{labels.ajustes.syncCreatedDaysHint}</p>
       </div>
       <div class="field">
         <label class="check"><input type="checkbox" bind:checked={advanced.debug} /> {labels.ajustes.debug}</label>
@@ -725,6 +821,14 @@
       {#if update}
         <div class="kraft-panel" style="margin-bottom:14px">
           <div class="kv"><span class="k">{labels.ajustes.updates}</span><span class="v">{updateStatusText}</span></div>
+          <div class="ruled" style="margin:4px 0 12px">
+            <div class="r">
+              <span class="k">{labels.ajustes.autoUpdate}</span>
+              <span class="v">
+                <button class="switch" class:on={autoUpdate} aria-pressed={autoUpdate} aria-label={labels.ajustes.autoUpdate} disabled={autoUpdateBusy} onclick={toggleAutoUpdate}></button>
+              </span>
+            </div>
+          </div>
           <p class="helper">{labels.ajustes.updatesHint}</p>
           <div class="actions">
             <button class="btn btn-kraft" onclick={checkUpdate} disabled={updateBusy}>{labels.ajustes.updateCheck}</button>
@@ -833,6 +937,11 @@
           {/if}
         </tbody>
       </table>
+    </div>
+    <p class="helper" style="margin-top:10px">{labels.ajustes.rotateStationHint}</p>
+    <div class="actions">
+      <button class="btn btn-danger" onclick={revokeAllSessions} disabled={accessBusy}>{labels.ajustes.revokeAll}</button>
+      <button class="btn btn-kraft" onclick={rotateStation} disabled={accessBusy}>{labels.ajustes.rotateStation}</button>
     </div>
   </div>
 </div>

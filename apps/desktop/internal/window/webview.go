@@ -11,7 +11,6 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
-	"syscall"
 	"time"
 
 	"golang.org/x/sys/windows"
@@ -115,15 +114,19 @@ func InstallWebView() error {
 		_ = os.Remove(target)
 		return fmt.Errorf("no se pudo guardar el instalador: %w", closeErr)
 	}
-	command := exec.Command(target, "/silent", "/install")
-	command.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+	// /passive shows the official progress bar and needs no interaction;
+	// /silent would install with no feedback at all. The installer window must
+	// stay visible, so no HideWindow here.
+	command := exec.Command(target, "/passive", "/install")
 	runErr := command.Run()
 	_ = os.Remove(target)
+	// The bootstrapper can exit non-zero on a harmless path (already installed,
+	// repair, update check); what matters is whether the runtime is there now.
+	if installed() {
+		return nil
+	}
 	if runErr != nil {
 		return fmt.Errorf("el instalador terminó con error: %w", runErr)
 	}
-	if !installed() {
-		return errors.New("el instalador terminó pero el runtime no quedó disponible; puede requerir permisos de administrador")
-	}
-	return nil
+	return errors.New("el instalador terminó pero el runtime no quedó disponible; puede requerir permisos de administrador")
 }

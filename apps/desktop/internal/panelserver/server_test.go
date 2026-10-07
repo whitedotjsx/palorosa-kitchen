@@ -169,11 +169,12 @@ func TestHostCreatesInviteAndSpectatorReadsTunnel(t *testing.T) {
 		t.Fatalf("spectator tunnel status = %d, want 200", recorder.Code)
 	}
 
-	// But cannot read or write the settings, nor manage invites.
+	// But cannot read or write the settings, nor manage invites, accounts or
+	// pairing QR codes.
 	for _, test := range []struct {
 		method string
 		path   string
-	}{{"GET", "/api/panel/settings"}, {"PATCH", "/api/panel/settings"}, {"POST", "/api/panel/invites"}, {"GET", "/api/panel/sessions"}} {
+	}{{"GET", "/api/panel/settings"}, {"PATCH", "/api/panel/settings"}, {"POST", "/api/panel/invites"}, {"GET", "/api/panel/sessions"}, {"GET", "/api/panel/bots"}, {"GET", "/api/panel/bots/default/qr.png"}} {
 		recorder = httptest.NewRecorder()
 		request = httptest.NewRequest(test.method, test.path, bytes.NewBufferString(`{}`))
 		request.AddCookie(session)

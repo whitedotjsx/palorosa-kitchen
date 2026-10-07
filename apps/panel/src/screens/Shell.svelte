@@ -185,19 +185,19 @@
   </header>
 
   <main class="content">
-    {#if screen === 'resumen'}
-      <Resumen {session} {tunnel} {revision} {notify} onNavigate={(next) => { screen = next as Screen; sidebarOpen = false }} />
-    {:else if screen === 'ajustes'}
+    {#if current?.id === 'resumen'}
+      <Resumen {session} {tunnel} {revision} {notify} onNavigate={(next) => { if (allowed.some((item) => item.id === next)) screen = next as Screen; sidebarOpen = false }} />
+    {:else if current?.id === 'ajustes'}
       <Ajustes {notify} {tunnel} reloadTunnel={loadTunnel} />
-    {:else if screen === 'bots'}
+    {:else if current?.id === 'bots'}
       <Bots {revision} {notify} />
-    {:else if screen === 'destinos'}
+    {:else if current?.id === 'destinos'}
       <Destinos {revision} {notify} />
-    {:else if screen === 'pedidos'}
+    {:else if current?.id === 'pedidos'}
       <Pedidos {revision} role={session.role} {notify} />
-    {:else if screen === 'lista'}
+    {:else if current?.id === 'lista'}
       <Lista {revision} {notify} />
-    {:else if screen === 'catalogo'}
+    {:else if current?.id === 'catalogo'}
       <Catalogo {notify} />
     {/if}
   </main>

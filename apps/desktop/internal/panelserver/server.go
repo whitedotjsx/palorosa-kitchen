@@ -276,7 +276,7 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("GET /api/panel/push", s.authenticated(s.handlePushGet))
 	mux.HandleFunc("POST /api/panel/push", s.authenticated(s.handlePushCreate))
 	mux.HandleFunc("DELETE /api/panel/push", s.authenticated(s.handlePushDelete))
-	mux.HandleFunc("GET /api/panel/bots", s.authenticated(s.handleBots))
+	mux.HandleFunc("GET /api/panel/bots", s.hostOnly(s.handleBots))
 	mux.HandleFunc("POST /api/panel/bots", s.hostOnly(s.handleBotCreate))
 	mux.HandleFunc("PATCH /api/panel/bots/{id}", s.hostOnly(s.handleBotUpdate))
 	mux.HandleFunc("DELETE /api/panel/bots/{id}", s.hostOnly(s.handleBotDelete))

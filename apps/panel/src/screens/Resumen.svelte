@@ -182,22 +182,24 @@
         <PushToggle />
       </div>
 
-      <h3 class="section-label">{labels.resumen.quick}</h3>
-      <hr class="section-rule" />
-      <div class="quick">
-        <button class="btn btn-primary" onclick={() => onNavigate?.('bots')}>
-          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" /></svg>
-          {labels.resumen.addAccount}
-        </button>
-        <button class="btn btn-kraft" onclick={publish} disabled={busy}>
-          <svg viewBox="0 0 24 24"><path d="M4 12h16M4 12l5-5M4 12l5 5" /><path d="M14 6h6v12h-6" /></svg>
-          {labels.resumen.publishToday}
-        </button>
-        <button class="btn btn-kraft" onclick={sendTest} disabled={busy}>
-          <svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z" /><path d="M8.5 9.5h7" /></svg>
-          {labels.resumen.sendTest}
-        </button>
-      </div>
+      {#if session.role === 'host'}
+        <h3 class="section-label">{labels.resumen.quick}</h3>
+        <hr class="section-rule" />
+        <div class="quick">
+          <button class="btn btn-primary" onclick={() => onNavigate?.('bots')}>
+            <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" /></svg>
+            {labels.resumen.addAccount}
+          </button>
+          <button class="btn btn-kraft" onclick={publish} disabled={busy}>
+            <svg viewBox="0 0 24 24"><path d="M4 12h16M4 12l5-5M4 12l5 5" /><path d="M14 6h6v12h-6" /></svg>
+            {labels.resumen.publishToday}
+          </button>
+          <button class="btn btn-kraft" onclick={sendTest} disabled={busy}>
+            <svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z" /><path d="M8.5 9.5h7" /></svg>
+            {labels.resumen.sendTest}
+          </button>
+        </div>
+      {/if}
     </div>
   </div>
 </section>

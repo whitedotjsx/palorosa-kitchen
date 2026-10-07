@@ -75,10 +75,11 @@ func (c *Client) handleWooCommerce(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Only "processing" orders are cooked. Any other status (pending payment,
-	// cancelled, trashed, refunded…) removes the order from the day.
+	// Only inactive orders are left out: pending orders are cooked too, and
+	// the rule lives in orderIsCooked so the export, the lookup and the
+	// webhook all agree.
 	status := strings.ToLower(strings.TrimSpace(order.Status))
-	if status != "processing" {
+	if !orderIsCooked(status) {
 		title := statusTitle(status) + " #" + number
 		result := c.applyRemoval(export.DeliveryDate, number, title)
 		result["status"] = status

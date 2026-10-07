@@ -842,6 +842,14 @@ func startPanel(cfg config.Config, bot *botShell, targets *notify.Manager, store
 			}
 			return panelserver.DefaultSyncMinutes
 		},
+		SyncFullInterval: func() int {
+			if store != nil {
+				if minutes := store.Values().SyncFullMinutes; minutes != nil {
+					return *minutes
+				}
+			}
+			return panelserver.DefaultFullSyncMinutes
+		},
 		RemoveOrder: func(date, number string) error {
 			if bot == nil || bot.panel == nil {
 				return errors.New("cocina no disponible")

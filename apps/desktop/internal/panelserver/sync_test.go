@@ -3,6 +3,7 @@ package panelserver
 import (
 	"fmt"
 	"testing"
+	"time"
 )
 
 func TestRequestedDates(t *testing.T) {
@@ -32,5 +33,36 @@ func TestRequestedDatesCaps(t *testing.T) {
 	}
 	if got := requestedDates("", dates); len(got) != maxSyncDates {
 		t.Fatalf("len = %d, want %d", len(got), maxSyncDates)
+	}
+}
+
+// TestSyncerDueCadence pins the two clocks: the fast lookup runs on the sync
+// interval and the exact export is forced on the full interval.
+func TestSyncerDueCadence(t *testing.T) {
+	start := time.Now()
+	syncer := &orderSyncer{last: start, lastFull: start}
+	cases := []struct {
+		name        string
+		after       time.Duration
+		wantRun     bool
+		wantFull    bool
+	}{
+		{"nothing due", 5 * time.Minute, false, false},
+		{"lookup due", 11 * time.Minute, true, false},
+		{"full export due", 181 * time.Minute, true, true},
+	}
+	for _, test := range cases {
+		run, full := syncer.due(DefaultSyncMinutes, DefaultFullSyncMinutes, start.Add(test.after))
+		if run != test.wantRun || full != test.wantFull {
+			t.Fatalf("%s: run=%v full=%v, want run=%v full=%v", test.name, run, full, test.wantRun, test.wantFull)
+		}
+	}
+	run, _ := syncer.due(0, DefaultFullSyncMinutes, start.Add(24*time.Hour))
+	if run {
+		t.Fatal("sync turned off should never run")
+	}
+	run, full := syncer.due(DefaultSyncMinutes, 0, start.Add(24*time.Hour))
+	if !run || full {
+		t.Fatalf("full export off: run=%v full=%v, want run=true full=false", run, full)
 	}
 }

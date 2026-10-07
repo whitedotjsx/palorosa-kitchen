@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/wsuites/palorosa-kitchen/apps/desktop/internal/engine"
+	"github.com/wsuites/palorosa-kitchen/apps/desktop/internal/labels"
 )
 
 // ExportRows returns the WP All Export sheet (header first) for one delivery
@@ -152,9 +153,11 @@ func (c *Client) SyncStore(ctx context.Context, req SyncRequest) (SyncResult, er
 	return result, nil
 }
 
-// applyLookup groups the fetched orders by delivery date, keeps the requested
-// days and merges them silently. Orders outside the requested days are ignored
-// (the lookup window covers every delivery, not only these days).
+// applyLookup groups the fetched orders by delivery date and applies the
+// requested days one order at a time, so every real change goes through the
+// same path (and the same notice) a webhook uses. That makes the lookup the
+// fallback for a webhook that never arrived: new, modified and cancelled
+// orders are notified from here without touching the ones already stored.
 func (c *Client) applyLookup(dates []string, orders []woocommerceOrder) (added, removed, kept int, perDate map[string]int, touched []string) {
 	wanted := make(map[string]bool, len(dates))
 	for _, date := range dates {
@@ -163,7 +166,7 @@ func (c *Client) applyLookup(dates []string, orders []woocommerceOrder) (added, 
 	seen := map[string]map[string][]engine.ParsedOrderLine{}
 	notes := map[string]map[string]string{}
 	annotations := map[string]map[string]engine.OrderAnnotation{}
-	removals := map[string]map[string]bool{}
+	removals := map[string]map[string]string{}
 	for index := range orders {
 		order := &orders[index]
 		row := wooRow(order)
@@ -179,7 +182,7 @@ func (c *Client) applyLookup(dates []string, orders []woocommerceOrder) (added, 
 		if number == "" {
 			continue
 		}
-		if strings.EqualFold(strings.TrimSpace(order.Status), "processing") {
+		if orderIsCooked(order.Status) {
 			if seen[date] == nil {
 				seen[date] = map[string][]engine.ParsedOrderLine{}
 				notes[date] = map[string]string{}
@@ -194,15 +197,15 @@ func (c *Client) applyLookup(dates []string, orders []woocommerceOrder) (added, 
 			}
 		} else {
 			if removals[date] == nil {
-				removals[date] = map[string]bool{}
+				removals[date] = map[string]string{}
 			}
-			removals[date][number] = true
+			removals[date][number] = order.Status
 		}
 	}
 
 	perDate = make(map[string]int, len(dates))
 	for _, date := range dates {
-		add, drop, total := c.mergeDay(date, seen[date], notes[date], annotations[date], removals[date])
+		add, drop, total := c.applyLookupDay(date, seen[date], notes[date], annotations[date], removals[date])
 		added += add
 		removed += drop
 		kept += total
@@ -211,6 +214,74 @@ func (c *Client) applyLookup(dates []string, orders []woocommerceOrder) (added, 
 	}
 	sort.Strings(touched)
 	return added, removed, kept, perDate, touched
+}
+
+// storedOrder is the stored state of one order, used to decide whether a
+// lookup result is a change. `present` distinguishes an order with no parsed
+// lines from an order that is not stored at all.
+type storedOrder struct {
+	present    bool
+	lines      []engine.ParsedOrderLine
+	note       string
+	annotation engine.OrderAnnotation
+}
+
+// applyLookupDay applies one day's lookup rows. Orders that match the stored
+// state are skipped; the rest go through applyOrder/applyRemoval, so a missed
+// webhook still produces the notice a webhook would, exactly once.
+func (c *Client) applyLookupDay(date string, orders map[string][]engine.ParsedOrderLine, notes map[string]string, annotations map[string]engine.OrderAnnotation, removals map[string]string) (added, removed, total int) {
+	c.kitchen.mu.Lock()
+	previous := make(map[string]storedOrder, len(orders)+len(removals))
+	for number := range orders {
+		previous[number] = c.storedOrderLocked(date, number)
+	}
+	for number := range removals {
+		previous[number] = c.storedOrderLocked(date, number)
+	}
+	c.kitchen.mu.Unlock()
+
+	for number, lines := range orders {
+		before := previous[number]
+		if before.present &&
+			sameUnits(c.orderUnits(before.lines), c.orderUnits(lines)) &&
+			orderText(before.lines) == orderText(lines) &&
+			before.note == notes[number] &&
+			before.annotation == annotations[number] {
+			continue
+		}
+		title := labels.Bot.UpdatedOrder + " #" + number
+		kind := eventUpdate
+		if !before.present {
+			title = labels.Bot.NewOrder + " #" + number
+			kind = eventNew
+			added++
+		}
+		c.applyOrder(date, number, lines, title, notes[number], annotations[number], kind)
+	}
+	for number, status := range removals {
+		if !previous[number].present {
+			continue
+		}
+		c.applyRemoval(date, number, statusTitle(status)+" #"+number)
+		removed++
+	}
+
+	c.kitchen.mu.Lock()
+	total = len(c.kitchen.state.Orders[date])
+	c.kitchen.mu.Unlock()
+	return added, removed, total
+}
+
+// storedOrderLocked copies one order's stored state. The caller holds
+// kitchen.mu.
+func (c *Client) storedOrderLocked(date, number string) storedOrder {
+	lines, present := c.kitchen.state.Orders[date][number]
+	return storedOrder{
+		present:    present,
+		lines:      lines,
+		note:       c.kitchen.state.Observations[date][number],
+		annotation: c.kitchen.state.Annotations[date][number],
+	}
 }
 
 // markExported records that the day paid for the full export once, so the next
@@ -283,6 +354,12 @@ func exportOrders(ctx context.Context, fetch ExportRows, date string) (map[strin
 		if number == "" {
 			continue
 		}
+		// The optional status column (Ajustes → the saved export gets an
+		// "Estado" field) keeps cancelled orders out of the day the same way
+		// the lookup does. An export without the column is kept as it was.
+		if status := exportRowStatus(record); status != "" && !orderIsCooked(status) {
+			continue
+		}
 		parsed := engine.ParseWideOrderRows([]map[string]any{record}, engine.WideExportOptions{})
 		if parsed.DeliveryDate != "" && parsed.DeliveryDate != date {
 			return nil, nil, nil, fmt.Errorf("el export devolvió pedidos del %s; el filtro de fecha no se aplicó", parsed.DeliveryDate)
@@ -348,76 +425,6 @@ func (c *Client) replaceDay(date string, orders map[string][]engine.ParsedOrderL
 	}
 	_ = saveBotState(c.kitchen.path, state)
 	return added, removed
-}
-
-// mergeDay applies a lookup to one day without judging the orders it did not
-// see: processing orders are stored or replaced, non-processing ones are
-// dropped and everything else stays. The creation window cannot prove an
-// order is gone, so the day is never wiped here.
-func (c *Client) mergeDay(date string, orders map[string][]engine.ParsedOrderLine, notes map[string]string, annotations map[string]engine.OrderAnnotation, removals map[string]bool) (added, removed, total int) {
-	c.kitchen.mu.Lock()
-	defer c.kitchen.mu.Unlock()
-	state := c.kitchen.state
-	previous := state.Orders[date]
-	if len(orders) == 0 && len(removals) == 0 {
-		return 0, 0, len(previous)
-	}
-	for number := range orders {
-		if _, ok := previous[number]; !ok {
-			added++
-		}
-	}
-	for number := range removals {
-		if _, ok := previous[number]; ok {
-			removed++
-		}
-	}
-	if state.Orders == nil {
-		state.Orders = map[string]map[string][]engine.ParsedOrderLine{}
-	}
-	if state.Orders[date] == nil {
-		state.Orders[date] = map[string][]engine.ParsedOrderLine{}
-	}
-	if state.Observations[date] == nil {
-		state.Observations[date] = map[string]string{}
-	}
-	if state.Annotations[date] == nil {
-		state.Annotations[date] = map[string]engine.OrderAnnotation{}
-	}
-	for number, lines := range orders {
-		state.Orders[date][number] = lines
-		if note := notes[number]; note != "" {
-			state.Observations[date][number] = note
-		} else {
-			delete(state.Observations[date], number)
-		}
-		if annotation, ok := annotations[number]; ok {
-			state.Annotations[date][number] = annotation
-		} else {
-			delete(state.Annotations[date], number)
-		}
-	}
-	for number := range removals {
-		delete(state.Orders[date], number)
-		delete(state.Observations[date], number)
-		delete(state.Annotations[date], number)
-	}
-	total = len(state.Orders[date])
-	if total == 0 {
-		delete(state.Orders, date)
-		delete(state.Observations, date)
-		delete(state.Annotations, date)
-	}
-	if next := c.listFromStateLocked(date); next != nil {
-		state.Lists[date] = *next
-	} else {
-		delete(state.Lists, date)
-	}
-	if added > 0 || removed > 0 {
-		addEventLocked(state, "update", fmt.Sprintf("Actualizado desde la tienda (%s): %d nuevos, %d quitados", date, added, removed))
-	}
-	_ = saveBotState(c.kitchen.path, state)
-	return added, removed, total
 }
 
 // fetchStoreOrders pages the WooCommerce REST orders created after `after`.

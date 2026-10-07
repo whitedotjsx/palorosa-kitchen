@@ -8,6 +8,8 @@ import (
 	"net/http/httptest"
 	"testing"
 	"time"
+
+	"github.com/wsuites/palorosa-kitchen/apps/desktop/internal/engine"
 )
 
 // orderJSON builds one WooCommerce order payload for the lookup tests.
@@ -149,5 +151,89 @@ func TestFetchStoreOrdersPaginates(t *testing.T) {
 	}
 	if page != 2 {
 		t.Fatalf("pages = %d, want 2", page)
+	}
+}
+
+// spanishDate renders one YYYY-MM-DD date the way the store meta does.
+func spanishDate(date string) string {
+	months := [...]string{"enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"}
+	parsed, err := time.Parse("2006-01-02", date)
+	if err != nil {
+		return date
+	}
+	return fmt.Sprintf("%d %s, %d", parsed.Day(), months[parsed.Month()-1], parsed.Year())
+}
+
+// storedLines builds the parsed lines of one order, the way the lookup stores
+// them.
+func storedLines(t testing.TB, number, date, products string) []engine.ParsedOrderLine {
+	t.Helper()
+	row := wooRow(&woocommerceOrder{
+		Number: number,
+		Status: "processing",
+		MetaData: []wooMeta{
+			{Key: "Seleccionar una Fecha", Value: date},
+			{Key: "desayuno_excel", Value: products},
+		},
+	})
+	return engine.ParseWideOrderRows([]map[string]any{row}, engine.WideExportOptions{}).Lines
+}
+
+// TestLookupNotifiesMissedWebhooks is the fallback rule: what the fast lookup
+// finds (a new order, a new pending order and a cancelled one) produces the
+// same notices a webhook would, and a second run with no changes stays silent.
+func TestLookupNotifiesMissedWebhooks(t *testing.T) {
+	c := testClient(t)
+	var kinds []string
+	c.cfg.Dispatcher = func(_ string, kind, _ string) int {
+		kinds = append(kinds, kind)
+		return 1
+	}
+	date := bogotaDate(0)
+	spanish := spanishDate(date)
+	server := lookupServer(t, []map[string]any{
+		orderJSON("10", "pending", spanish),
+		orderJSON("11", "processing", spanish),
+		orderJSON("12", "cancelled", spanish),
+	})
+	request := SyncRequest{Dates: []string{date}, APIBase: server.URL, APIKey: "ck", APISecret: "cs", CreatedDays: 45}
+
+	// Order 12 is stored already, so its cancelled row removes it and notifies.
+	c.kitchen.state.Orders[date] = map[string][]engine.ParsedOrderLine{
+		"12": storedLines(t, "12", spanish, "Box Hombre X 1"),
+	}
+
+	first, err := c.SyncStore(context.Background(), request)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if first.Added != 2 || first.Removed != 1 || first.Kept != 2 {
+		t.Fatalf("first = %+v", first)
+	}
+	count := map[string]int{}
+	for _, kind := range kinds {
+		count[kind]++
+	}
+	if count[eventNew] != 2 || count[eventUpdate] != 1 || len(kinds) != 3 {
+		t.Fatalf("notices = %v", kinds)
+	}
+	day := c.kitchen.state.Orders[date]
+	if _, ok := day["10"]; !ok {
+		t.Fatal("the pending order was not cooked")
+	}
+	if _, ok := day["11"]; !ok {
+		t.Fatal("the processing order is missing")
+	}
+	if _, ok := day["12"]; ok {
+		t.Fatal("the cancelled order stayed in the day")
+	}
+
+	kinds = nil
+	second, err := c.SyncStore(context.Background(), request)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if second.Added != 0 || second.Removed != 0 || len(kinds) != 0 {
+		t.Fatalf("second run notified %v: %+v", kinds, second)
 	}
 }

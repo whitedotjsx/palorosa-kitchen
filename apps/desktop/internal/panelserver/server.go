@@ -106,7 +106,8 @@ type Config struct {
 	// hides the update routes.
 	Update *update.Manager
 	// SyncOrders brings the given delivery dates (YYYY-MM-DD) up to date from
-	// the store: the WP All Export runs once per day, later refreshes use the
+	// the store: the WP All Export runs on the full cadence (first contact
+	// with a day and every full interval), later refreshes use the
 	// WooCommerce lookup, and full forces the export again. Nil disables the
 	// sync.
 	SyncOrders func(context.Context, []string, bool) (any, error)
@@ -122,6 +123,9 @@ type Config struct {
 	Version string
 	// SyncInterval returns the automatic sync interval in minutes (0 = off).
 	SyncInterval func() int
+	// SyncFullInterval returns the automatic full-export interval in minutes
+	// (0 = off). Nil means DefaultFullSyncMinutes.
+	SyncFullInterval func() int
 	// CatalogPath returns the catalog seed the kitchen uses. Nil or empty
 	// disables the catalog editor routes.
 	CatalogPath func() string
@@ -189,7 +193,10 @@ func New(cfg Config) *Server {
 	}
 	server := &Server{cfg: cfg, log: logger, subs: map[int]chan string{}}
 	if cfg.SyncOrders != nil {
-		server.syncer = &orderSyncer{run: cfg.SyncOrders}
+		// lastFull starts at process start: the startup sync already exports
+		// any day without a marker, so the first forced full export waits one
+		// full interval.
+		server.syncer = &orderSyncer{run: cfg.SyncOrders, lastFull: time.Now()}
 	}
 	return server
 }
@@ -1311,6 +1318,7 @@ type settingsPatch struct {
 	WebhookSecret   *string      `json:"webhookSecret"`
 	Access          *accessPatch `json:"access"`
 	SyncMinutes     *int         `json:"syncMinutes"`
+	SyncFullMinutes *int         `json:"syncFullMinutes"`
 	SyncCreatedDays *int         `json:"syncCreatedDays"`
 	AutoUpdate      *bool        `json:"autoUpdate"`
 }
@@ -1355,6 +1363,10 @@ func applyPatch(current settings.Values, patch settingsPatch) settings.Values {
 	if patch.SyncMinutes != nil && *patch.SyncMinutes >= 0 && *patch.SyncMinutes <= 1440 {
 		minutes := *patch.SyncMinutes
 		out.SyncMinutes = &minutes
+	}
+	if patch.SyncFullMinutes != nil && *patch.SyncFullMinutes >= 0 && *patch.SyncFullMinutes <= 1440 {
+		minutes := *patch.SyncFullMinutes
+		out.SyncFullMinutes = &minutes
 	}
 	if patch.SyncCreatedDays != nil && *patch.SyncCreatedDays >= 1 && *patch.SyncCreatedDays <= 365 {
 		days := *patch.SyncCreatedDays

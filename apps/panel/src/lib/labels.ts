@@ -290,6 +290,8 @@ export const labels = {
     advanced: 'Avanzado',
     syncMinutes: 'Actualizar pedidos cada (minutos)',
     syncMinutesHint: 'Sincroniza los pedidos de la tienda (hoy y mañana) cada tantos minutos. 0 lo desactiva; el botón Actualizar sigue funcionando. Se aplica sin reiniciar.',
+    syncFullMinutes: 'Export completo cada (minutos)',
+    syncFullMinutesHint: 'Cada tanto corre el export exacto de WP All Export, que trae también los pedidos creados hace más días y quita los que ya no están. 0 lo desactiva; el botón Export completo sigue funcionando.',
     syncCreatedDays: 'Buscar pedidos creados en los últimos (días)',
     syncCreatedDaysHint: 'Ventana de la consulta rápida a la API de WooCommerce. El primer contacto con un día siempre hace el export completo; después se actualiza con esta ventana.',
     restartHint: 'El túnel, el puerto, la ruta del catálogo y el modo diagnóstico se aplican al reiniciar. Usa "Guardar y reiniciar" para aplicarlos sin cerrar la aplicación a mano.',

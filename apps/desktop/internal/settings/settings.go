@@ -28,6 +28,10 @@ type Values struct {
 	// SyncMinutes is the automatic WooCommerce order sync interval. Nil means
 	// the default; 0 turns the automatic sync off.
 	SyncMinutes *int `json:"syncMinutes,omitempty"`
+	// SyncFullMinutes is the automatic full WP All Export interval. Nil means
+	// the default; 0 turns the periodic full export off (the first contact
+	// with a day still exports once).
+	SyncFullMinutes *int `json:"syncFullMinutes,omitempty"`
 	// SyncCreatedDays is the creation window of the fast store lookup: how far
 	// back an order can have been booked and still be seen by the periodic
 	// refresh. Zero means the default (45 days).

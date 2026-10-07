@@ -5,6 +5,8 @@ import (
 	"errors"
 	"testing"
 
+	waLog "go.mau.fi/whatsmeow/util/log"
+
 	"github.com/wsuites/palorosa-kitchen/apps/desktop/internal/engine"
 )
 
@@ -14,7 +16,7 @@ func testClient(t testing.TB) *Client {
 	if kitchen.Index() == nil {
 		t.Skip("seed catalog not available")
 	}
-	return &Client{kitchen: kitchen}
+	return &Client{kitchen: kitchen, log: waLog.Noop}
 }
 
 var header = []string{"ID orden", "Fecha de Entrega", "Productos", "Adicionales", "Observaciones"}
@@ -66,5 +68,37 @@ func TestSyncFromExportKeepsTheDayOnBadExports(t *testing.T) {
 		if _, ok := c.kitchen.state.Orders["2026-10-04"]["1"]; !ok {
 			t.Fatalf("%s: the day was wiped", name)
 		}
+	}
+}
+
+// TestSyncFromExportDropsInactiveStatuses is the status column rule: the saved
+// export carries an Estado column now, processing and pending rows are cooked
+// and the inactive ones never enter the day.
+func TestSyncFromExportDropsInactiveStatuses(t *testing.T) {
+	c := testClient(t)
+	withStatus := []string{"ID orden", "Fecha de Entrega", "Estado", "Productos", "Adicionales", "Observaciones"}
+	fetch := func(_ context.Context, _ string) ([][]string, error) {
+		return [][]string{
+			withStatus,
+			{"1", "4 octubre, 2026", "processing", "", "", ""},
+			{"2", "4 octubre, 2026", "pending", "", "", ""},
+			{"3", "4 octubre, 2026", "cancelled", "", "", ""},
+			{"4", "4 octubre, 2026", "wc-cancelled", "", "", ""},
+		}, nil
+	}
+	result, err := c.SyncFromExport(context.Background(), fetch, []string{"2026-10-04"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	day := c.kitchen.state.Orders["2026-10-04"]
+	_, hasProcessing := day["1"]
+	_, hasPending := day["2"]
+	_, hasCancelled := day["3"]
+	_, hasPrefixed := day["4"]
+	if len(day) != 2 || !hasProcessing || !hasPending || hasCancelled || hasPrefixed {
+		t.Fatalf("day = %v", day)
+	}
+	if result.Kept != 2 {
+		t.Fatalf("kept = %d, want 2", result.Kept)
 	}
 }

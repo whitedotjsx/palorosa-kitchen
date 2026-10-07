@@ -231,7 +231,7 @@ func (c *Client) applyOrder(date, number string, lines []engine.ParsedOrderLine,
 	}
 	c.kitchen.mu.Lock()
 	previousDay := c.previousListLocked(date)
-	previousLines := c.kitchen.state.Orders[date][number]
+	previousLines, existed := c.kitchen.state.Orders[date][number]
 	previousNote := ""
 	if observations, ok := c.kitchen.state.Observations[date]; ok {
 		previousNote = observations[number]
@@ -245,6 +245,8 @@ func (c *Client) applyOrder(date, number string, lines []engine.ParsedOrderLine,
 			c.kitchen.state.Observations[date] = map[string]string{}
 		}
 		c.kitchen.state.Observations[date][number] = note
+	} else {
+		delete(c.kitchen.state.Observations[date], number)
 	}
 	if annotation.Color != "" || annotation.Reason != "" {
 		if c.kitchen.state.Annotations[date] == nil {
@@ -261,7 +263,7 @@ func (c *Client) applyOrder(date, number string, lines []engine.ParsedOrderLine,
 		delete(c.kitchen.state.Lists, date)
 	}
 	diff := engine.DiffLists(previousDay, emptyIfNil(next))
-	if len(previousLines) == 0 {
+	if !existed {
 		addEventLocked(c.kitchen.state, "new", strings.ReplaceAll(labels.Activity.NewOrder, "{n}", number))
 	} else if !sameUnits(c.orderUnits(previousLines), c.orderUnits(lines)) || orderText(previousLines) != orderText(lines) || previousNote != note {
 		addEventLocked(c.kitchen.state, "update", strings.ReplaceAll(labels.Activity.UpdateOrder, "{n}", number))
@@ -274,7 +276,7 @@ func (c *Client) applyOrder(date, number string, lines []engine.ParsedOrderLine,
 	// after, and the resulting totals in the day list.
 	before := c.orderUnits(previousLines)
 	after := c.orderUnits(lines)
-	isNew := len(previousLines) == 0
+	isNew := !existed
 	foodChanged := !sameUnits(before, after)
 	changed := isNew || foodChanged || orderText(previousLines) != orderText(lines) || previousNote != note
 

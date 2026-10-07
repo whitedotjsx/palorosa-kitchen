@@ -19,6 +19,12 @@ const syncCooldown = 20 * time.Second
 // DefaultSyncMinutes is the automatic sync interval when none is configured.
 const DefaultSyncMinutes = 10
 
+// DefaultFullSyncMinutes is the automatic full WP All Export interval when none
+// is configured: the exact export repairs what the fast lookup cannot see
+// (orders booked more than the creation window ago) and drops the ones that
+// disappeared.
+const DefaultFullSyncMinutes = 180
+
 // orderSyncer serialises store syncs from the button and the background loop.
 type orderSyncer struct {
 	// run syncs the dates; full forces the exact WP All Export even for the
@@ -28,6 +34,7 @@ type orderSyncer struct {
 	mu        sync.Mutex
 	running   bool
 	last      time.Time
+	lastFull  time.Time
 	lastDates string
 	result    any
 	err       string
@@ -108,6 +115,9 @@ func (o *orderSyncer) sync(ctx context.Context, dates []string, full bool) bool 
 	defer o.mu.Unlock()
 	o.running = false
 	o.last = time.Now()
+	if full {
+		o.lastFull = o.last
+	}
 	o.lastDates = key
 	if result != nil {
 		o.result = result
@@ -119,6 +129,24 @@ func (o *orderSyncer) sync(ctx context.Context, dates []string, full bool) bool 
 	o.err = ""
 	o.result = result
 	return true
+}
+
+// due reports whether the background loop should sync now, and whether that
+// sync must be the periodic full export. The lookup interval drives the fast
+// refresh; the full interval forces the exact WP All Export on its own clock.
+func (o *orderSyncer) due(interval, fullInterval int, now time.Time) (run, full bool) {
+	if interval <= 0 {
+		return false, false
+	}
+	o.mu.Lock()
+	defer o.mu.Unlock()
+	if fullInterval > 0 && !o.lastFull.IsZero() && now.Sub(o.lastFull) >= time.Duration(fullInterval)*time.Minute {
+		return true, true
+	}
+	if o.last.IsZero() || now.Sub(o.last) >= time.Duration(interval)*time.Minute {
+		return true, false
+	}
+	return false, false
 }
 
 func (o *orderSyncer) status(interval int) syncStatus {
@@ -139,8 +167,19 @@ func (s *Server) syncInterval() int {
 	return s.cfg.SyncInterval()
 }
 
+// syncFullInterval is the configured automatic full-export interval in minutes
+// (0 = off).
+func (s *Server) syncFullInterval() int {
+	if s.cfg.SyncFullInterval == nil {
+		return DefaultFullSyncMinutes
+	}
+	return s.cfg.SyncFullInterval()
+}
+
 // syncLoop syncs right after start and then every configured interval. The
-// interval is re-read every minute so a change in Ajustes applies live.
+// interval is re-read every minute so a change in Ajustes applies live. The
+// full export runs on its own slower clock, so the fast lookup only adds and
+// updates and the exact export repairs the day.
 func (s *Server) syncLoop(ctx context.Context) {
 	if s.syncer == nil {
 		return
@@ -153,12 +192,8 @@ func (s *Server) syncLoop(ctx context.Context) {
 			return
 		case <-timer.C:
 		}
-		interval := s.syncInterval()
-		s.syncer.mu.Lock()
-		last := s.syncer.last
-		s.syncer.mu.Unlock()
-		if interval > 0 && (last.IsZero() || time.Since(last) >= time.Duration(interval)*time.Minute) {
-			if s.syncer.sync(ctx, syncDates(""), false) {
+		if run, full := s.syncer.due(s.syncInterval(), s.syncFullInterval(), time.Now()); run {
+			if s.syncer.sync(ctx, syncDates(""), full) {
 				s.Publish("orders")
 				s.Publish("sync")
 			}

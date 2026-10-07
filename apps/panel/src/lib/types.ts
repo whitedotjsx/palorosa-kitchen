@@ -23,6 +23,7 @@ export interface Settings {
   panelPort: number
   debug: boolean
   syncMinutes?: number | null
+  syncFullMinutes?: number | null
   syncCreatedDays?: number | null
   autoUpdate?: boolean | null
   wp: WpSettings

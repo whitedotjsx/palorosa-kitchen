@@ -40,7 +40,7 @@
       default: return labels.ajustes.updateUpToDate(update.current)
     }
   })
-  let advanced = $state({ catalogPath: '', panelPort: 5211, debug: false, syncMinutes: 10, syncCreatedDays: 45 })
+  let advanced = $state({ catalogPath: '', panelPort: 5211, debug: false, syncMinutes: 10, syncFullMinutes: 180, syncCreatedDays: 45 })
   let notifBusy = $state(false)
   let advancedBusy = $state(false)
   let checks = $state<CheckResult[]>([])
@@ -77,6 +77,7 @@
         catalogPath: settings.catalogPath ?? '',
         panelPort: settings.panelPort || 5211,
         syncMinutes: settings.syncMinutes ?? 10,
+        syncFullMinutes: settings.syncFullMinutes ?? 180,
         syncCreatedDays: settings.syncCreatedDays ?? 45,
         debug: !!settings.debug,
       }
@@ -306,7 +307,7 @@
     try {
       settings = await api<Settings>('/api/panel/settings', {
         method: 'PATCH',
-        body: JSON.stringify({ catalogPath: advanced.catalogPath, panelPort: Number(advanced.panelPort) || 5211, debug: advanced.debug, syncMinutes: Math.max(0, Math.min(1440, Math.round(Number(advanced.syncMinutes) || 0))), syncCreatedDays: Math.max(1, Math.min(365, Math.round(Number(advanced.syncCreatedDays) || 45))) }),
+        body: JSON.stringify({ catalogPath: advanced.catalogPath, panelPort: Number(advanced.panelPort) || 5211, debug: advanced.debug, syncMinutes: Math.max(0, Math.min(1440, Math.round(Number(advanced.syncMinutes) || 0))), syncFullMinutes: Math.max(0, Math.min(1440, Math.round(Number(advanced.syncFullMinutes) || 0))), syncCreatedDays: Math.max(1, Math.min(365, Math.round(Number(advanced.syncCreatedDays) || 45))) }),
       })
       notify(labels.ajustes.savedAdvanced)
       await loadDiagnostics()
@@ -757,6 +758,11 @@
         <label class="label" for="sync-minutes">{labels.ajustes.syncMinutes}</label>
         <input class="input" id="sync-minutes" type="number" min="0" max="1440" bind:value={advanced.syncMinutes} style="max-width:140px" />
         <p class="helper">{labels.ajustes.syncMinutesHint}</p>
+      </div>
+      <div class="field">
+        <label class="label" for="sync-full-minutes">{labels.ajustes.syncFullMinutes}</label>
+        <input class="input" id="sync-full-minutes" type="number" min="0" max="1440" bind:value={advanced.syncFullMinutes} style="max-width:140px" />
+        <p class="helper">{labels.ajustes.syncFullMinutesHint}</p>
       </div>
       <div class="field">
         <label class="label" for="sync-created-days">{labels.ajustes.syncCreatedDays}</label>
